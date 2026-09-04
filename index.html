@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TB Honest</title>
+<meta name="description" content="Clear, simple, sourced answers about TB and latent TB, in multiple languages." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  html, body, #root { height: 100%; }
+  body { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo, useRef } = React;
+
+/* ---------------------------------- inline icons (no external dependency) ---------------------------------- */
+function Icon({ children, size = 24, style, className }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={style}
+      className={className}
+    >
+      {children}
+    </svg>
+  );
+}
+function ChevronLeft(props) { return <Icon {...props}><polyline points="15 18 9 12 15 6" /></Icon>; }
+function ChevronDown(props) { return <Icon {...props}><polyline points="6 9 12 15 18 9" /></Icon>; }
+function Search(props) { return <Icon {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></Icon>; }
+function Volume2(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></Icon>; }
+function VolumeX(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></Icon>; }
+function Type(props) { return <Icon {...props}><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></Icon>; }
+function X(props) { return <Icon {...props}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>; }
+function ExternalLink(props) { return <Icon {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></Icon>; }
+function Globe(props) { return <Icon {...props}><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></Icon>; }
+
+
+/* ---------------------------------- library content (7th-grade level) ---------------------------------- */
+
+const ARTICLES = [
+  {
+    id: "what-is-tb",
+    category: "Basics",
+    title: "What Is TB?",
+    summary: "The basics of tuberculosis, in plain words.",
+    readTime: "2 min",
+    simple: [
+      "TB stands for tuberculosis. It's an illness caused by tiny [[bacteria||Very small living things, too small to see, that can make you sick.]], and it usually attacks the lungs.",
+      "TB can also affect other parts of the body, such as the kidneys, spine, or brain, although that's less common.",
+      "There are two kinds of TB: [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] and [[active TB||TB germs that are 'awake' and making you sick. You may be able to spread it to others.]] The next article explains the difference between them.",
+    ],
+    detailed: [
+      "TB stands for tuberculosis, an illness caused by a type of [[bacteria||Very small living things, too small to see, that can make you sick.]] called Mycobacterium tuberculosis. It usually settles in the lungs, but it can travel to other organs as well.",
+      "TB has been part of human history for thousands of years, and it remains a major global health issue today. Health officials estimate that roughly a quarter of the world's population has been exposed to TB germs at some point, though most people exposed never become sick.",
+      "There are two kinds of TB: [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] and [[active TB||TB germs that are 'awake' and making you sick. You may be able to spread it to others.]] In the U.S., several million people are estimated to be living with latent TB without knowing it, which is exactly why testing and treatment matter even for people who feel completely fine.",
+    ],
+    sources: [
+      { label: "World Health Organization — Tuberculosis (Q&A)", url: "https://www.who.int/features/qa/08/en/" },
+      { label: "CDC — Division of Tuberculosis Elimination", url: "https://www.cdc.gov/tb/" },
+    ],
+  },
+  {
+    id: "latent-vs-active",
+    category: "Basics",
+    title: "Latent TB vs. Active TB",
+    summary: "Why 'sleeping' germs and 'awake' germs are treated differently.",
+    readTime: "4 min",
+    simple: [
+      "When TB germs enter your body, your [[immune system||Your body's defense team that fights off germs.]] usually traps them, and the germs go quiet. This is [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]], often shortened to [[LTBI||Short for 'latent TB infection.' Doctors and nurses often use this short name instead of saying the full words.]] on medical paperwork. You feel fine, and you are not contagious to anyone.",
+      "Latent TB is more common than most people realize. Worldwide, about 1 in 4 people are thought to carry sleeping TB germs, which adds up to roughly 2 billion people. In the United States, health officials estimate that up to 13 million people are living with LTBI, most without knowing it.",
+      "Sometimes, especially if your immune system becomes weaker, the germs can 'wake up.' This is [[active TB||TB germs that are 'awake' and making you sick. You may be able to spread it to others.]] Now you can feel sick, and depending on where the TB is in your body, you may be able to spread it to others.",
+      "Without treatment, about 5 to 10 out of every 100 people with LTBI will go on to develop active TB at some point in their life, and about half of those cases happen within the first two years after infection. Treatment changes those odds a lot: finishing a full course lowers that risk by roughly 60% to 90%, depending on the medicine used.",
+      "Most people with latent TB never become sick, but treatment lowers that risk even further, which is why doctors often recommend it.",
+    ],
+    detailed: [
+      "When TB germs enter your body, your [[immune system||Your body's defense team that fights off germs.]] usually surrounds and traps them before they can cause damage. The germs survive but stay inactive, and that inactive state is called [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] or [[LTBI||Short for 'latent TB infection.' Doctors and nurses often use this short name instead of saying the full words.]] for short. You feel completely normal, and you cannot pass TB to anyone else while it stays this way.",
+      "LTBI is far more common than active TB. Global health officials estimate that roughly 25% of the world's population, or about 2 billion people, carry latent TB germs. In the United States, the CDC estimates that up to 13 million people have LTBI, which is a small share of the overall population but still a substantial number of people who could benefit from testing and treatment.",
+      "Without treatment, some people with LTBI will go on to develop [[active TB||TB germs that are 'awake' and making you sick. You may be able to spread it to others.]] later in life, sometimes years or decades afterward. On average, 5% to 10% of people with untreated LTBI develop active TB over their lifetime, and about half of those cases occur within the first two years after infection. The risk is notably higher for people with a weakened immune system: for example, someone living with untreated HIV faces roughly a 10% risk of progressing to active TB every year, rather than over a lifetime. More than 80% of active TB cases in the U.S. are traced back to untreated LTBI, which is a big part of why testing and treatment matter so much.",
+      "Treating LTBI substantially changes those odds. Completing a full course of treatment has been shown to lower the lifetime risk of developing active TB by roughly 60% to 90%, with the exact protection depending on which medicine is used and how much of the course is completed. Shorter, modern regimens can offer strong protection similar to older, longer ones, while also being easier for most people to finish.",
+      "This is why treating latent TB matters even though you feel fine: the goal is preventing a future illness, not curing a current one. Your doctor can help you weigh your personal risk against the treatment options available to you.",
+    ],
+    sources: [
+      { label: "World Health Organization — Tuberculosis (Q&A)", url: "https://www.who.int/features/qa/08/en/" },
+      { label: "CDC — Treatment Regimens for Latent TB Infection", url: "https://www.cdc.gov/tb/topic/treatment/ltbi.htm" },
+    ],
+  },
+  {
+    id: "how-tb-spreads",
+    category: "Basics",
+    title: "How TB Spreads",
+    summary: "TB travels through the air — but not as easily as you might think.",
+    readTime: "3 min",
+    simple: [
+      "Active TB in the lungs or throat can spread through the air when someone coughs, sneezes, speaks, or sings.",
+      "It usually takes hours of close contact in an enclosed space, like living with someone, rather than a quick hello, to catch TB germs this way.",
+      "TB does not spread by shaking hands, sharing food or dishes, or touching surfaces like doorknobs or toilet seats.",
+      "Even so, TB doesn't infect everyone it comes near, even at home. Studies of people living with someone who has active TB often find that many household members never get infected, even after weeks or months in the same home. How much someone is exposed, how strong their immune system is, and some amount of chance all play a role.",
+      "People with [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] cannot spread TB to anyone, because their germs aren't active.",
+    ],
+    detailed: [
+      "Active TB becomes [[contagious||Able to spread from one person to another.]] mainly when it affects the lungs or throat, a form called pulmonary or laryngeal TB, because tiny airborne droplets carrying the bacteria are released when someone coughs, sneezes, talks, or sings.",
+      "Catching TB this way usually takes repeated or prolonged close contact in a shared indoor space, such as living with a household member, working in a small office together, or sharing long car rides. Brief contact, like passing someone on the street, carries very low risk.",
+      "TB does not spread through handshakes, shared utensils, toilet seats, or surfaces, and it isn't passed through food or water either.",
+      "In clinical practice, though, it's not unusual for household members to avoid infection even after prolonged, close exposure. Studies that test the household contacts of someone with active pulmonary TB typically find that roughly 1 in 5 to about half become infected, which means a substantial share do not, even after weeks or months of shared living space. One 12-month study of household contacts found just under half tested positive for TB infection over that period. Differences in how much bacteria a person breathes in, room airflow and ventilation, and each person's individual immune response all help explain why exposure doesn't always lead to infection.",
+      "People with [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] are not contagious at all, since the germs are inactive and there's nothing to transmit. Once active TB has been treated for about two weeks with an effective regimen, a person usually becomes much less contagious, though a doctor will confirm when it's safe to be around others.",
+    ],
+    sources: [
+      { label: "World Health Organization — Tuberculosis (Q&A)", url: "https://www.who.int/features/qa/08/en/" },
+      { label: "CDC — Division of Tuberculosis Elimination", url: "https://www.cdc.gov/tb/" },
+      { label: "Surveillance of close contacts of patients with infectious tuberculosis (PMC)", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11163748/" },
+    ],
+  },
+  {
+    id: "symptoms",
+    category: "Symptoms",
+    title: "Signs and Symptoms of Active TB",
+    summary: "What to watch for — and why latent TB has no symptoms at all.",
+    readTime: "2 min",
+    simple: [
+      "Latent TB has no symptoms, so you won't feel sick and won't know you have it without a test.",
+      "Active TB in the lungs can cause a cough that lasts three weeks or longer, chest pain, and coughing up blood or mucus.",
+      "Other signs of active TB include feeling very tired, losing weight without trying, night sweats, fever, chills, and a poor appetite.",
+      "If you have these symptoms, especially a long-lasting cough, talk to a doctor or nurse. TB is treatable, and getting checked early helps.",
+    ],
+    detailed: [
+      "Latent TB causes no symptoms whatsoever, since it's found only through testing, which is why screening matters for people at higher risk of exposure.",
+      "Active TB disease in the lungs commonly causes a cough lasting three weeks or more, chest pain, and coughing up blood or thick mucus, also called sputum.",
+      "Because TB affects the whole body, people often also notice fatigue, unintended weight loss, night sweats, fever, chills, and loss of appetite. When TB affects organs outside the lungs, symptoms depend on the part of the body involved, such as back pain with spinal TB or swollen glands with lymph node TB.",
+      "These symptoms overlap with many other illnesses, so they don't automatically mean TB. Still, a cough lasting three weeks or longer is worth getting checked out, particularly if you've had close contact with someone with active TB, spent time somewhere TB is common, or have a weakened immune system.",
+    ],
+    sources: [
+      { label: "CDC — Signs and Symptoms of TB", url: "https://www.cdc.gov/tb/topic/basics/signsandsymptoms.htm" },
+    ],
+  },
+  {
+    id: "testing",
+    category: "Testing",
+    title: "Getting Tested for TB",
+    summary: "The two main tests, and what your results mean.",
+    readTime: "4 min",
+    simple: [
+      "There are two common ways to test for TB, and both check whether your body has ever reacted to TB germs.",
+      "The [[skin test||Also called a TST or Mantoux test. A small amount of liquid is injected just under the skin of your arm. A nurse checks the spot 2 to 3 days later.]] needs a follow-up visit two to three days later so a nurse can check your arm.",
+      "The [[blood test||Also called an IGRA test. A single blood sample is sent to a lab. It usually takes just one visit.]] only needs one visit, since it's a blood draw sent to a lab.",
+      "Many doctors now consider the blood test the more reliable option. It's much less likely to come back positive by mistake, especially in people who got the [[BCG vaccine||A TB vaccine given to children in many countries outside the U.S. It can make a skin test look positive even without real TB infection.]] as children, and there's no second visit needed to read it.",
+      "No test is perfect, though. A [[false positive||A test result that says you have TB germs when you actually don't.]] on the skin test can happen because of a past BCG vaccine or exposure to harmless, TB-like germs in the environment. A [[false negative||A test result that says you don't have TB germs when you actually do.]] can happen with either test, most often in people with a weakened immune system, or if someone is tested too soon after being exposed, before their body has had time to react.",
+      "A positive result means your body has been exposed to TB germs at some point. It doesn't by itself tell you whether the TB is latent or active, so your doctor will usually order a chest X-ray or other tests to find out.",
+      "Cost or insurance shouldn't stop you from getting tested. Local health department TB clinics and community health centers are required to serve patients regardless of insurance status or ability to pay, often for free or on a sliding scale.",
+    ],
+    detailed: [
+      "Two tests are commonly used to check for TB infection, and neither one alone can tell you whether TB is latent or active. That distinction comes from a follow-up chest X-ray, a symptom check, and sometimes a sputum sample.",
+      "The [[skin test||Also called a TST or Mantoux test. A small amount of liquid is injected just under the skin of your arm. A nurse checks the spot 2 to 3 days later.]] involves a small injection of a substance called tuberculin just under the skin of your forearm. A trained health worker measures any resulting bump 48 to 72 hours later, so this test requires two visits.",
+      "The [[blood test||Also called an IGRA test. A single blood sample is sent to a lab. It usually takes just one visit.]], or IGRA, measures how your immune cells respond to TB-specific proteins in a lab. It only requires one blood draw, and unlike the skin test, it isn't affected by a past [[BCG vaccine||A TB vaccine given to children in many countries outside the U.S. It can make a skin test look positive even without real TB infection.]], a TB vaccine used in some countries outside the U.S.",
+      "The blood test is generally considered the more accurate option for most adults today, mainly because of specificity, which is how well a test avoids false alarms. Research reviews have found the skin test's specificity can drop to roughly 50–60% in people who received BCG, compared with around 97% in people who never got it. The blood test's specificity tends to stay high, often around 99%, regardless of BCG history, because it targets proteins that aren't part of the BCG vaccine strain. Sensitivity, or how well a test catches a true infection, is roughly comparable between the two, with different studies finding one slightly ahead of the other.",
+      "Both tests can still be wrong in either direction. A [[false positive||A test result that says you have TB germs when you actually don't.]] on the skin test is most often caused by a past BCG vaccine or by exposure to other, non-TB mycobacteria in the environment; blood test false positives are less common but can occasionally happen with a few closely related bacteria. A [[false negative||A test result that says you don't have TB germs when you actually do.]] on either test is more likely in people with a weakened immune system, since the tests depend on the immune system reacting, and in anyone tested too soon after exposure, since the body typically needs about 8 to 10 weeks after exposure to develop a detectable response.",
+      "A positive result on either test means you've been exposed to TB bacteria at some point, but it doesn't necessarily mean you're sick now. Your doctor will use your symptoms, a chest X-ray, and sometimes a sputum test to determine whether it's latent or active, and to plan the right treatment.",
+      "Testing is available regardless of insurance or immigration status. Federally funded community health centers (sometimes called FQHCs) are legally required to serve everyone, often charging on a sliding scale based on income, and local health department TB clinics frequently test and treat for free as a matter of public health policy.",
+    ],
+    sources: [
+      { label: "CDC — Bacille Calmette-Guérin (BCG) Vaccine for Tuberculosis", url: "https://www.cdc.gov/tb/hcp/vaccines" },
+      { label: "CDC — Division of Tuberculosis Elimination", url: "https://www.cdc.gov/tb/" },
+    ],
+  },
+  {
+    id: "bcg-vaccine",
+    category: "Vaccines",
+    title: "TB Vaccines and Confusing Test Results",
+    summary: "Why a childhood shot can make a TB skin test come back positive years later.",
+    readTime: "3 min",
+    simple: [
+      "There is a vaccine for TB called [[BCG||Short for 'Bacille Calmette-Guérin.' A vaccine used in many countries to help protect young children from severe TB.]]. It's given to infants and young children in many countries where TB is common, but it isn't a routine vaccine in the United States.",
+      "BCG mainly protects young children from the most severe, dangerous forms of TB, like TB that spreads to the brain. It's less reliable at preventing the more common lung form of TB in adults, which is part of why the U.S. doesn't use it widely.",
+      "Here's the confusing part: because BCG is made from a weakened relative of the TB bacteria, it can train your immune system to react to a TB [[skin test||Also called a TST or Mantoux test. A small amount of liquid is injected just under the skin of your arm. A nurse checks the spot 2 to 3 days later.]] later in life, even if you were never actually infected with TB. This is called a false positive.",
+      "If you got the BCG vaccine as a child and your skin test comes back positive, ask about getting a [[blood test||Also called an IGRA test. A single blood sample is sent to a lab. It usually takes just one visit.]] instead. BCG does not cause a false positive on the blood test, so it can help sort out what's really going on.",
+      "A positive test, either way, doesn't mean you're sick with active TB. It just means more follow-up is needed. Talk with your doctor about next steps.",
+    ],
+    detailed: [
+      "[[BCG||Short for 'Bacille Calmette-Guérin.' A vaccine used in many countries to help protect young children from severe TB.]] stands for Bacille Calmette-Guérin, a vaccine developed in the 1920s from a weakened, live strain of Mycobacterium bovis, a close relative of the bacteria that causes human TB. It's one of the most widely used vaccines in the world, given routinely, often at birth, in more than 100 countries where TB is common.",
+      "In the United States, BCG is not part of routine vaccination. The CDC points to three main reasons: TB infection risk is relatively low in the U.S., the vaccine's effectiveness against adult pulmonary TB varies widely between studies, and it can complicate TB skin testing later in life.",
+      "That complication comes from how the immune system responds. BCG trains your immune system to recognize proteins similar to those on real TB bacteria, so a [[skin test||Also called a TST or Mantoux test. A small amount of liquid is injected just under the skin of your arm. A nurse checks the spot 2 to 3 days later.]] can register a reaction even without a true TB infection. According to the CDC, there is no reliable way to tell whether a positive skin test came from BCG or from real exposure to TB. People who received multiple doses of BCG, or who were vaccinated at an older age, tend to have stronger and longer-lasting false-positive reactions.",
+      "The [[blood test||Also called an IGRA test. A single blood sample is sent to a lab. It usually takes just one visit.]] avoids this problem because it looks for a reaction to specific proteins that aren't part of the BCG vaccine strain. That's why health guidelines recommend the blood test, not the skin test, for anyone who has been vaccinated with BCG, including children.",
+      "If you were vaccinated with BCG and you're facing a positive skin test result, it's reasonable to ask your provider about a follow-up blood test before assuming you have latent TB. And either way, a positive test on its own doesn't mean you have active TB disease. It simply means more evaluation, like a chest X-ray or a conversation about your risk factors, is the next step.",
+    ],
+    sources: [
+      { label: "CDC — Bacille Calmette-Guérin (BCG) Vaccine for Tuberculosis", url: "https://www.cdc.gov/tb/hcp/vaccines" },
+      { label: "CDC — Division of Tuberculosis Elimination", url: "https://www.cdc.gov/tb/" },
+    ],
+  },
+  {
+    id: "immigration-status",
+    category: "Your Rights",
+    title: "TB, Latent TB, and Your Immigration Status",
+    summary: "What actually affects an immigration case — and what doesn't.",
+    readTime: "4 min",
+    simple: [
+      "If you're worried a TB test could hurt an immigration application, here's the most important fact: only active, contagious TB (what immigration officials call 'Class A TB') can make someone [[inadmissible||A legal term meaning someone can be denied entry or a green card for a specific reason.]] to the U.S. [[Latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] does not disqualify anyone from an immigration medical exam.",
+      "If an immigration medical exam finds you have latent TB, you'll typically be classified as needing follow-up care, not turned away. Treatment is recommended, not held against you.",
+      "Public health TB clinics exist to control the spread of disease, not to enforce immigration law. Medical information is protected by privacy laws. If you're unsure about a specific clinic's policies, it's reasonable to call and ask before your visit.",
+      "'Public charge' is a separate, unrelated rule about certain government benefits, and its details have changed multiple times in recent years and are still actively being debated in court and in new regulations. Because this keeps shifting, general information can go out of date fast — a free or low-cost immigration legal aid organization can give you an answer based on the current rule and your specific situation.",
+      "Getting tested and, if needed, treated for TB is something public health experts want for everyone, regardless of immigration status. Untreated active TB is a far bigger risk to your health than any paperwork concern.",
+    ],
+    detailed: [
+      "U.S. immigration medical exams (required for green card applicants, refugees, and some other categories) classify TB findings, but only one category affects admissibility: 'Class A TB' — TB disease that is clinically active and contagious. [[Latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] is generally classified as 'Class B' and does not make someone [[inadmissible||A legal term meaning someone can be denied entry or a green card for a specific reason.]]. Class B findings typically lead to a recommendation for medical evaluation and, for latent TB, a recommendation to complete treatment — not a bar to entry.",
+      "Public health clinics that test and treat TB are separate from immigration enforcement agencies, and their core mission is disease control. Health information is protected by federal and state medical privacy laws. That said, policies and enforcement priorities can change, and if you have specific concerns about a clinic's practices, it's reasonable to ask them directly, or to seek out a clinic recommended by a trusted community or immigrant-serving organization.",
+      "'Public charge' is a distinct immigration concept: officials can consider whether someone is likely to depend primarily on certain government benefits when deciding on a green card or entry. What counts as a relevant benefit has changed across different administrations — it was broadened in 2019, narrowed again in 2022, and is under renewed proposals to broaden it again as of late 2025, with legal challenges likely. Because the rule is genuinely in flux, and because eligibility also depends on someone's specific immigration category (refugees, asylees, and several other groups have historically been exempt), general information here can't substitute for current, individualized guidance.",
+      "If you have questions about your own situation, a licensed immigration attorney or an accredited representative at a nonprofit legal aid organization (many offer free or low-cost help) can give guidance based on the current rules. Be cautious of anyone other than a licensed attorney or DOJ-accredited representative offering to handle immigration paperwork for a fee — this is a common source of fraud targeting immigrant communities, sometimes called 'notario fraud.'",
+      "None of this changes the medical picture: TB is treatable, latent TB is not contagious, and getting evaluated is squarely in your interest, separate from any immigration question.",
+    ],
+    sources: [
+      { label: "USCIS Policy Manual — Communicable Diseases of Public Health Significance", url: "https://www.uscis.gov/policy-manual" },
+      { label: "KFF — Public Charge Policies for Immigrants: Implications for Health Coverage", url: "https://www.kff.org/racial-equity-and-health-policy/fact-sheet/public-charge-policies-for-immigrants-implications-for-health-coverage/" },
+      { label: "National Immigration Law Center", url: "https://www.nilc.org/" },
+    ],
+  },
+  {
+    id: "employment-rights",
+    category: "Your Rights",
+    title: "Latent TB Treatment and Your Job",
+    summary: "What you do (and don't) have to tell your employer, and what the law protects.",
+    readTime: "4 min",
+    simple: [
+      "Latent TB is not contagious, so in most jobs, there is no legal requirement to tell your employer about it, and no reason you'd need to stop working or change your duties.",
+      "If you do need to share medical information with your employer, for example to request time off for appointments, U.S. law (the [[ADA||The Americans with Disabilities Act. A U.S. law that protects people with disabilities, including certain health conditions, from job discrimination.]]) requires that information be kept confidential and stored separately from your regular personnel file.",
+      "Some jobs, especially healthcare, childcare, teaching, and corrections work, have their own TB screening rules set by state or local law. These are separate from general workplace protections and vary by state.",
+      "Employers cannot legally refuse to hire, fire, or exclude someone from work just because they have latent TB and are not contagious. This has actually been enforced by federal regulators against employers who got it wrong.",
+      "If you believe you've faced unfair treatment at work because of a TB diagnosis, the U.S. Equal Employment Opportunity Commission (EEOC) and many local worker's rights organizations offer free help.",
+    ],
+    detailed: [
+      "Because [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] is not contagious, it generally does not create a 'direct threat' to others in a workplace, which is the legal standard employers must meet before restricting someone's job duties on health grounds. For most jobs, there's no legal obligation to disclose a latent TB diagnosis at all.",
+      "When medical information is shared with an employer, for instance to request a reasonable accommodation like flexible scheduling around treatment appointments, the [[ADA||The Americans with Disabilities Act. A U.S. law that protects people with disabilities, including certain health conditions, from job discrimination.]] requires it be treated as confidential medical information, kept in a file separate from the general personnel record, and shared only on a need-to-know basis. Note that HIPAA, which people often assume covers this, actually doesn't apply to employers directly in this context — it's the ADA's confidentiality provisions that do the work here.",
+      "Certain occupations, most notably healthcare, childcare, K-12 education, and corrections, are subject to state or local public health laws requiring periodic TB screening, sometimes annually. These requirements exist because of elevated exposure risk in those settings, not because latent TB itself is dangerous to coworkers, and they vary significantly from state to state.",
+      "The U.S. Equal Employment Opportunity Commission (EEOC) has taken enforcement action against employers who wrongly barred employees with latent TB from work, treating a non-contagious condition as if it were a direct threat. This is considered disability discrimination under the ADA, whether the exclusion is based on an actual or merely a perceived disability.",
+      "If you believe you've experienced discrimination at work related to a TB diagnosis, the EEOC accepts complaints, and many states and cities have their own workers' rights or fair employment agencies that can help, often at no cost. This is general information, not legal advice for your specific situation — an employment attorney or local worker's rights organization can advise on the specifics of your state and job.",
+    ],
+    sources: [
+      { label: "U.S. Equal Employment Opportunity Commission (EEOC)", url: "https://www.eeoc.gov/" },
+      { label: "ADA.gov — Americans with Disabilities Act", url: "https://www.ada.gov/" },
+    ],
+  },
+  {
+    id: "treating-latent",
+    category: "Treatment",
+    title: "Treating Latent TB Infection",
+    summary: "Short courses now make it easier to finish treatment.",
+    readTime: "3 min",
+    simple: [
+      "Treating [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] greatly lowers the chance it will ever turn into active TB later in life.",
+      "Doctors now often recommend shorter treatments that take three to four months, using one or two medicines, while older treatments could take six to nine months of a single daily pill.",
+      "All of these options work well, and shorter treatments are often easier to finish, which is a big part of why they're recommended when possible.",
+      "The most important thing is to take every dose and finish the full course, even though you feel completely fine the whole time.",
+    ],
+    detailed: [
+      "Treating [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] substantially lowers the lifetime risk that it develops into active disease. Health guidelines in the U.S. now favor shorter, rifamycin-based regimens over older, longer options, because people are more likely to complete a shorter course.",
+      "The preferred short options include three months of once-weekly [[isoniazid||A TB medicine, often paired with other drugs. Sometimes shortened to 'INH' or 'H.']] plus [[rifapentine||A TB medicine usually combined with isoniazid in a 3-month, once-weekly plan.]], known as 3HP; four months of daily [[rifampin||A TB medicine, sometimes used alone for 4 months or combined with isoniazid for 3 months.]], known as 4R; or three months of daily isoniazid plus rifampin, known as 3HR.",
+      "If a short course isn't a good fit, because of other medicines you take or other health conditions, daily isoniazid alone for six or nine months is an effective alternative, though it takes longer and carries a somewhat higher chance of liver-related side effects.",
+      "Whichever regimen you and your doctor choose, finishing every planned dose matters most, since stopping early can leave the treatment only partly effective.",
+    ],
+    sources: [
+      { label: "CDC — Treatment Regimens for Latent TB Infection", url: "https://www.cdc.gov/tb/topic/treatment/ltbi.htm" },
+      { label: "CDC — Latent TB Infection Treatment Regimens Table", url: "https://www.cdc.gov/tb/hcp/education/latent-tb-infection-treatment-table.html" },
+    ],
+  },
+  {
+    id: "ltbi-regimens",
+    category: "Treatment",
+    title: "LTBI Treatment Regimens, Compared",
+    summary: "Drug names, pill counts, side effects, and how well people stick with each one.",
+    readTime: "5 min",
+    simple: [
+      "If you're treating [[LTBI||Short for 'latent TB infection.' Doctors and nurses often use this short name instead of saying the full words.]], your doctor will usually choose from a handful of regimens built from three medicines: [[isoniazid||A TB medicine, often paired with other drugs. Sometimes shortened to 'INH' or 'H.']], [[rifapentine||A TB medicine usually combined with isoniazid in a 3-month, once-weekly plan.]], and [[rifampin||A TB medicine, sometimes used alone for 4 months or combined with isoniazid for 3 months.]]. All of them work well; the differences are mostly about how long treatment lasts, how many pills you take, and which side effects are more common.",
+      "[[Rifampin||A TB medicine, sometimes used alone for 4 months or combined with isoniazid for 3 months.]] alone, taken daily for 4 months (called 4R), is often seen as an easy short-course option. It's dosed by body weight, and for most adults that works out to about 2 pills a day, which is fewer pills per dose than the weekly regimens. Common side effects include a mild headache, brief stomach discomfort for about an hour after taking it, and orange-tinted body fluids, mostly urine, which is harmless but can be surprising if you're not expecting it.",
+      "[[Isoniazid||A TB medicine, often paired with other drugs. Sometimes shortened to 'INH' or 'H.']] plus [[rifapentine||A TB medicine usually combined with isoniazid in a 3-month, once-weekly plan.]], taken once a week for 12 weeks (called 3HP), means fewer total doses, but each weekly dose involves more pills, sometimes 7 to 9 at once for an average-sized adult. Some people get flu-like symptoms, like a mild fever, chills, or muscle aches, for a day or so after a dose.",
+      "Isoniazid plus rifampin daily for 3 months (3HR) is another option, and daily isoniazid alone for 6 or 9 months is the oldest approach, used when the others aren't a good fit. Isoniazid on its own carries a higher chance of tingling or numbness in the hands or feet, so it's often paired with a vitamin B6 pill to help prevent that.",
+      "Shorter regimens are easier to finish. In real-world studies, roughly half of people completed the full 9 months of isoniazid alone, compared with about 7 in 10 on the 4-month rifampin plan, and about 8 in 10 on the 12-dose weekly plan. Your doctor will help weigh which option fits your health, your schedule, and any other medicines you take.",
+    ],
+    detailed: [
+      "Treating [[LTBI||Short for 'latent TB infection.' Doctors and nurses often use this short name instead of saying the full words.]] in the U.S. generally means choosing among a small set of CDC-recommended regimens, built from three drugs: [[isoniazid||A TB medicine, often paired with other drugs. Sometimes shortened to 'INH' or 'H.']] (INH), [[rifapentine||A TB medicine usually combined with isoniazid in a 3-month, once-weekly plan.]] (RPT), and [[rifampin||A TB medicine, sometimes used alone for 4 months or combined with isoniazid for 3 months.]] (RIF). Current guidelines favor the shorter, rifamycin-based options over older isoniazid-only regimens, mainly because people are more likely to finish them.",
+      "Daily rifampin for 4 months (4R) is dosed by body weight, roughly 10 mg per kilogram, which for most adults comes out to about 600 mg a day, commonly taken as 2 capsules once daily. It tends to have a lower rate of liver-related side effects than isoniazid-only regimens. Its most noticeable side effects are usually mild: a headache, stomach discomfort in the hour or so after a dose, and a harmless orange-red tint to body fluids, most often urine, but sometimes sweat or tears too. Rifampin also changes how the liver processes many other drugs, including hormonal birth control and some HIV medicines, so it's important to review your full medication list with your doctor before starting it.",
+      "Weekly isoniazid plus [[rifapentine||A TB medicine usually combined with isoniazid in a 3-month, once-weekly plan.]] for 12 weeks (3HP) trades a higher pill count per dose for fewer total doses. Adults weighing 50 kg (about 110 lbs) or more typically take 3 isoniazid tablets and 6 rifapentine tablets at once, once a week, for 9 pills per dose. Studies of 3HP report a somewhat higher rate of short-term side effects than rifampin, including flu-like symptoms, gastrointestinal upset, and headache, though these are usually mild and resolve within the first couple weeks of treatment. 3HP can be self-administered or given under directly observed therapy, where a health worker watches each weekly dose.",
+      "Isoniazid plus rifampin daily for 3 months (3HR) is a middle-ground option. Daily isoniazid alone for 6 or 9 months (6H/9H) remains available for people who can't take a rifamycin, for example due to significant drug interactions with certain HIV antiretroviral medicines or organ transplant drugs. Isoniazid's main downsides are a higher chance of liver enzyme changes and peripheral neuropathy (tingling or numbness in the hands or feet), the latter usually prevented by taking a vitamin B6 (pyridoxine) supplement alongside it.",
+      "Completion rates consistently favor shorter regimens. One multi-clinic U.S. study found 49% of patients finished 9 months of isoniazid, compared with 70% on 4 months of rifampin and 79% on 12-dose weekly 3HP. A separate head-to-head study of adults found 3HP completion around 79–87% depending on age group, versus 64–68% for rifampin, with older adults doing especially well on the weekly option. Discontinuation specifically due to side effects was low across all regimens, generally in the low single digits.",
+      "In practice, rifampin (4R) is often favored for its simplicity, low pill count, and gentler liver profile, especially for people who prefer a daily routine without a large weekly pill count. 3HP is often favored when weekly, supervised dosing fits someone's life better, or when finishing in fewer total visits matters. Isoniazid-based regimens remain the go-to when rifamycins aren't safe to use. This is a general guide, not a personal recommendation: the right choice depends on your other medications, health conditions, and preferences, which is exactly what your doctor factors in.",
+    ],
+    sources: [
+      { label: "CDC — Treatment Regimens for Latent TB Infection", url: "https://www.cdc.gov/tb/topic/treatment/ltbi.htm" },
+      { label: "CDC — Latent TB Infection Treatment Regimens Table", url: "https://www.cdc.gov/tb/hcp/education/latent-tb-infection-treatment-table.html" },
+      { label: "NTCA — Provider Guidance on the 3HP Regimen (PDF)", url: "https://www.publichealthmdc.com/documents/NTCA_Provider_Guidance_3HP_11918.pdf" },
+      { label: "Improved treatment completion with shorter LTBI regimens (CDC/NYC study)", url: "https://stacks.cdc.gov/view/cdc/61785" },
+    ],
+  },
+  {
+    id: "treating-active",
+    category: "Treatment",
+    title: "Treating Active TB Disease",
+    summary: "Multiple medicines, taken together, for several months.",
+    readTime: "3 min",
+    simple: [
+      "Active TB is treated with a combination of several TB medicines taken together, usually for six months or longer.",
+      "Taking more than one medicine at once helps kill the TB germs fully and helps prevent [[drug-resistant TB||A form of TB that no longer responds to one or more of the usual medicines. It's harder, and takes longer, to treat.]] from developing.",
+      "Some people take their medicine with support from a health worker who watches them take each dose. This is called directly observed therapy, and it's offered to help people stay on track.",
+      "Finishing the entire course, even after symptoms go away, is essential, since stopping early is one of the main reasons TB becomes harder to treat.",
+    ],
+    detailed: [
+      "Active TB disease is treated with a combination of TB medicines, typically for a minimum of six months. Using several drugs together is more effective than any single medicine, and it helps prevent the bacteria from developing resistance.",
+      "Treatment usually happens in two phases: an initial phase of about two months with four medicines to rapidly reduce the number of bacteria, followed by a continuation phase of four months or more with fewer medicines to clear out what remains.",
+      "Skipping doses or stopping early is one of the main causes of [[drug-resistant TB||A form of TB that no longer responds to one or more of the usual medicines. It's harder, and takes longer, to treat.]], which is significantly harder, longer, and more expensive to treat. Because of this, some patients are offered directly observed therapy, where a health worker watches each dose being taken. That isn't a sign of distrust; it's simply a proven way to support people through a long treatment course.",
+      "Most people start feeling better within a few weeks, but feeling better isn't the same as being cured. The full course needs to be completed exactly as prescribed, even after symptoms are gone.",
+    ],
+    sources: [
+      { label: "CDC — Division of Tuberculosis Elimination", url: "https://www.cdc.gov/tb/" },
+    ],
+  },
+  {
+    id: "active-tb-regimens",
+    category: "Treatment",
+    title: "Active TB Treatment Regimens, Compared",
+    summary: "The standard 4-drug plan, a newer 4-month option, and what side effects to expect.",
+    readTime: "5 min",
+    simple: [
+      "Active TB disease is usually treated with four medicines together: [[rifampin||A TB medicine, sometimes used alone for 4 months or combined with isoniazid for 3 months.]], [[isoniazid||A TB medicine, often paired with other drugs. Sometimes shortened to 'INH' or 'H.']], [[pyrazinamide||A TB medicine used in the first two months of active TB treatment to help kill bacteria quickly.]], and [[ethambutol||A TB medicine used in the first two months of active TB treatment. It can affect eyesight, so eye checks are recommended.]]. Health workers sometimes call this combination by the shorthand RIPE, one letter for each drug.",
+      "The standard plan has two parts: 2 months of all four medicines together, called the intensive phase, followed by 4 months of just rifampin and isoniazid, called the continuation phase. That's 6 months in total.",
+      "Each medicine can cause its own side effects. Rifampin can turn urine and other body fluids orange, along with stomach upset. Isoniazid can cause tingling or numbness in the hands or feet, which a vitamin B6 pill helps prevent. Pyrazinamide can cause joint aches. Ethambutol can affect eyesight, especially color vision, so regular eye checks are part of treatment. All four can, rarely, affect the liver, so blood tests are used to keep an eye on things.",
+      "A newer option, approved in 2022, treats eligible patients in just 4 months using a different four-drug combination that includes [[rifapentine||A TB medicine usually combined with isoniazid in a 3-month, once-weekly plan.]] and [[moxifloxacin||An antibiotic used in some newer TB treatment plans, alongside other TB medicines.]] instead of standard rifampin and ethambutol. It works about as well as the 6-month plan for people with TB that isn't drug-resistant.",
+      "Finishing every dose matters, whether treatment takes 4 or 6 months. Some people take their medicine with a health worker watching each dose, called directly observed therapy, since stopping early is one of the main ways TB becomes resistant to treatment and much harder to cure.",
+    ],
+    detailed: [
+      "The standard treatment for drug-susceptible active TB disease combines four medicines: [[rifampin||A TB medicine, sometimes used alone for 4 months or combined with isoniazid for 3 months.]] (RIF), [[isoniazid||A TB medicine, often paired with other drugs. Sometimes shortened to 'INH' or 'H.']] (INH), [[pyrazinamide||A TB medicine used in the first two months of active TB treatment to help kill bacteria quickly.]] (PZA), and [[ethambutol||A TB medicine used in the first two months of active TB treatment. It can affect eyesight, so eye checks are recommended.]] (EMB), often shortened to RIPE. Treatment runs 6 months total, split into an 8-week intensive phase with all four drugs, meant to rapidly reduce the bacterial load, followed by an 18-week continuation phase with just rifampin and isoniazid to clear out what remains. If drug susceptibility testing confirms the TB responds to both isoniazid and rifampin, ethambutol can sometimes be dropped from the intensive phase.",
+      "Each drug has a distinct side effect profile. Rifampin commonly causes an orange-red tint to urine, sweat, and tears, plus occasional stomach upset, and it's a potent liver-enzyme inducer, meaning it can weaken the effect of many other medications, including hormonal contraceptives. Isoniazid causes asymptomatic elevation of liver enzymes in an estimated 10–20% of patients, usually without symptoms, and true drug-induced liver injury in a smaller share; it can also cause peripheral neuropathy (numbness, tingling, or pain in the hands or feet), which is why a daily vitamin B6 (pyridoxine) supplement is typically prescribed alongside it. Pyrazinamide is associated with joint aches and can raise uric acid levels, occasionally triggering gout-like symptoms. Ethambutol's main concern is optic neuritis, a change in vision, particularly color vision, which is why baseline and periodic eye exams are recommended, especially for people on it longer or at higher doses. All four drugs can, in rare cases, cause a hypersensitivity reaction like a rash or fever, and all carry some risk of liver toxicity, so clinicians monitor liver function periodically during treatment, more closely for people with existing liver disease, older adults, or those who drink alcohol regularly.",
+      "In 2022, the CDC recommended a newer 4-month regimen for eligible patients: 8 weeks of daily [[rifapentine||A TB medicine usually combined with isoniazid in a 3-month, once-weekly plan.]], [[moxifloxacin||An antibiotic used in some newer TB treatment plans, alongside other TB medicines.]], isoniazid, and pyrazinamide, followed by 9 weeks of rifapentine, moxifloxacin, and isoniazid, for 119 daily doses in total. A large international clinical trial found this regimen worked about as well as the standard 6-month plan for curing drug-susceptible pulmonary TB. It's approved for patients age 12 and older who weigh at least 40 kg (about 88 lbs), whose TB isn't known or suspected to be drug-resistant, and who don't have contraindications such as certain drug interactions.",
+      "Regardless of which regimen is used, finishing every dose is critical. Skipping doses or stopping early is one of the main drivers of [[drug-resistant TB||A form of TB that no longer responds to one or more of the usual medicines. It's harder, and takes longer, to treat.]], which requires longer, more complex, and often more toxic treatment, sometimes over a year or more, under specialist care. Because of this, many patients are offered directly observed therapy, where a health worker watches each dose being taken; this is standard practice, not a sign of distrust, and it meaningfully improves completion rates. Most people start feeling noticeably better within a few weeks of starting treatment, but feeling better isn't the same as being cured, and the full course needs to be completed exactly as prescribed.",
+      "Which regimen is preferred generally comes down to eligibility and circumstance: the standard 6-month RIPE regimen remains the most widely used and available option and is required when a shorter regimen isn't a fit (for example, drug-resistant TB, TB outside the lungs, pregnancy, or age under 12). The 4-month rifapentine-moxifloxacin regimen is an appealing option for eligible patients who want a shorter course and can tolerate its drug list. Drug-resistant TB requires an individualized regimen chosen by a TB specialist, often with different, second-line medicines.",
+    ],
+    sources: [
+      { label: "CDC — Division of Tuberculosis Elimination", url: "https://www.cdc.gov/tb/" },
+      { label: "CDC MMWR — Interim Guidance: 4-Month Rifapentine-Moxifloxacin Regimen (2022)", url: "https://www.cdc.gov/mmwr/volumes/71/wr/mm7108a1.htm" },
+      { label: "Virginia Dept. of Health — Overview of TB Treatment Regimens and Side Effects (PDF)", url: "https://www.vdh.virginia.gov/content/uploads/sites/175/Overview-of-TB-treatment-regimens-and-side-effects.pdf" },
+    ],
+  },
+  {
+    id: "myths",
+    category: "Myths",
+    title: "Common Myths About TB",
+    summary: "Separating what's true from what people often assume.",
+    readTime: "2 min",
+    simple: [
+      "Myth: TB is a disease of the past. Fact: TB still affects millions of people around the world every year, including in the United States.",
+      "Myth: any TB diagnosis means you're contagious. Fact: [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] cannot be spread to anyone.",
+      "Myth: you can catch TB from shaking hands or sharing a plate. Fact: TB spreads through the air, usually only after hours of close contact, not from touching things or eating together.",
+      "Myth: a TB diagnosis is a death sentence. Fact: with proper treatment, TB is curable for the vast majority of people.",
+    ],
+    detailed: [
+      "Myth: TB is a disease of the past. Fact: TB remains one of the most significant infectious diseases worldwide, and it still causes illness and death every year, including thousands of cases diagnosed annually in the United States.",
+      "Myth: any TB diagnosis means you're contagious. Fact: [[latent TB||TB germs that are 'sleeping' inside your body. You are not sick, and you cannot spread it to others.]] involves inactive bacteria that cannot be passed to another person under any circumstances. Only certain forms of active TB are contagious.",
+      "Myth: you can catch TB from shaking hands, sharing a plate, or touching a doorknob. Fact: TB spreads through airborne droplets released by coughing, sneezing, or talking, and it typically requires hours of shared indoor air with someone who has active, untreated TB in the lungs or throat.",
+      "Myth: a TB diagnosis is a death sentence. Fact: with a full, correctly completed course of treatment, TB is curable for the large majority of people. The biggest risk to a good outcome is stopping treatment early, not the diagnosis itself.",
+    ],
+    sources: [
+      { label: "World Health Organization — Tuberculosis (Q&A)", url: "https://www.who.int/features/qa/08/en/" },
+      { label: "CDC — Division of Tuberculosis Elimination", url: "https://www.cdc.gov/tb/" },
+    ],
+  },
+];
+
+const CATEGORIES = ["All", "Basics", "Symptoms", "Testing", "Treatment", "Vaccines", "Your Rights", "Myths"];
+
+/* ---------------------------------- languages ---------------------------------- */
+// Language set matches the languages U.S. TB programs (CDC, state health depts) most
+// commonly translate patient materials into: the largest Asian immigrant languages,
+// plus Spanish and Russian.
+
+const LANGUAGES = [
+  { code: "en", label: "English", native: "English" },
+  { code: "es", label: "Spanish", native: "Español" },
+  { code: "zh-Hans", label: "Chinese (Simplified)", native: "中文（简体）" },
+  { code: "zh-Hant", label: "Chinese (Traditional)", native: "中文（繁體）" },
+  { code: "vi", label: "Vietnamese", native: "Tiếng Việt" },
+  { code: "ko", label: "Korean", native: "한국어" },
+  { code: "tl", label: "Tagalog", native: "Tagalog" },
+  { code: "ru", label: "Russian", native: "Русский" },
+];
+
+// UI chrome strings. Content (article text) lives in ARTICLE_TRANSLATIONS below.
+const UI_STRINGS = {
+  en: {
+    library: "Library", latestResearch: "Latest Research",
+    searchPlaceholder: "Search topics, like 'testing' or 'symptoms'",
+    simple: "Simple", moreDetail: "More detail", listen: "Listen", stop: "Stop",
+    sources: "Sources", noResults: "No articles match your search. Try a different word or category.",
+    tagline: "Clear, simple answers about TB and latent TB — no medical background needed.",
+    libraryDisclaimer: "This app explains general health information in plain language. It is not medical advice and doesn't replace a visit with your doctor or nurse.",
+    articleDisclaimer: "This is general health information, not medical advice. Please talk with your doctor or nurse about your own health and treatment.",
+    reviewBanner: "This translation was drafted by AI and has not yet been checked by a medical professional. If anything is unclear, please check the English version or ask your doctor.",
+    detailFallback: "The \"More detail\" version isn't translated yet, so it's shown in English below.",
+    categories: { All: "All", Basics: "Basics", Symptoms: "Symptoms", Testing: "Testing", Treatment: "Treatment", Vaccines: "Vaccines", "Your Rights": "Your Rights", Myths: "Myths" },
+  },
+  es: {
+    library: "Biblioteca", latestResearch: "Investigación reciente",
+    searchPlaceholder: "Busca temas, como 'pruebas' o 'síntomas'",
+    simple: "Sencillo", moreDetail: "Más detalle", listen: "Escuchar", stop: "Detener",
+    sources: "Fuentes", noResults: "Ningún artículo coincide con tu búsqueda. Prueba con otra palabra o categoría.",
+    tagline: "Respuestas claras y sencillas sobre la tuberculosis y la tuberculosis latente, sin necesitar conocimientos médicos.",
+    libraryDisclaimer: "Esta aplicación explica información de salud general en lenguaje sencillo. No es un consejo médico y no reemplaza una visita con tu médico o enfermera.",
+    articleDisclaimer: "Esta es información de salud general, no un consejo médico. Por favor, habla con tu médico o enfermera sobre tu salud y tratamiento.",
+    reviewBanner: "Esta traducción fue generada por IA y todavía no ha sido revisada por un profesional médico. Si algo no está claro, consulta la versión en inglés o pregúntale a tu médico.",
+    detailFallback: "La versión \"Más detalle\" todavía no está traducida, así que se muestra en inglés a continuación.",
+    categories: { All: "Todos", Basics: "Conceptos básicos", Symptoms: "Síntomas", Testing: "Pruebas", Treatment: "Tratamiento", Vaccines: "Vacunas", "Your Rights": "Tus derechos", Myths: "Mitos" },
+  },
+  "zh-Hans": {
+    library: "资料库", latestResearch: "最新研究",
+    searchPlaceholder: "搜索主题，例如“检测”或“症状”",
+    simple: "简明版", moreDetail: "详细版", listen: "朗读", stop: "停止",
+    sources: "资料来源", noResults: "没有符合搜索条件的文章。请尝试其他词语或类别。",
+    tagline: "关于结核病和潜伏结核感染的清晰简明解答，无需医学背景。",
+    libraryDisclaimer: "本应用以通俗语言解释一般健康信息，并非医疗建议，不能替代医生或护士的诊疗。",
+    articleDisclaimer: "这是一般健康信息，不是医疗建议。请就您自己的健康和治疗咨询医生或护士。",
+    reviewBanner: "此翻译由人工智能生成，尚未经过医学专业人员审核。如有不清楚之处，请查看英文版本或咨询医生。",
+    detailFallback: "“详细版”暂无翻译，下面显示的是英文内容。",
+    categories: { All: "全部", Basics: "基础知识", Symptoms: "症状", Testing: "检测", Treatment: "治疗", Vaccines: "疫苗", "Your Rights": "你的权利", Myths: "常见误区" },
+  },
+  "zh-Hant": {
+    library: "資料庫", latestResearch: "最新研究",
+    searchPlaceholder: "搜尋主題，例如「檢測」或「症狀」",
+    simple: "簡明版", moreDetail: "詳細版", listen: "朗讀", stop: "停止",
+    sources: "資料來源", noResults: "沒有符合搜尋條件的文章。請嘗試其他詞語或類別。",
+    tagline: "關於結核病與潛伏結核感染的清晰簡明解答，不需要醫學背景。",
+    libraryDisclaimer: "本應用程式以淺顯語言說明一般健康資訊，並非醫療建議，也不能取代醫生或護理師的診療。",
+    articleDisclaimer: "這是一般健康資訊，並非醫療建議。請就您自己的健康與治療諮詢醫生或護理師。",
+    reviewBanner: "此翻譯由人工智慧生成，尚未經醫療專業人員審閱。如有不清楚之處，請查看英文版本或詢問您的醫生。",
+    detailFallback: "「詳細版」尚未翻譯，以下顯示英文內容。",
+    categories: { All: "全部", Basics: "基礎知識", Symptoms: "症狀", Testing: "檢測", Treatment: "治療", Vaccines: "疫苗", "Your Rights": "你的權利", Myths: "常見迷思" },
+  },
+  vi: {
+    library: "Thư viện", latestResearch: "Nghiên cứu mới nhất",
+    searchPlaceholder: "Tìm chủ đề, như 'xét nghiệm' hoặc 'triệu chứng'",
+    simple: "Đơn giản", moreDetail: "Chi tiết hơn", listen: "Nghe", stop: "Dừng",
+    sources: "Nguồn", noResults: "Không có bài viết nào phù hợp với tìm kiếm của bạn. Hãy thử từ khóa hoặc danh mục khác.",
+    tagline: "Giải đáp rõ ràng, đơn giản về bệnh lao và lao tiềm ẩn — không cần kiến thức y khoa.",
+    libraryDisclaimer: "Ứng dụng này giải thích thông tin sức khỏe chung bằng ngôn ngữ đơn giản. Đây không phải là lời khuyên y tế và không thay thế việc gặp bác sĩ hoặc y tá.",
+    articleDisclaimer: "Đây là thông tin sức khỏe chung, không phải lời khuyên y tế. Vui lòng trao đổi với bác sĩ hoặc y tá về sức khỏe và việc điều trị của bạn.",
+    reviewBanner: "Bản dịch này do AI soạn thảo và chưa được chuyên gia y tế kiểm tra. Nếu có điều gì chưa rõ, vui lòng xem bản tiếng Anh hoặc hỏi bác sĩ của bạn.",
+    detailFallback: "Phiên bản \"Chi tiết hơn\" chưa được dịch, nên nội dung tiếng Anh được hiển thị bên dưới.",
+    categories: { All: "Tất cả", Basics: "Cơ bản", Symptoms: "Triệu chứng", Testing: "Xét nghiệm", Treatment: "Điều trị", Vaccines: "Vắc-xin", "Your Rights": "Quyền của bạn", Myths: "Quan niệm sai lầm" },
+  },
+  ko: {
+    library: "라이브러리", latestResearch: "최신 연구",
+    searchPlaceholder: "'검사'나 '증상' 같은 주제를 검색하세요",
+    simple: "간단히", moreDetail: "자세히", listen: "듣기", stop: "중지",
+    sources: "출처", noResults: "검색과 일치하는 글이 없습니다. 다른 단어나 카테고리로 시도해 보세요.",
+    tagline: "결핵과 잠복결핵에 대한 명확하고 간단한 설명 — 의학 지식이 없어도 이해할 수 있습니다.",
+    libraryDisclaimer: "이 앱은 일반적인 건강 정보를 쉬운 말로 설명합니다. 의학적 조언이 아니며 의사나 간호사의 진료를 대신할 수 없습니다.",
+    articleDisclaimer: "이는 일반적인 건강 정보이며 의학적 조언이 아닙니다. 본인의 건강과 치료에 대해서는 의사나 간호사와 상담하세요.",
+    reviewBanner: "이 번역은 AI가 작성한 초안이며 아직 의료 전문가의 검토를 거치지 않았습니다. 이해가 안 되는 부분이 있으면 영어 버전을 확인하거나 의사에게 문의하세요.",
+    detailFallback: "\"자세히\" 버전은 아직 번역되지 않아 아래에 영어로 표시됩니다.",
+    categories: { All: "전체", Basics: "기초", Symptoms: "증상", Testing: "검사", Treatment: "치료", Vaccines: "백신", "Your Rights": "당신의 권리", Myths: "오해와 진실" },
+  },
+  tl: {
+    library: "Aklatan", latestResearch: "Pinakabagong Pananaliksik",
+    searchPlaceholder: "Maghanap ng paksa, tulad ng 'pagsusuri' o 'sintomas'",
+    simple: "Simple", moreDetail: "Mas detalyado", listen: "Pakinggan", stop: "Ihinto",
+    sources: "Mga Pinagmulan", noResults: "Walang artikulong tumutugma sa iyong paghahanap. Subukan ang ibang salita o kategorya.",
+    tagline: "Malinaw at simpleng mga sagot tungkol sa TB at latent TB — hindi kailangan ng medikal na kaalaman.",
+    libraryDisclaimer: "Ipinapaliwanag ng app na ito ang pangkalahatang impormasyon sa kalusugan gamit ang simpleng wika. Hindi ito medikal na payo at hindi ito kapalit ng pagpapatingin sa iyong doktor o nars.",
+    articleDisclaimer: "Ito ay pangkalahatang impormasyon sa kalusugan, hindi medikal na payo. Mangyaring makipag-usap sa iyong doktor o nars tungkol sa iyong sariling kalusugan at paggamot.",
+    reviewBanner: "Ang salin na ito ay ginawa ng AI at hindi pa nasusuri ng isang propesyonal sa medisina. Kung may hindi malinaw, pakisuri ang bersyong Ingles o magtanong sa iyong doktor.",
+    detailFallback: "Ang bersyong \"Mas detalyado\" ay hindi pa isinasalin, kaya ipinapakita ito sa Ingles sa ibaba.",
+    categories: { All: "Lahat", Basics: "Mga Batayan", Symptoms: "Mga Sintomas", Testing: "Pagsusuri", Treatment: "Paggamot", Vaccines: "Bakuna", "Your Rights": "Ang Iyong mga Karapatan", Myths: "Mga Maling Paniniwala" },
+  },
+  ru: {
+    library: "Библиотека", latestResearch: "Последние исследования",
+    searchPlaceholder: "Искать темы, например «тестирование» или «симптомы»",
+    simple: "Просто", moreDetail: "Подробнее", listen: "Слушать", stop: "Стоп",
+    sources: "Источники", noResults: "Статьи по вашему запросу не найдены. Попробуйте другое слово или категорию.",
+    tagline: "Понятные, простые ответы о туберкулёзе и латентном туберкулёзе — без медицинского образования.",
+    libraryDisclaimer: "Это приложение объясняет общую информацию о здоровье простым языком. Это не медицинская консультация и не заменяет визит к врачу или медсестре.",
+    articleDisclaimer: "Это общая информация о здоровье, а не медицинская консультация. Пожалуйста, обсудите своё здоровье и лечение с врачом или медсестрой.",
+    reviewBanner: "Этот перевод подготовлен ИИ и ещё не проверен медицинским специалистом. Если что-то непонятно, посмотрите версию на английском языке или спросите своего врача.",
+    detailFallback: "Версия «Подробнее» пока не переведена, поэтому ниже показан английский текст.",
+    categories: { All: "Все", Basics: "Основы", Symptoms: "Симптомы", Testing: "Тестирование", Treatment: "Лечение", Vaccines: "Вакцины", "Your Rights": "Ваши права", Myths: "Мифы" },
+  },
+};
+
+// AI-drafted translations of each article's "Simple" reading level, plus title/summary.
+// NEEDS-REVIEW: drafted by AI, not yet checked by a bilingual clinician or medical
+// translator. The "More detail" reading level is intentionally left untranslated for
+// now (see UI_STRINGS.detailFallback) since it carries the highest-stakes clinical
+// detail (dosing, side-effect statistics) and most needs professional review first.
+const ARTICLE_TRANSLATIONS = {
+  "what-is-tb": {
+    es: { title: "¿Qué es la tuberculosis?", summary: "Lo básico sobre la tuberculosis, en palabras sencillas.",
+      simple: [
+        "La tuberculosis (TB) es una enfermedad causada por bacterias muy pequeñas que suelen atacar los pulmones.",
+        "La TB también puede afectar otras partes del cuerpo, como los riñones, la columna o el cerebro.",
+        "Hay dos tipos de TB: la TB latente (los gérmenes están 'dormidos'; no estás enfermo y no puedes contagiar a nadie) y la TB activa (los gérmenes están 'despiertos'; puedes sentirte enfermo y podrías contagiar a otras personas).",
+      ] },
+    "zh-Hans": { title: "什么是结核病？", summary: "用简单的话说明结核病的基本知识。",
+      simple: [
+        "结核病（TB）是由极其微小的细菌引起的疾病，通常侵袭肺部。",
+        "结核病也可能影响身体其他部位，比如肾脏、脊柱或大脑。",
+        "结核病分为两种：潜伏结核（细菌处于“休眠”状态，您不会生病，也不会传染给他人）和活动性结核（细菌“活跃”并使您生病，可能会传染给他人）。",
+      ] },
+    "zh-Hant": { title: "什麼是結核病？", summary: "用簡單的話說明結核病的基本知識。",
+      simple: [
+        "結核病（TB）是由極其微小的細菌引起的疾病，通常侵襲肺部。",
+        "結核病也可能影響身體其他部位，例如腎臟、脊椎或大腦。",
+        "結核病分為兩種：潛伏結核（細菌處於「休眠」狀態，您不會生病，也不會傳染給他人）和活動性結核（細菌「活躍」並使您生病，可能會傳染給他人）。",
+      ] },
+    vi: { title: "Bệnh Lao Là Gì?", summary: "Kiến thức cơ bản về bệnh lao, bằng lời lẽ đơn giản.",
+      simple: [
+        "Lao (TB) là bệnh do vi khuẩn rất nhỏ gây ra, thường tấn công phổi.",
+        "Lao cũng có thể ảnh hưởng đến các bộ phận khác của cơ thể, như thận, cột sống hoặc não.",
+        "Có hai loại lao: lao tiềm ẩn (vi khuẩn đang 'ngủ', bạn không bị bệnh và không thể lây cho ai) và lao hoạt động (vi khuẩn 'thức dậy' khiến bạn cảm thấy bệnh và có thể lây cho người khác).",
+      ] },
+    ko: { title: "결핵이란 무엇인가요?", summary: "결핵의 기본 개념을 쉬운 말로 설명합니다.",
+      simple: [
+        "결핵(TB)은 아주 작은 세균이 일으키는 병으로, 보통 폐를 공격합니다.",
+        "결핵은 신장, 척추, 뇌 등 몸의 다른 부위에도 영향을 줄 수 있습니다.",
+        "결핵에는 두 종류가 있습니다: 잠복결핵(세균이 '잠들어' 있어 아프지 않고 남에게 옮기지 않음)과 활동성 결핵(세균이 '깨어나' 아플 수 있고 남에게 옮길 수 있음)입니다.",
+      ] },
+    tl: { title: "Ano ang TB?", summary: "Ang mga pangunahing kaalaman tungkol sa tuberculosis, sa simpleng salita.",
+      simple: [
+        "Ang TB ay sakit na dulot ng napakaliit na bakterya na karaniwang umaatake sa baga.",
+        "Maaari ring apektuhan ng TB ang ibang bahagi ng katawan, tulad ng bato, gulugod, o utak.",
+        "May dalawang uri ng TB: ang latent TB (natutulog ang mga mikrobyo; hindi ka may sakit at hindi ka makakahawa) at ang active TB (gising ang mga mikrobyo; maaari kang magkasakit at makahawa sa iba).",
+      ] },
+    ru: { title: "Что такое туберкулёз?", summary: "Основы туберкулёза простыми словами.",
+      simple: [
+        "Туберкулёз (ТБ) — это заболевание, вызываемое очень маленькими бактериями, которые обычно поражают лёгкие.",
+        "Туберкулёз также может затрагивать другие части тела, например почки, позвоночник или мозг.",
+        "Есть два вида туберкулёза: латентный (микробы «спят», вы не больны и не можете никого заразить) и активный (микробы «проснулись», вы можете почувствовать себя больным и заразить других).",
+      ] },
+  },
+  "latent-vs-active": {
+    es: { title: "TB latente vs. TB activa", summary: "Por qué los gérmenes 'dormidos' y los 'despiertos' se tratan de forma diferente.",
+      simple: [
+        "Cuando los gérmenes de la TB entran en tu cuerpo, tu sistema inmunitario suele atraparlos y quedan inactivos. Esto se llama TB latente, o LTBI. Te sientes bien y no puedes contagiar a nadie.",
+        "La TB latente es más común de lo que parece: en todo el mundo, cerca de 1 de cada 4 personas tiene gérmenes de TB dormidos; en Estados Unidos, hasta 13 millones de personas tienen LTBI.",
+        "A veces los gérmenes 'despiertan' y se vuelven TB activa, lo que puede enfermarte y hacer que contagies a otros.",
+        "Sin tratamiento, entre 5 y 10 de cada 100 personas con LTBI desarrollan TB activa en algún momento de su vida. El tratamiento reduce ese riesgo entre un 60% y un 90%.",
+      ] },
+    "zh-Hans": { title: "潜伏结核 与 活动性结核", summary: "为什么“休眠”细菌和“活跃”细菌需要不同的处理方式。",
+      simple: [
+        "结核细菌进入体内后，免疫系统通常会将其控制住，使其保持“休眠”状态。这称为潜伏结核感染，简称LTBI。您会感觉良好，也不会传染给他人。",
+        "潜伏结核比想象中更常见：全球约每4人中就有1人携带休眠的结核细菌；在美国，估计有多达1300万人患有LTBI。",
+        "有时细菌会“苏醒”变为活动性结核，这会让您生病，并可能传染给他人。",
+        "如果不治疗，每100名LTBI患者中约有5到10人一生中会发展为活动性结核。而完成治疗可将这一风险降低60%到90%。",
+      ] },
+    "zh-Hant": { title: "潛伏結核 與 活動性結核", summary: "為什麼「休眠」細菌和「活躍」細菌需要不同的處理方式。",
+      simple: [
+        "結核細菌進入體內後，免疫系統通常會將其控制住，使其保持「休眠」狀態。這稱為潛伏結核感染，簡稱LTBI。您會感覺良好，也不會傳染給他人。",
+        "潛伏結核比想像中更常見：全球約每4人中就有1人帶有休眠的結核細菌；在美國，估計多達1300萬人患有LTBI。",
+        "有時細菌會「甦醒」變為活動性結核，這會讓您生病，並可能傳染給他人。",
+        "若不治療，每100名LTBI患者中約有5到10人一生中會發展為活動性結核。完成治療可將此風險降低60%至90%。",
+      ] },
+    vi: { title: "Lao Tiềm Ẩn so với Lao Hoạt Động", summary: "Tại sao vi khuẩn 'đang ngủ' và 'đang thức' cần được điều trị khác nhau.",
+      simple: [
+        "Khi vi khuẩn lao xâm nhập cơ thể, hệ miễn dịch thường bẫy chúng lại và chúng trở nên im lặng. Đây gọi là lao tiềm ẩn, hay LTBI. Bạn cảm thấy khỏe mạnh và không thể lây cho ai.",
+        "Lao tiềm ẩn phổ biến hơn nhiều người nghĩ: trên toàn thế giới, khoảng 1 trong 4 người mang vi khuẩn lao đang ngủ; tại Hoa Kỳ, ước tính có tới 13 triệu người mắc LTBI.",
+        "Đôi khi vi khuẩn 'thức dậy' và trở thành lao hoạt động, khiến bạn cảm thấy bệnh và có thể lây cho người khác.",
+        "Nếu không điều trị, khoảng 5 đến 10 trong số 100 người mắc LTBI sẽ phát triển thành lao hoạt động trong đời. Điều trị đầy đủ giúp giảm nguy cơ này từ 60% đến 90%.",
+      ] },
+    ko: { title: "잠복결핵 대 활동성 결핵", summary: "'잠든' 세균과 '깨어난' 세균을 다르게 치료하는 이유.",
+      simple: [
+        "결핵균이 몸에 들어오면 면역체계가 대개 이를 가두어 조용하게 만듭니다. 이를 잠복결핵감염(LTBI)이라고 합니다. 이때는 몸이 멀쩡하고 남에게 옮기지도 않습니다.",
+        "잠복결핵은 생각보다 흔합니다. 전 세계적으로 약 4명 중 1명이 잠든 결핵균을 지니고 있으며, 미국에서는 최대 1,300만 명이 LTBI를 가진 것으로 추정됩니다.",
+        "때때로 세균이 '깨어나' 활동성 결핵이 되면 몸이 아플 수 있고 다른 사람에게 옮길 수도 있습니다.",
+        "치료하지 않으면 LTBI를 가진 사람 100명 중 5~10명이 평생 동안 활동성 결핵으로 진행됩니다. 치료를 완료하면 이 위험이 60~90% 줄어듭니다.",
+      ] },
+    tl: { title: "Latent TB kumpara sa Active TB", summary: "Bakit iba ang paggamot sa 'natutulog' at 'gising' na mikrobyo.",
+      simple: [
+        "Kapag pumasok ang mikrobyo ng TB sa katawan mo, karaniwang huhulihin ito ng iyong immune system at mananahimik ito. Tinatawag itong latent TB, o LTBI. Pakiramdam mo ay maayos ka at hindi ka makakahawa sa iba.",
+        "Mas karaniwan ang latent TB kaysa sa iniisip ng marami: sa buong mundo, tinatayang 1 sa 4 na tao ay may natutulog na mikrobyo ng TB; sa Estados Unidos, tinatayang hanggang 13 milyong tao ang may LTBI.",
+        "Minsan, 'gumigising' ang mikrobyo at nagiging active TB, na maaaring magpasakit sa iyo at makahawa sa iba.",
+        "Kung hindi gagamutin, mga 5 hanggang 10 sa bawat 100 taong may LTBI ang magkakaroon ng active TB sa kanilang buhay. Binabawasan ng paggamot ang panganib na ito ng humigit-kumulang 60% hanggang 90%.",
+      ] },
+    ru: { title: "Латентный туберкулёз и активный туберкулёз", summary: "Почему «спящие» и «проснувшиеся» микробы лечат по-разному.",
+      simple: [
+        "Когда микробы туберкулёза попадают в организм, иммунная система обычно захватывает их, и они остаются неактивными. Это называется латентная туберкулёзная инфекция (ЛТБИ). Вы чувствуете себя хорошо и не можете никого заразить.",
+        "Латентный туберкулёз встречается чаще, чем кажется: во всём мире примерно 1 из 4 человек носит «спящие» микробы туберкулёза; в США, по оценкам, до 13 миллионов человек имеют ЛТБИ.",
+        "Иногда микробы «просыпаются» и переходят в активный туберкулёз, из-за которого вы можете заболеть и заразить других.",
+        "Без лечения примерно 5–10 из каждых 100 человек с ЛТБИ заболевают активным туберкулёзом в течение жизни. Лечение снижает этот риск на 60–90%.",
+      ] },
+  },
+  "how-tb-spreads": {
+    es: { title: "Cómo se contagia la TB", summary: "La TB viaja por el aire, pero no se contagia tan fácilmente como podrías pensar.",
+      simple: [
+        "La TB activa en los pulmones o la garganta puede contagiarse por el aire cuando alguien tose, estornuda, habla o canta.",
+        "Generalmente se necesitan horas de contacto cercano en un espacio cerrado, no un saludo rápido, para contagiarse.",
+        "La TB no se contagia al dar la mano, compartir comida o tocar superficies.",
+        "Aun así, muchos familiares que viven con alguien con TB activa nunca se infectan, incluso después de semanas o meses juntos. Las personas con TB latente no pueden contagiar a nadie.",
+      ] },
+    "zh-Hans": { title: "结核病如何传播", summary: "结核病通过空气传播，但不像你想象的那么容易被传染。",
+      simple: [
+        "肺部或喉部的活动性结核，可以在患者咳嗽、打喷嚏、说话或唱歌时通过空气传播。",
+        "通常需要在密闭空间内长时间近距离接触，而不是短暂的打招呼，才会被传染。",
+        "结核病不会通过握手、分享食物或触摸物体表面传播。",
+        "即便如此，与活动性结核患者同住的许多家庭成员，即使共同生活数周或数月，也不会被感染。潜伏结核患者不会传染给任何人。",
+      ] },
+    "zh-Hant": { title: "結核病如何傳播", summary: "結核病透過空氣傳播，但不像你想像的那麼容易被傳染。",
+      simple: [
+        "肺部或喉部的活動性結核，會在患者咳嗽、打噴嚏、說話或唱歌時透過空氣傳播。",
+        "通常需要在密閉空間內長時間近距離接觸，而不是短暫的打招呼，才會被傳染。",
+        "結核病不會透過握手、分享食物或觸摸物體表面傳播。",
+        "即便如此，與活動性結核患者同住的許多家庭成員，即使共同生活數週或數月，也不會被感染。潛伏結核患者不會傳染給任何人。",
+      ] },
+    vi: { title: "Bệnh Lao Lây Lan Như Thế Nào", summary: "Lao lây qua không khí — nhưng không dễ lây như bạn nghĩ.",
+      simple: [
+        "Lao hoạt động ở phổi hoặc cổ họng có thể lây qua không khí khi ai đó ho, hắt hơi, nói chuyện hoặc hát.",
+        "Thường cần nhiều giờ tiếp xúc gần trong không gian kín, chứ không phải một lời chào nhanh, để lây nhiễm.",
+        "Lao không lây qua bắt tay, dùng chung thức ăn, hoặc chạm vào bề mặt.",
+        "Dù vậy, nhiều thành viên trong gia đình sống cùng người mắc lao hoạt động không bao giờ bị lây, dù đã sống chung nhiều tuần hoặc nhiều tháng. Người mắc lao tiềm ẩn không thể lây cho ai.",
+      ] },
+    ko: { title: "결핵은 어떻게 전염되나요", summary: "결핵은 공기로 전염되지만, 생각보다 쉽게 옮지 않습니다.",
+      simple: [
+        "폐나 목의 활동성 결핵은 기침, 재채기, 말, 노래를 할 때 공기를 통해 전염될 수 있습니다.",
+        "보통 잠깐 인사하는 정도가 아니라 밀폐된 공간에서 몇 시간의 밀접 접촉이 있어야 감염됩니다.",
+        "결핵은 악수, 음식 공유, 표면 접촉으로는 전염되지 않습니다.",
+        "그럼에도 활동성 결핵 환자와 함께 사는 많은 가족 구성원이 몇 주, 몇 달을 함께 지내도 감염되지 않는 경우가 흔합니다. 잠복결핵인 사람은 누구에게도 옮기지 않습니다.",
+      ] },
+    tl: { title: "Paano Kumakalat ang TB", summary: "Kumakalat ang TB sa hangin — pero hindi ganoon kadaling makahawa.",
+      simple: [
+        "Ang active TB sa baga o lalamunan ay maaaring kumalat sa hangin kapag ang isang tao ay umubo, bumahin, nagsalita, o kumanta.",
+        "Karaniwang nangangailangan ito ng maraming oras ng malapitang pakikisalamuha sa saradong lugar, hindi lang isang mabilisang pagbati.",
+        "Hindi kumakalat ang TB sa pakikipagkamay, pagbabahagi ng pagkain, o paghawak ng mga ibabaw.",
+        "Gayunpaman, karaniwang hindi nahahawa ang maraming miyembro ng pamilya na kasama ng taong may active TB, kahit magkasama sila nang ilang linggo o buwan. Hindi makakahawa ang taong may latent TB sa kahit sino.",
+      ] },
+    ru: { title: "Как распространяется туберкулёз", summary: "Туберкулёз передаётся по воздуху, но заразиться не так просто, как может показаться.",
+      simple: [
+        "Активный туберкулёз лёгких или горла может передаваться по воздуху, когда человек кашляет, чихает, говорит или поёт.",
+        "Обычно для заражения нужны часы близкого контакта в закрытом помещении, а не короткое приветствие.",
+        "Туберкулёз не передаётся через рукопожатия, общую еду или прикосновение к поверхностям.",
+        "Тем не менее, многие члены семьи, живущие с человеком с активным туберкулёзом, никогда не заражаются, даже после недель или месяцев совместного проживания. Люди с латентным туберкулёзом не могут никого заразить.",
+      ] },
+  },
+  symptoms: {
+    es: { title: "Signos y síntomas de la TB activa", summary: "Qué señales observar, y por qué la TB latente no tiene ningún síntoma.",
+      simple: [
+        "La TB latente no tiene síntomas, así que no sabrás que la tienes sin una prueba.",
+        "La TB activa en los pulmones puede causar tos que dura tres semanas o más, dolor en el pecho y tos con sangre o flema.",
+        "Otros signos incluyen cansancio, pérdida de peso, sudores nocturnos, fiebre, escalofríos y poco apetito.",
+        "Si tienes estos síntomas, especialmente una tos que no se quita, habla con un médico o enfermera. La TB es tratable.",
+      ] },
+    "zh-Hans": { title: "活动性结核的体征和症状", summary: "需要注意哪些信号，以及为什么潜伏结核完全没有症状。",
+      simple: [
+        "潜伏结核没有任何症状，因此如果不做检测，您不会知道自己感染了。",
+        "肺部活动性结核可能导致咳嗽持续三周或更久、胸痛、咳血或咳痰。",
+        "其他症状包括疲倦、体重下降、盗汗、发烧、寒颤和食欲不振。",
+        "如果您有这些症状，尤其是持续很久的咳嗽，请咨询医生或护士。结核病是可以治疗的。",
+      ] },
+    "zh-Hant": { title: "活動性結核的徵狀", summary: "需要注意哪些信號，以及為什麼潛伏結核完全沒有症狀。",
+      simple: [
+        "潛伏結核沒有任何症狀，因此若不做檢測，您不會知道自己已感染。",
+        "肺部活動性結核可能導致咳嗽持續三週以上、胸痛、咳血或咳痰。",
+        "其他症狀包括疲倦、體重下降、盜汗、發燒、寒顫及食慾不振。",
+        "若您有這些症狀，尤其是久咳不癒，請諮詢醫生或護理師。結核病是可以治療的。",
+      ] },
+    vi: { title: "Dấu Hiệu và Triệu Chứng của Lao Hoạt Động", summary: "Những gì cần chú ý — và tại sao lao tiềm ẩn không có triệu chứng gì.",
+      simple: [
+        "Lao tiềm ẩn không có triệu chứng, vì vậy bạn sẽ không biết mình mắc bệnh nếu không xét nghiệm.",
+        "Lao hoạt động ở phổi có thể gây ho kéo dài từ ba tuần trở lên, đau ngực, và ho ra máu hoặc đờm.",
+        "Các dấu hiệu khác gồm mệt mỏi, sụt cân, đổ mồ hôi đêm, sốt, ớn lạnh, và chán ăn.",
+        "Nếu bạn có các triệu chứng này, đặc biệt là ho kéo dài, hãy trao đổi với bác sĩ hoặc y tá. Bệnh lao có thể chữa được.",
+      ] },
+    ko: { title: "활동성 결핵의 징후와 증상", summary: "무엇을 살펴야 하는지 — 그리고 잠복결핵에는 왜 증상이 전혀 없는지.",
+      simple: [
+        "잠복결핵은 증상이 없어서 검사를 하지 않으면 알 수 없습니다.",
+        "폐의 활동성 결핵은 3주 이상 지속되는 기침, 흉통, 피 섞인 가래나 객담을 유발할 수 있습니다.",
+        "다른 징후로는 피로감, 체중 감소, 야간 발한, 발열, 오한, 식욕 부진이 있습니다.",
+        "특히 오래가는 기침 등 이런 증상이 있다면 의사나 간호사와 상담하세요. 결핵은 치료할 수 있습니다.",
+      ] },
+    tl: { title: "Mga Palatandaan at Sintomas ng Active TB", summary: "Ano ang bantayan — at bakit walang sintomas ang latent TB.",
+      simple: [
+        "Walang sintomas ang latent TB, kaya hindi mo malalaman na meron ka nito kung walang pagsusuri.",
+        "Ang active TB sa baga ay maaaring magdulot ng ubo na tumatagal ng tatlong linggo o higit pa, sakit sa dibdib, at pag-ubo ng dugo o plema.",
+        "Kabilang sa iba pang palatandaan ang pagkapagod, pagbaba ng timbang, pagpapawis sa gabi, lagnat, panginginig, at kawalan ng gana kumain.",
+        "Kung mayroon kang mga sintomas na ito, lalo na ang matagal nang ubo, kausapin ang doktor o nars. Nagagamot ang TB.",
+      ] },
+    ru: { title: "Признаки и симптомы активного туберкулёза", summary: "На что обратить внимание — и почему латентный туберкулёз не даёт никаких симптомов.",
+      simple: [
+        "Латентный туберкулёз не вызывает никаких симптомов, поэтому вы не узнаете о нём без анализа.",
+        "Активный туберкулёз лёгких может вызывать кашель, длящийся три недели и более, боль в груди, кашель с кровью или мокротой.",
+        "Другие признаки включают усталость, потерю веса, ночную потливость, температуру, озноб и плохой аппетит.",
+        "Если у вас есть эти симптомы, особенно долгий кашель, обратитесь к врачу или медсестре. Туберкулёз излечим.",
+      ] },
+  },
+  testing: {
+    es: { title: "Hacerte la prueba de TB", summary: "Las dos pruebas principales, y qué significan tus resultados.",
+      simple: [
+        "Hay dos formas comunes de hacer la prueba de TB, y ambas revisan si tu cuerpo ha reaccionado alguna vez a los gérmenes de la TB.",
+        "La prueba cutánea necesita una segunda visita, de 2 a 3 días después, para revisar tu brazo. La prueba de sangre solo necesita una visita.",
+        "Muchos médicos consideran que la prueba de sangre es más confiable, especialmente en personas vacunadas con BCG de niños, porque es menos probable que dé un falso positivo.",
+        "Ningún resultado es perfecto: puede haber falsos positivos (sobre todo con la prueba cutánea, por la vacuna BCG) y falsos negativos (más comunes si el sistema inmunitario está débil o si te haces la prueba demasiado pronto).",
+        "Un resultado positivo significa que has estado expuesto a los gérmenes de la TB, no necesariamente que estés enfermo ahora. Tu médico pedirá más pruebas, como una radiografía de tórax.",
+      ] },
+    "zh-Hans": { title: "接受结核病检测", summary: "两种主要检测方法及其结果的含义。",
+      simple: [
+        "结核病常用两种检测方法，都是检查您的身体是否曾对结核细菌产生反应。",
+        "皮肤测试需要2到3天后再次就诊检查手臂；血液测试只需一次就诊。",
+        "许多医生认为血液测试更可靠，尤其对于儿童时期接种过卡介苗（BCG）的人，因为它更不容易出现假阳性。",
+        "没有任何检测是完美的：皮肤测试可能因卡介苗而出现假阳性；两种测试在免疫系统较弱或感染后太早检测时都可能出现假阴性。",
+        "阳性结果意味着您曾接触过结核细菌，但不一定代表您现在生病。医生通常还会安排胸部X光等进一步检查。",
+      ] },
+    "zh-Hant": { title: "接受結核病檢測", summary: "兩種主要檢測方法及其結果的意義。",
+      simple: [
+        "結核病常用兩種檢測方法，都是檢查您的身體是否曾對結核細菌產生反應。",
+        "皮膚測試需要2到3天後再次就診檢查手臂；血液測試只需一次就診。",
+        "許多醫生認為血液測試更可靠，尤其對於兒時接種過卡介苗（BCG）的人，因為它較不易出現偽陽性。",
+        "沒有任何檢測是完美的：皮膚測試可能因卡介苗而出現偽陽性；兩種測試在免疫系統較弱或感染後太早檢測時都可能出現偽陰性。",
+        "陽性結果代表您曾接觸過結核細菌，但不一定代表您現在生病。醫生通常還會安排胸部X光等進一步檢查。",
+      ] },
+    vi: { title: "Xét Nghiệm Lao", summary: "Hai loại xét nghiệm chính, và ý nghĩa của kết quả.",
+      simple: [
+        "Có hai cách xét nghiệm lao phổ biến, cả hai đều kiểm tra xem cơ thể bạn đã từng phản ứng với vi khuẩn lao hay chưa.",
+        "Xét nghiệm da cần một lần khám lại sau 2–3 ngày để kiểm tra cánh tay. Xét nghiệm máu chỉ cần một lần khám.",
+        "Nhiều bác sĩ cho rằng xét nghiệm máu đáng tin cậy hơn, đặc biệt với người đã tiêm vắc-xin BCG khi còn nhỏ, vì ít có khả năng cho kết quả dương tính giả.",
+        "Không có xét nghiệm nào hoàn hảo: dương tính giả có thể xảy ra với xét nghiệm da (thường do BCG), và âm tính giả có thể xảy ra với cả hai loại, đặc biệt nếu hệ miễn dịch yếu hoặc xét nghiệm quá sớm sau khi phơi nhiễm.",
+        "Kết quả dương tính nghĩa là bạn đã từng tiếp xúc với vi khuẩn lao, không nhất thiết là đang mắc bệnh. Bác sĩ sẽ yêu cầu thêm xét nghiệm như chụp X-quang ngực.",
+      ] },
+    ko: { title: "결핵 검사받기", summary: "두 가지 주요 검사 방법과 결과의 의미.",
+      simple: [
+        "결핵 검사에는 두 가지 흔한 방법이 있으며, 둘 다 몸이 결핵균에 반응한 적이 있는지 확인합니다.",
+        "피부 검사는 2~3일 후 팔을 확인하러 다시 방문해야 합니다. 혈액 검사는 한 번만 방문하면 됩니다.",
+        "많은 의사들은 혈액 검사가 더 신뢰할 만하다고 봅니다. 특히 어릴 때 BCG 백신을 맞은 사람의 경우 위양성이 나올 가능성이 더 낮기 때문입니다.",
+        "완벽한 검사는 없습니다. 피부 검사는 BCG로 인해 위양성이 나올 수 있고, 두 검사 모두 면역력이 약하거나 노출 후 너무 일찍 검사하면 위음성이 나올 수 있습니다.",
+        "양성 결과는 결핵균에 노출된 적이 있다는 뜻이지, 반드시 지금 아프다는 뜻은 아닙니다. 의사는 흉부 엑스레이 등 추가 검사를 진행할 것입니다.",
+      ] },
+    tl: { title: "Pagpapasuri para sa TB", summary: "Ang dalawang pangunahing pagsusuri, at ang kahulugan ng iyong resulta.",
+      simple: [
+        "May dalawang karaniwang paraan ng pagsusuri sa TB, at pareho itong sinusuri kung ang katawan mo ay dating nag-react sa mikrobyo ng TB.",
+        "Ang skin test ay nangangailangan ng ikalawang pagbisita, 2 hanggang 3 araw makalipas, para tingnan ang iyong braso. Ang blood test naman ay isang beses lang bumisita.",
+        "Maraming doktor ang naniniwalang mas maaasahan ang blood test, lalo na sa mga taong nabakunahan ng BCG noong bata pa, dahil mas maliit ang tsansang magbigay ito ng maling positibong resulta.",
+        "Walang perpektong pagsusuri: posible ang maling positibo (kadalasan dahil sa BCG sa skin test), at posible ang maling negatibo sa alinman sa dalawa, lalo na kung mahina ang immune system o kung masyadong maaga ang pagsusuri.",
+        "Ang positibong resulta ay nangangahulugang na-expose ka sa mikrobyo ng TB, hindi ibig sabihin ay may sakit ka na ngayon. Magrerekomenda ang iyong doktor ng karagdagang pagsusuri tulad ng chest X-ray.",
+      ] },
+    ru: { title: "Прохождение теста на туберкулёз", summary: "Два основных теста и что означают их результаты.",
+      simple: [
+        "Есть два распространённых способа проверки на туберкулёз, оба проверяют, реагировал ли когда-либо ваш организм на микробы туберкулёза.",
+        "Кожная проба требует повторного визита через 2–3 дня для осмотра руки. Анализ крови требует только одного визита.",
+        "Многие врачи считают анализ крови более надёжным, особенно для людей, привитых БЦЖ в детстве, поскольку он реже даёт ложноположительный результат.",
+        "Ни один тест не идеален: ложноположительный результат возможен при кожной пробе (чаще всего из-за БЦЖ), а ложноотрицательный — при обоих тестах, особенно при ослабленном иммунитете или слишком раннем тестировании после контакта.",
+        "Положительный результат означает, что вы контактировали с микробами туберкулёза, но не обязательно, что вы больны сейчас. Врач назначит дополнительные обследования, например рентген грудной клетки.",
+      ] },
+  },
+  "bcg-vaccine": {
+    es: { title: "Vacunas de TB y resultados confusos", summary: "Por qué una vacuna de la infancia puede hacer que una prueba cutánea salga positiva años después.",
+      simple: [
+        "Existe una vacuna contra la TB llamada BCG. Se aplica a bebés y niños pequeños en muchos países donde la TB es común, pero no es una vacuna de rutina en Estados Unidos.",
+        "La BCG protege principalmente a los niños pequeños de las formas más graves de TB, pero es menos confiable para prevenir la TB pulmonar en adultos.",
+        "Como la BCG está hecha de un pariente debilitado de la bacteria de la TB, puede hacer que la prueba cutánea salga positiva años después, incluso sin una infección real. Esto se llama falso positivo.",
+        "Si te vacunaron con BCG de niño y tu prueba cutánea sale positiva, pregunta por una prueba de sangre; la BCG no afecta ese resultado. Un resultado positivo no significa que tengas TB activa: habla con tu médico sobre los siguientes pasos.",
+      ] },
+    "zh-Hans": { title: "结核疫苗与令人困惑的检测结果", summary: "为什么儿时接种的疫苗会让多年后的皮肤测试呈阳性。",
+      simple: [
+        "有一种结核疫苗叫卡介苗（BCG）。许多结核病常见的国家会给婴儿和幼儿接种，但美国并不常规接种此疫苗。",
+        "卡介苗主要保护幼儿免受最严重的结核病侵害，但对预防成人肺结核的效果并不稳定可靠。",
+        "由于卡介苗是由结核细菌的减毒近亲制成，它可能使多年后的皮肤测试呈阳性，即使并未真正感染，这称为假阳性。",
+        "如果您小时候接种过卡介苗，皮肤测试呈阳性，可以要求做血液测试，因为卡介苗不会影响血液测试结果。阳性结果并不代表您患有活动性结核病——请与医生讨论下一步。",
+      ] },
+    "zh-Hant": { title: "結核疫苗與令人困惑的檢測結果", summary: "為什麼兒時接種的疫苗會讓多年後的皮膚測試呈陽性。",
+      simple: [
+        "有一種結核疫苗叫卡介苗（BCG）。許多結核病常見的國家會為嬰兒和幼兒接種，但美國並不常規接種此疫苗。",
+        "卡介苗主要保護幼兒免於最嚴重的結核病，但對預防成人肺結核的效果並不穩定可靠。",
+        "由於卡介苗是由結核細菌的減毒近親製成，可能使多年後的皮膚測試呈陽性，即使並未真正感染，這稱為偽陽性。",
+        "若您小時候接種過卡介苗，皮膚測試呈陽性，可要求改做血液測試，因為卡介苗不會影響血液測試結果。陽性結果並不代表您患有活動性結核病——請與醫生討論下一步。",
+      ] },
+    vi: { title: "Vắc-xin Lao và Kết Quả Xét Nghiệm Gây Nhầm Lẫn", summary: "Tại sao một mũi tiêm thời thơ ấu có thể khiến xét nghiệm da dương tính nhiều năm sau.",
+      simple: [
+        "Có một loại vắc-xin lao gọi là BCG. Vắc-xin này được tiêm cho trẻ sơ sinh và trẻ nhỏ ở nhiều quốc gia có bệnh lao phổ biến, nhưng không phải là vắc-xin thường quy ở Hoa Kỳ.",
+        "BCG chủ yếu bảo vệ trẻ nhỏ khỏi các dạng lao nghiêm trọng nhất, nhưng kém tin cậy hơn trong việc ngăn ngừa lao phổi ở người lớn.",
+        "Vì BCG được làm từ một chủng vi khuẩn yếu, có họ hàng với vi khuẩn lao, nó có thể khiến xét nghiệm da dương tính nhiều năm sau, ngay cả khi không thực sự bị nhiễm lao. Đây gọi là dương tính giả.",
+        "Nếu bạn đã tiêm BCG khi còn nhỏ và xét nghiệm da cho kết quả dương tính, hãy hỏi về xét nghiệm máu, vì BCG không ảnh hưởng đến kết quả đó. Kết quả dương tính không có nghĩa là bạn mắc lao hoạt động — hãy trao đổi với bác sĩ về các bước tiếp theo.",
+      ] },
+    ko: { title: "결핵 백신과 헷갈리는 검사 결과", summary: "어릴 때 맞은 백신이 왜 몇 년 후 피부 검사를 양성으로 만들 수 있는지.",
+      simple: [
+        "BCG라는 결핵 백신이 있습니다. 결핵이 흔한 많은 나라에서 영유아에게 접종하지만, 미국에서는 정기 접종 백신이 아닙니다.",
+        "BCG는 주로 어린이를 가장 심각한 형태의 결핵으로부터 보호하지만, 성인의 폐결핵을 예방하는 데는 효과가 일정하지 않습니다.",
+        "BCG는 결핵균과 비슷한 약화된 균으로 만들어졌기 때문에, 실제 감염이 없어도 몇 년 후 피부 검사에서 양성 반응을 일으킬 수 있습니다. 이를 위양성이라고 합니다.",
+        "어릴 때 BCG를 맞았고 피부 검사가 양성으로 나왔다면, 혈액 검사를 요청해보세요. BCG는 혈액 검사 결과에 영향을 주지 않습니다. 양성 결과가 활동성 결핵을 의미하는 것은 아니니 의사와 다음 단계를 상의하세요.",
+      ] },
+    tl: { title: "Bakuna sa TB at Nakakalitong Resulta ng Pagsusuri", summary: "Bakit ang bakuna noong bata ka pa ay maaaring magpapositibo sa skin test pagkalipas ng maraming taon.",
+      simple: [
+        "May bakuna para sa TB na tinatawag na BCG. Ibinibigay ito sa mga sanggol at maliliit na bata sa maraming bansang karaniwan ang TB, pero hindi ito regular na bakuna sa Estados Unidos.",
+        "Pangunahing pinoprotektahan ng BCG ang mga maliliit na bata mula sa pinakamalalang uri ng TB, pero hindi ito palaging maaasahan sa pagpigil ng TB sa baga ng mga matatanda.",
+        "Dahil ang BCG ay gawa sa pinahinang kamag-anak ng bakterya ng TB, maaari nitong mapapositibo ang skin test pagkalipas ng maraming taon, kahit walang tunay na impeksyon. Tinatawag itong maling positibo.",
+        "Kung nabakunahan ka ng BCG noong bata ka at pumositibo ang iyong skin test, magtanong tungkol sa blood test, dahil hindi ito naaapektuhan ng BCG. Ang positibong resulta ay hindi nangangahulugang may active TB ka — kausapin ang iyong doktor tungkol sa susunod na hakbang.",
+      ] },
+    ru: { title: "Вакцины от туберкулёза и запутанные результаты теста", summary: "Почему прививка в детстве может дать положительный результат кожной пробы спустя годы.",
+      simple: [
+        "Существует вакцина от туберкулёза под названием БЦЖ. Её делают младенцам и маленьким детям во многих странах, где туберкулёз распространён, но в США она не входит в обычный график прививок.",
+        "БЦЖ в основном защищает маленьких детей от самых тяжёлых форм туберкулёза, но менее надёжно предотвращает лёгочный туберкулёз у взрослых.",
+        "Поскольку БЦЖ сделана из ослабленного родственника бактерии туберкулёза, она может вызвать положительный результат кожной пробы спустя годы, даже без настоящей инфекции. Это называется ложноположительный результат.",
+        "Если вам делали БЦЖ в детстве и кожная проба положительна, попросите анализ крови — на него БЦЖ не влияет. Положительный результат не означает, что у вас активный туберкулёз — обсудите с врачом дальнейшие шаги.",
+      ] },
+  },
+  "immigration-status": {
+    es: { title: "La TB, la TB latente y tu estatus migratorio", summary: "Lo que realmente afecta un caso de inmigración, y lo que no.",
+      simple: [
+        "Si te preocupa que una prueba de TB pueda perjudicar una solicitud de inmigración, este es el dato más importante: solo la TB activa y contagiosa (lo que las autoridades migratorias llaman 'TB Clase A') puede hacer que alguien sea inadmisible a Estados Unidos. La TB latente no descalifica a nadie en un examen médico migratorio.",
+        "Si un examen médico migratorio encuentra TB latente, normalmente se te clasificará como alguien que necesita seguimiento médico, no se te rechazará. El tratamiento se recomienda, no se usa en tu contra.",
+        "Las clínicas de salud pública para la TB existen para controlar la propagación de la enfermedad, no para hacer cumplir las leyes de inmigración. La información médica está protegida por leyes de privacidad. Si tienes dudas sobre una clínica en particular, es razonable llamar y preguntar antes de tu visita.",
+        "El 'cargo público' es una regla aparte, sobre ciertos beneficios del gobierno, y sus detalles han cambiado varias veces en los últimos años y siguen siendo debatidos en los tribunales y en nuevas regulaciones. Como esto sigue cambiando, la información general puede quedar desactualizada rápido — una organización de ayuda legal migratoria gratuita o de bajo costo puede darte una respuesta basada en la regla actual y tu situación específica.",
+        "Hacerte la prueba y, si es necesario, tratarte la TB es algo que los expertos en salud pública quieren para todos, sin importar el estatus migratorio. La TB activa sin tratar es un riesgo mucho mayor para tu salud que cualquier preocupación de papeleo.",
+      ] },
+    "zh-Hans": { title: "结核病、潜伏结核与您的移民身份", summary: "真正会影响移民案件的因素，以及不会影响的因素。",
+      simple: [
+        "如果您担心结核病检测会影响移民申请，最重要的事实是：只有活动性、具传染性的结核病（移民部门称为“A类结核”）才会使申请人被认定为“不可入境”。潜伏结核不会使任何人在移民体检中不合格。",
+        "如果移民体检发现潜伏结核，通常会被归类为需要后续医疗随访，而不会被拒绝。医生会建议接受治疗，而不会因此对您不利。",
+        "结核病公共卫生诊所的职责是控制疾病传播，而不是执行移民法律。医疗信息受隐私法保护。如果您对某诊所的做法有疑问，可以在就诊前致电询问。",
+        "“公共负担”是另一项关于特定政府福利的规定，其细节近年多次变化，目前仍在法院和新法规中被讨论。由于这项规定仍在变化中，笼统的信息可能很快过时——免费或低成本的移民法律援助机构可以根据当前规定和您的具体情况给出答案。",
+        "无论移民身份如何，接受检测并在需要时接受治疗，都是公共卫生专家希望每个人都做到的事。未经治疗的活动性结核病对您健康的威胁，远大于任何文件方面的顾虑。",
+      ] },
+    "zh-Hant": { title: "結核病、潛伏結核與您的移民身分", summary: "真正會影響移民案件的因素，以及不會影響的因素。",
+      simple: [
+        "如果您擔心結核病檢測會影響移民申請，最重要的事實是：只有活動性、具傳染性的結核病（移民部門稱為「A類結核」）才會使申請人被認定為「不可入境」。潛伏結核不會使任何人在移民體檢中不合格。",
+        "如果移民體檢發現潛伏結核，通常會被歸類為需要後續醫療追蹤，而不會被拒絕。醫生會建議接受治療，而不會因此對您不利。",
+        "結核病公共衛生診所的職責是控制疾病傳播，而不是執行移民法律。醫療資訊受隱私法保護。若您對某診所的做法有疑問，可在就診前致電詢問。",
+        "「公共負擔」是另一項關於特定政府福利的規定，其細節近年多次變化，目前仍在法院和新法規中被討論。由於這項規定仍在變動中，籠統的資訊可能很快過時——免費或低成本的移民法律援助機構可以根據目前的規定和您的具體情況給您解答。",
+        "無論移民身分為何，接受檢測並在需要時接受治療，都是公共衛生專家希望每個人都做到的事。未經治療的活動性結核病對您健康的威脅，遠大於任何文件方面的顧慮。",
+      ] },
+    vi: { title: "Bệnh Lao, Lao Tiềm Ẩn, và Tình Trạng Di Trú của Bạn", summary: "Điều thực sự ảnh hưởng đến hồ sơ di trú — và điều không ảnh hưởng.",
+      simple: [
+        "Nếu bạn lo lắng xét nghiệm lao có thể ảnh hưởng đến hồ sơ di trú, đây là sự thật quan trọng nhất: chỉ có lao hoạt động, có khả năng lây nhiễm (mà cơ quan di trú gọi là 'Lao Loại A') mới có thể khiến ai đó không đủ điều kiện nhập cảnh Hoa Kỳ. Lao tiềm ẩn không loại ai khỏi việc khám sức khỏe di trú.",
+        "Nếu khám sức khỏe di trú phát hiện lao tiềm ẩn, bạn thường sẽ được xếp vào diện cần theo dõi y tế thêm, chứ không bị từ chối. Việc điều trị được khuyến nghị, không phải điều bất lợi cho bạn.",
+        "Các phòng khám lao công cộng tồn tại để kiểm soát sự lây lan của bệnh, không phải để thực thi luật di trú. Thông tin y tế được bảo vệ bởi luật riêng tư. Nếu không chắc chắn, bạn có thể gọi hỏi chính sách của phòng khám trước khi đến khám.",
+        "'Gánh nặng công cộng' là một quy định riêng, liên quan đến một số phúc lợi của chính phủ, và các chi tiết của nó đã thay đổi nhiều lần trong những năm gần đây và vẫn đang được tranh luận tại tòa án và trong các quy định mới. Vì điều này vẫn đang thay đổi, thông tin chung có thể nhanh chóng lỗi thời — một tổ chức hỗ trợ pháp lý di trú miễn phí hoặc chi phí thấp có thể cho bạn câu trả lời dựa trên quy định hiện hành và tình huống cụ thể của bạn.",
+        "Việc xét nghiệm và, nếu cần, điều trị bệnh lao là điều mà các chuyên gia y tế công cộng mong muốn cho tất cả mọi người, bất kể tình trạng di trú. Lao hoạt động không được điều trị là rủi ro lớn hơn nhiều cho sức khỏe của bạn so với bất kỳ lo lắng nào về giấy tờ.",
+      ] },
+    ko: { title: "결핵, 잠복결핵, 그리고 이민 신분", summary: "실제로 이민 사건에 영향을 주는 것과 그렇지 않은 것.",
+      simple: [
+        "결핵 검사가 이민 신청에 해가 될까 봐 걱정된다면, 가장 중요한 사실은 이것입니다: 활동성이고 전염성이 있는 결핵('클래스 A 결핵'이라 불림)만이 미국 입국 부적격 사유가 될 수 있습니다. 잠복결핵은 이민 건강검진에서 누구도 자격을 박탈하지 않습니다.",
+        "이민 건강검진에서 잠복결핵이 발견되면 보통 추가 진료가 필요한 것으로 분류될 뿐, 거부되지 않습니다. 치료는 권장 사항이지 불이익이 아닙니다.",
+        "결핵 관련 공중보건 클리닉은 질병 확산을 막기 위해 존재하는 것이지, 이민법을 집행하기 위한 것이 아닙니다. 의료 정보는 개인정보 보호법으로 보호됩니다. 확실하지 않다면 방문 전에 클리닉에 정책을 직접 문의하는 것도 좋은 방법입니다.",
+        "'공공부담(Public Charge)'은 특정 정부 혜택에 관한 별개의 규정으로, 최근 몇 년간 여러 차례 바뀌었고 지금도 법원과 새로운 규정에서 계속 논의되고 있습니다. 계속 변하고 있는 사안이기 때문에, 일반적인 정보는 금방 낡은 정보가 될 수 있습니다 — 무료 또는 저비용 이민 법률 지원 기관이 현재 규정과 본인 상황에 맞는 답을 줄 수 있습니다.",
+        "이민 신분과 관계없이 검사를 받고 필요하면 치료를 받는 것은 공중보건 전문가들이 모두에게 바라는 일입니다. 치료하지 않은 활동성 결핵은 서류상의 어떤 걱정보다 건강에 훨씬 더 큰 위험입니다.",
+      ] },
+    tl: { title: "TB, Latent TB, at ang Iyong Immigration Status", summary: "Ang talagang nakakaapekto sa isang kaso ng imigrasyon — at ang hindi.",
+      simple: [
+        "Kung nag-aalala kang makakasama sa imigrasyon ang isang pagsusuri sa TB, ito ang pinakamahalagang katotohanan: tanging ang aktibo at nakakahawang TB lamang (tinatawag na 'Class A TB' ng mga awtoridad sa imigrasyon) ang maaaring maging dahilan upang ituring na 'inadmissible' ang isang tao sa Estados Unidos. Hindi dinidiskwalipika ng latent TB ang sinuman sa medical exam para sa imigrasyon.",
+        "Kung sa medical exam para sa imigrasyon ay natuklasang may latent TB ang isang tao, karaniwan siyang ituturing na kailangan lang ng follow-up na pangangalaga, hindi tatanggihan. Iniirerekomenda ang paggamot, hindi ito laban sa iyo.",
+        "Ang mga klinika ng pampublikong kalusugan para sa TB ay nariyan upang kontrolin ang paglaganap ng sakit, hindi para ipatupad ang batas sa imigrasyon. Protektado ang impormasyong medikal ng mga batas sa privacy. Kung hindi ka sigurado, makatuwiran na tumawag at magtanong sa isang klinika bago ang iyong pagbisita.",
+        "Ang 'public charge' ay hiwalay na patakaran tungkol sa ilang benepisyo ng gobyerno, at nagbago na ito nang ilang beses sa mga nakaraang taon at pinagtatalunan pa rin sa mga korte at bagong regulasyon. Dahil patuloy itong nagbabago, maaaring maging luma agad ang pangkalahatang impormasyon — makakatulong ang isang libre o murang organisasyon ng legal na tulong sa imigrasyon na magbigay ng sagot batay sa kasalukuyang patakaran at sa iyong sitwasyon.",
+        "Ang pagpapasuri at, kung kinakailangan, ang paggamot sa TB ay bagay na gustong makamit ng mga eksperto sa pampublikong kalusugan para sa lahat, anuman ang immigration status. Ang hindi ginagamot na active TB ay mas malaking panganib sa iyong kalusugan kaysa sa anumang alalahanin sa papeles.",
+      ] },
+    ru: { title: "Туберкулёз, латентный туберкулёз и ваш иммиграционный статус", summary: "Что действительно влияет на иммиграционное дело — а что нет.",
+      simple: [
+        "Если вы переживаете, что тест на туберкулёз может навредить иммиграционному заявлению, вот самый важный факт: только активный, заразный туберкулёз (то, что иммиграционные органы называют «туберкулёз класса А») может сделать человека не имеющим права на въезд в США. Латентный туберкулёз не лишает никого права пройти иммиграционный медицинский осмотр.",
+        "Если при иммиграционном медосмотре обнаружен латентный туберкулёз, обычно это означает, что нужно дальнейшее наблюдение, а не отказ. Лечение рекомендуется, а не используется против вас.",
+        "Клиники общественного здравоохранения по туберкулёзу существуют для борьбы с распространением болезни, а не для соблюдения иммиграционных законов. Медицинская информация защищена законами о конфиденциальности. Если вы не уверены, разумно позвонить в клинику и спросить о её политике перед визитом.",
+        "«Общественная нагрузка» (public charge) — это отдельное правило о некоторых государственных льготах, и его детали неоднократно менялись за последние годы и всё ещё обсуждаются в судах и новых нормативных актах. Поскольку это правило продолжает меняться, общая информация может быстро устареть — бесплатная или недорогая организация иммиграционной юридической помощи может дать ответ на основе действующих правил и вашей ситуации.",
+        "Пройти тест и, при необходимости, лечение от туберкулёза — это то, чего специалисты по общественному здравоохранению хотят для всех, независимо от иммиграционного статуса. Нелеченый активный туберкулёз представляет гораздо больший риск для вашего здоровья, чем любые опасения по поводу документов.",
+      ] },
+  },
+  "employment-rights": {
+    es: { title: "El tratamiento de la TB latente y tu trabajo", summary: "Lo que tienes (y no tienes) que decirle a tu empleador, y qué protege la ley.",
+      simple: [
+        "La TB latente no es contagiosa, así que en la mayoría de los trabajos no hay obligación legal de decírselo a tu empleador, ni razón para dejar de trabajar o cambiar tus funciones.",
+        "Si sí compartes información médica con tu empleador, por ejemplo para pedir tiempo libre para citas médicas, la ley de EE. UU. (la ADA) exige que esa información se mantenga confidencial y separada de tu archivo de personal regular.",
+        "Algunos trabajos, especialmente en salud, cuidado infantil, educación y correccionales, tienen sus propias reglas de detección de TB establecidas por ley estatal o local. Son distintas de las protecciones laborales generales y varían según el estado.",
+        "Los empleadores no pueden legalmente negarse a contratar, despedir o excluir del trabajo a alguien solo por tener TB latente y no ser contagioso. Esto de hecho ha sido sancionado por reguladores federales.",
+        "Si crees que has recibido un trato injusto en el trabajo por un diagnóstico de TB, la Comisión de Igualdad de Oportunidades en el Empleo de EE. UU. (EEOC) y muchas organizaciones locales de derechos laborales ofrecen ayuda gratuita.",
+      ] },
+    "zh-Hans": { title: "潜伏结核治疗与您的工作", summary: "您需要（和不需要）告诉雇主的事情，以及法律保护哪些内容。",
+      simple: [
+        "潜伏结核不具传染性，因此在大多数工作中，法律并不要求您告知雇主，也没有理由需要停止工作或改变工作内容。",
+        "如果您确实需要与雇主分享医疗信息，例如为了请假去看病，美国法律（《美国残疾人法》，ADA）要求这些信息必须保密，并与您的普通人事档案分开存放。",
+        "有些工作，尤其是医疗保健、儿童看护、教育和惩教工作，有其州或地方法律规定的结核病筛查要求，这与一般的职场保护规定不同，各州差异也很大。",
+        "雇主不得仅因为员工患有不具传染性的潜伏结核，就合法拒绝雇用、解雇或将其排除在工作之外。这一点实际上已被联邦监管机构强制执行过。",
+        "如果您认为自己因结核病诊断而在工作中受到不公平对待，美国平等就业机会委员会（EEOC）以及许多地方的劳工权益组织都提供免费帮助。",
+      ] },
+    "zh-Hant": { title: "潛伏結核治療與您的工作", summary: "您需要（和不需要）告訴雇主的事情，以及法律保護哪些內容。",
+      simple: [
+        "潛伏結核不具傳染性，因此在大多數工作中，法律並不要求您告知雇主，也沒有理由需要停止工作或改變工作內容。",
+        "如果您確實需要與雇主分享醫療資訊，例如為了請假去看病，美國法律（《美國身心障礙者法》，ADA）要求這些資訊必須保密，並與您的一般人事檔案分開存放。",
+        "有些工作，尤其是醫療保健、兒童照護、教育和矯正工作，有其州或地方法律規定的結核病篩檢要求，這與一般職場保護規定不同，各州差異也很大。",
+        "雇主不得僅因員工患有不具傳染性的潛伏結核，就合法拒絕雇用、解僱或將其排除在工作之外。這一點實際上已被聯邦監管機構強制執行過。",
+        "如果您認為自己因結核病診斷而在工作中受到不公平對待，美國平等就業機會委員會（EEOC）以及許多地方的勞工權益組織都提供免費協助。",
+      ] },
+    vi: { title: "Điều Trị Lao Tiềm Ẩn và Công Việc của Bạn", summary: "Những gì bạn phải (và không phải) nói với chủ lao động, và luật bảo vệ gì.",
+      simple: [
+        "Lao tiềm ẩn không lây nhiễm, vì vậy ở hầu hết các công việc, không có yêu cầu pháp lý nào buộc bạn phải cho chủ lao động biết, và cũng không có lý do gì để ngừng làm việc hay thay đổi nhiệm vụ.",
+        "Nếu bạn có chia sẻ thông tin y tế với chủ lao động, chẳng hạn để xin nghỉ đi khám, luật Hoa Kỳ (ADA) yêu cầu thông tin đó phải được giữ bí mật và lưu trữ riêng khỏi hồ sơ nhân sự thông thường của bạn.",
+        "Một số công việc, đặc biệt là y tế, chăm sóc trẻ em, giáo dục, và cải huấn, có các quy định riêng về xét nghiệm lao do luật tiểu bang hoặc địa phương quy định. Đây là quy định khác với các bảo vệ chung tại nơi làm việc, và khác nhau tùy theo từng bang.",
+        "Chủ lao động không được phép hợp pháp từ chối tuyển dụng, sa thải, hoặc loại một người khỏi công việc chỉ vì họ mắc lao tiềm ẩn và không lây nhiễm. Điều này thực tế đã từng bị các cơ quan liên bang xử phạt.",
+        "Nếu bạn cho rằng mình đã bị đối xử bất công tại nơi làm việc vì chẩn đoán lao, Ủy ban Cơ hội Việc làm Bình đẳng Hoa Kỳ (EEOC) và nhiều tổ chức quyền lợi người lao động địa phương cung cấp hỗ trợ miễn phí.",
+      ] },
+    ko: { title: "잠복결핵 치료와 당신의 직장", summary: "고용주에게 알려야 할 것(그리고 알리지 않아도 되는 것), 그리고 법이 보호하는 것.",
+      simple: [
+        "잠복결핵은 전염성이 없기 때문에, 대부분의 직장에서는 고용주에게 알릴 법적 의무가 없으며, 일을 그만두거나 업무를 바꿔야 할 이유도 없습니다.",
+        "진료 예약을 위한 휴가 신청 등으로 고용주와 의료 정보를 공유해야 한다면, 미국 법(장애인법, ADA)에 따라 그 정보는 기밀로 유지되어야 하며 일반 인사 파일과 별도로 보관되어야 합니다.",
+        "특히 의료, 보육, 교육, 교정 시설 등 일부 직종은 주 또는 지역 법률에 따라 자체적인 결핵 검사 규정을 두고 있습니다. 이는 일반적인 직장 내 보호와는 별개이며 주마다 차이가 있습니다.",
+        "고용주는 전염성이 없는 잠복결핵을 가진 직원을 그 이유만으로 고용을 거부하거나 해고하거나 업무에서 배제할 수 없습니다. 실제로 연방 규제 기관이 이를 집행한 사례가 있습니다.",
+        "결핵 진단으로 인해 직장에서 부당한 대우를 받았다고 생각된다면, 미국 평등고용기회위원회(EEOC)와 여러 지역 노동자 권리 단체가 무료로 도움을 제공합니다.",
+      ] },
+    tl: { title: "Paggamot sa Latent TB at ang Iyong Trabaho", summary: "Ang dapat (at hindi kailangang) sabihin mo sa iyong employer, at kung ano ang pinoprotektahan ng batas.",
+      simple: [
+        "Hindi nakakahawa ang latent TB, kaya sa karamihan ng trabaho, walang legal na obligasyon na sabihin ito sa iyong employer, at walang dahilan para huminto sa trabaho o baguhin ang iyong mga tungkulin.",
+        "Kung magbahagi ka man ng impormasyong medikal sa iyong employer, halimbawa para humingi ng bakasyon para sa appointment, iniaatas ng batas ng U.S. (ang ADA) na panatilihing kompidensyal ang impormasyong iyon at itago nang hiwalay sa iyong regular na personnel file.",
+        "May ilang trabaho, lalo na sa healthcare, pangangalaga sa bata, edukasyon, at mga institusyong pangkorreksyon, na may sariling mga patakaran sa pagsusuri ng TB na itinatakda ng batas ng estado o lokal na pamahalaan. Iba ito sa pangkalahatang proteksyon sa trabaho at nag-iiba depende sa estado.",
+        "Hindi legal na maaaring tumangging kumuha, magtanggal, o hindi payagang magtrabaho ang isang employer sa isang tao dahil lamang sa mayroon itong latent TB at hindi nakakahawa. Ito ay talagang ipinatupad na ng mga pederal na regulator.",
+        "Kung sa palagay mo ay hindi ka makatarungang tinrato sa trabaho dahil sa diagnosis ng TB, ang U.S. Equal Employment Opportunity Commission (EEOC) at maraming lokal na organisasyon ng karapatan ng manggagawa ay nag-aalok ng libreng tulong.",
+      ] },
+    ru: { title: "Лечение латентного туберкулёза и ваша работа", summary: "Что вы должны (и не должны) сообщать работодателю, и что защищает закон.",
+      simple: [
+        "Латентный туберкулёз не заразен, поэтому на большинстве работ нет юридической обязанности сообщать об этом работодателю, и нет причин прекращать работу или менять обязанности.",
+        "Если вы всё же делитесь медицинской информацией с работодателем, например, чтобы отпроситься на приём к врачу, законодательство США (ADA) требует, чтобы эта информация оставалась конфиденциальной и хранилась отдельно от обычного личного дела.",
+        "Некоторые профессии, особенно в здравоохранении, уходе за детьми, образовании и исправительных учреждениях, имеют собственные правила проверки на туберкулёз, установленные законами штата или местными властями. Это отдельно от общих трудовых прав и различается в зависимости от штата.",
+        "Работодатели не имеют законного права отказывать в приёме на работу, увольнять или отстранять человека только потому, что у него латентный туберкулёз и он не заразен. Это реально применялось федеральными регуляторами.",
+        "Если вы считаете, что столкнулись с несправедливым отношением на работе из-за диагноза туберкулёза, Комиссия по соблюдению равноправия при трудоустройстве США (EEOC) и многие местные организации по защите прав работников предлагают бесплатную помощь.",
+      ] },
+  },
+  "treating-latent": {
+    es: { title: "Tratamiento de la infección latente de TB", summary: "Los tratamientos cortos ahora hacen más fácil terminarlos.",
+      simple: [
+        "Tratar la TB latente reduce mucho la probabilidad de que se convierta en TB activa más adelante.",
+        "Ahora los médicos suelen recomendar tratamientos más cortos, de tres a cuatro meses, con uno o dos medicamentos, en lugar de los tratamientos antiguos de seis a nueve meses con una sola pastilla diaria.",
+        "Todas estas opciones funcionan bien, y los tratamientos más cortos son más fáciles de terminar.",
+        "Lo más importante es tomar cada dosis y completar todo el tratamiento, aunque te sientas completamente bien todo el tiempo.",
+      ] },
+    "zh-Hans": { title: "潜伏结核感染的治疗", summary: "如今的短疗程让完成治疗变得更容易。",
+      simple: [
+        "治疗潜伏结核可以大幅降低日后发展为活动性结核的可能性。",
+        "现在医生通常推荐使用一到两种药物、为期三到四个月的短疗程，而不是过去六到九个月每天服一种药的疗程。",
+        "这些方案的效果都很好，而且短疗程通常更容易坚持完成。",
+        "最重要的是按时服用每一剂药物并完成整个疗程，即使您全程感觉良好。",
+      ] },
+    "zh-Hant": { title: "潛伏結核感染的治療", summary: "如今的短療程讓完成治療變得更容易。",
+      simple: [
+        "治療潛伏結核可以大幅降低日後發展為活動性結核的可能性。",
+        "現在醫生通常建議使用一到兩種藥物、為期三到四個月的短療程，而非過去六到九個月每天服用一種藥物的療程。",
+        "這些方案的效果都很好，而且短療程通常更容易堅持完成。",
+        "最重要的是按時服用每一劑藥物並完成整個療程，即使您全程感覺良好。",
+      ] },
+    vi: { title: "Điều Trị Nhiễm Lao Tiềm Ẩn", summary: "Các liệu trình ngắn hơn hiện nay giúp việc hoàn thành điều trị dễ dàng hơn.",
+      simple: [
+        "Điều trị lao tiềm ẩn giúp giảm đáng kể khả năng nó chuyển thành lao hoạt động sau này.",
+        "Hiện nay các bác sĩ thường đề nghị liệu trình ngắn hơn, kéo dài ba đến bốn tháng, dùng một hoặc hai loại thuốc, thay vì liệu trình cũ kéo dài sáu đến chín tháng với một loại thuốc uống hàng ngày.",
+        "Tất cả các lựa chọn này đều hiệu quả, và liệu trình ngắn hơn thường dễ hoàn thành hơn.",
+        "Điều quan trọng nhất là uống đủ mọi liều thuốc và hoàn thành toàn bộ liệu trình, ngay cả khi bạn cảm thấy hoàn toàn khỏe mạnh suốt thời gian đó.",
+      ] },
+    ko: { title: "잠복결핵감염 치료", summary: "이제는 짧은 치료 기간 덕분에 치료를 끝까지 마치기가 더 쉬워졌습니다.",
+      simple: [
+        "잠복결핵을 치료하면 나중에 활동성 결핵으로 진행될 가능성이 크게 줄어듭니다.",
+        "요즘 의사들은 한두 가지 약으로 3~4개월간 진행하는 더 짧은 치료를 권장하는 경우가 많습니다. 예전에는 하루 한 알씩 6~9개월간 복용해야 했습니다.",
+        "이 모든 방법은 효과가 좋으며, 짧은 치료일수록 끝까지 마치기가 더 쉽습니다.",
+        "가장 중요한 것은 몸이 계속 멀쩡하게 느껴지더라도 모든 용량을 빠짐없이 복용하고 전체 치료 과정을 끝내는 것입니다.",
+      ] },
+    tl: { title: "Paggamot sa Latent TB Infection", summary: "Mas madali na ngayong tapusin ang paggamot dahil sa mas maiikling regimen.",
+      simple: [
+        "Ang paggamot sa latent TB ay lubos na binabawasan ang tsansang ito ay maging active TB sa hinaharap.",
+        "Kadalasan ay iniirerekomenda na ngayon ng mga doktor ang mas maikling paggamot na tatlo hanggang apat na buwan, gamit ang isa o dalawang gamot, sa halip na ang lumang paggamot na anim hanggang siyam na buwan ng isang tabletas araw-araw.",
+        "Epektibo ang lahat ng mga opsyong ito, at mas madaling tapusin ang mas maiikling paggamot.",
+        "Ang pinakamahalaga ay inumin ang bawat dosis at tapusin ang buong paggamot, kahit na pakiramdam mo ay maayos ka sa buong panahong ito.",
+      ] },
+    ru: { title: "Лечение латентной туберкулёзной инфекции", summary: "Короткие курсы теперь облегчают завершение лечения.",
+      simple: [
+        "Лечение латентного туберкулёза значительно снижает вероятность того, что он перейдёт в активную форму в будущем.",
+        "Сейчас врачи чаще рекомендуют более короткие курсы — три-четыре месяца с одним или двумя препаратами — вместо старых курсов по шесть-девять месяцев с одной таблеткой в день.",
+        "Все эти варианты эффективны, а короткие курсы легче довести до конца.",
+        "Самое важное — принимать каждую дозу и завершить полный курс, даже если вы чувствуете себя совершенно здоровым всё это время.",
+      ] },
+  },
+  "ltbi-regimens": {
+    es: { title: "Comparación de los tratamientos para LTBI", summary: "Nombres de los medicamentos, cuántas pastillas, efectos secundarios, y qué tan bien los completa la gente.",
+      simple: [
+        "Los tratamientos para la LTBI usan tres medicamentos principales: isoniazida, rifapentina y rifampina. Todos funcionan bien; las diferencias están en la duración, el número de pastillas y los efectos secundarios.",
+        "La rifampina sola, a diario durante 4 meses, es una opción corta y sencilla: normalmente 2 pastillas al día. Los efectos secundarios comunes incluyen dolor de cabeza leve, molestias estomacales durante una hora después de tomarla, y líquidos corporales de color naranja, sobre todo la orina.",
+        "Isoniazida más rifapentina, una vez por semana durante 12 semanas, significa menos dosis totales, pero más pastillas por dosis (a veces 7 a 9 pastillas de una vez). Algunas personas sienten síntomas parecidos a la gripe después de una dosis.",
+        "La isoniazida sola, de 6 a 9 meses, es la opción más antigua, usada cuando las otras no son adecuadas; puede causar hormigueo en las manos o los pies, por lo que suele acompañarse de vitamina B6.",
+        "Los tratamientos más cortos se terminan con más frecuencia: en estudios reales, cerca de la mitad de las personas terminó los 9 meses de isoniazida, comparado con 7 de cada 10 con rifampina de 4 meses, y 8 de cada 10 con el plan semanal de 12 dosis.",
+      ] },
+    "zh-Hans": { title: "LTBI各治疗方案比较", summary: "药物名称、服药颗数、副作用，以及人们坚持完成治疗的情况。",
+      simple: [
+        "潜伏结核感染的治疗主要使用三种药物：异烟肼、利福喷丁和利福平。这些方案效果都不错，主要区别在于疗程长短、每次服药数量和副作用。",
+        "单用利福平，每日服用4个月，是一种简单的短疗程：大多数成人通常每天服用2颗药丸。常见副作用包括轻微头痛、服药后约一小时内的胃部不适，以及体液（主要是尿液）呈橙色。",
+        "异烟肼加利福喷丁，每周一次共12周，总用药次数更少，但每次剂量的药丸更多（有时一次需服7到9颗）。有些人在服药后会出现类似流感的症状。",
+        "单用异烟肼6到9个月是较旧的方案，用于其他方案不适合的情况；它可能引起手脚麻木或刺痛，因此通常会同时服用维生素B6来预防。",
+        "疗程越短，完成率越高：在实际研究中，约一半的人完成了9个月的异烟肼疗程，相比之下，4个月利福平疗程的完成率约为七成，而每周一次共12剂的疗程完成率约为八成。",
+      ] },
+    "zh-Hant": { title: "LTBI各治療方案比較", summary: "藥物名稱、服藥顆數、副作用，以及人們完成治療的情況。",
+      simple: [
+        "潛伏結核感染的治療主要使用三種藥物：異菸鹼醯胼、利福噴汀和利福平。這些方案效果都不錯，主要差異在於療程長短、每次服藥數量和副作用。",
+        "單用利福平，每日服用4個月，是一種簡單的短療程：大多數成人通常每天服用2顆藥丸。常見副作用包括輕微頭痛、服藥後約一小時內的胃部不適，以及體液（主要是尿液）呈橙色。",
+        "異菸鹼醯胼加利福噴汀，每週一次共12週，總用藥次數更少，但每次劑量的藥丸更多（有時一次需服7到9顆）。有些人服藥後會出現類似流感的症狀。",
+        "單用異菸鹼醯胼6到9個月是較舊的方案，用於其他方案不適合的情況；它可能引起手腳麻木或刺痛，因此通常會同時服用維他命B6來預防。",
+        "療程越短，完成率越高：在實際研究中，約一半的人完成了9個月的異菸鹼醯胼療程，相較之下，4個月利福平療程完成率約為七成，而每週一次共12劑的療程完成率約為八成。",
+      ] },
+    vi: { title: "So Sánh Các Liệu Trình Điều Trị LTBI", summary: "Tên thuốc, số viên phải uống, tác dụng phụ, và mức độ tuân thủ điều trị.",
+      simple: [
+        "Điều trị LTBI thường dùng ba loại thuốc chính: isoniazid, rifapentine, và rifampin. Tất cả đều hiệu quả; khác biệt chủ yếu là thời gian điều trị, số viên thuốc, và tác dụng phụ.",
+        "Rifampin dùng một mình, hàng ngày trong 4 tháng, là lựa chọn ngắn và đơn giản: hầu hết người lớn uống khoảng 2 viên mỗi ngày. Tác dụng phụ thường gặp gồm đau đầu nhẹ, khó chịu ở dạ dày trong khoảng một giờ sau khi uống, và nước tiểu (và các dịch cơ thể khác) có màu cam.",
+        "Isoniazid cộng rifapentine, uống một lần mỗi tuần trong 12 tuần, nghĩa là ít liều hơn tổng cộng, nhưng mỗi liều lại nhiều viên hơn (đôi khi 7 đến 9 viên một lúc). Một số người bị các triệu chứng giống cúm sau khi uống.",
+        "Isoniazid dùng một mình trong 6 đến 9 tháng là lựa chọn cũ hơn, dùng khi các lựa chọn khác không phù hợp; nó có thể gây tê hoặc ngứa ran ở tay chân, nên thường được uống kèm vitamin B6 để phòng ngừa.",
+        "Liệu trình ngắn hơn dễ hoàn thành hơn: trong các nghiên cứu thực tế, khoảng một nửa số người hoàn thành 9 tháng isoniazid, so với khoảng 7 trong 10 người với rifampin 4 tháng, và khoảng 8 trong 10 người với liệu trình 12 liều hàng tuần.",
+      ] },
+    ko: { title: "LTBI 치료 요법 비교", summary: "약물 이름, 복용 알약 수, 부작용, 그리고 치료를 끝까지 잘 마치는 정도.",
+      simple: [
+        "LTBI 치료는 주로 세 가지 약, 즉 이소니아지드, 리파펜틴, 리팜핀을 사용합니다. 모두 효과가 좋으며, 차이는 주로 치료 기간, 알약 수, 부작용에 있습니다.",
+        "리팜핀 단독으로 매일 4개월간 복용하는 방법은 간단하고 짧은 옵션입니다. 대부분 성인은 하루 약 2알을 복용합니다. 흔한 부작용으로는 가벼운 두통, 복용 후 한 시간 정도의 속쓰림, 그리고 소변 등 체액이 주황색을 띠는 것이 있습니다.",
+        "이소니아지드와 리파펜틴을 12주간 주 1회 복용하는 방법은 총 복용 횟수는 적지만 한 번에 먹는 알약 수가 더 많습니다(성인의 경우 한 번에 7~9알까지). 일부 사람들은 복용 후 감기 같은 증상을 겪습니다.",
+        "이소니아지드 단독으로 6~9개월간 복용하는 방법은 가장 오래된 방식으로, 다른 방법이 맞지 않을 때 사용합니다. 손발 저림이나 따끔거림이 생길 수 있어 보통 비타민 B6를 함께 복용합니다.",
+        "짧은 치료일수록 완료율이 높습니다. 실제 연구에서 이소니아지드 9개월 요법은 약 절반이 완료했지만, 리팜핀 4개월 요법은 약 70%, 주 1회 12회 요법은 약 80%가 완료했습니다.",
+      ] },
+    tl: { title: "Paghahambing ng mga Regimen sa Paggamot ng LTBI", summary: "Mga pangalan ng gamot, bilang ng tableta, side effects, at kung gaano kadalas natatapos ang paggamot.",
+      simple: [
+        "Ang paggamot sa LTBI ay karaniwang gumagamit ng tatlong pangunahing gamot: isoniazid, rifapentine, at rifampin. Epektibo silang lahat; ang pagkakaiba ay nasa tagal, bilang ng tableta, at side effects.",
+        "Ang rifampin lamang, araw-araw sa loob ng 4 na buwan, ay isang simple at maikling opsyon: karaniwang 2 tableta bawat araw para sa karamihan ng matatanda. Kabilang sa karaniwang side effects ang banayad na sakit ng ulo, kaunting kaba ng tiyan sa loob ng isang oras pagkatapos inumin, at kulay-kahel na likido ng katawan, lalo na ang ihi.",
+        "Ang isoniazid kasama ang rifapentine, isang beses kada linggo sa loob ng 12 linggo, ay nangangahulugan ng mas kaunting kabuuang dosis, pero mas maraming tableta bawat dosis (minsan 7 hanggang 9 na tableta nang sabay). Ang ilan ay nakakaranas ng sintomas na parang trangkaso pagkatapos uminom.",
+        "Ang isoniazid lamang sa loob ng 6 hanggang 9 na buwan ay ang pinakalumang opsyon, ginagamit kapag hindi bagay ang iba; maaari itong magdulot ng pangingimay o pamamanhid ng kamay o paa, kaya karaniwang sinasamahan ito ng bitamina B6.",
+        "Mas madaling matapos ang mas maiikling regimen: sa mga tunay na pag-aaral, halos kalahati ng mga tao ang natapos ang 9 na buwan ng isoniazid, kumpara sa halos 7 sa bawat 10 sa 4 na buwang rifampin, at halos 8 sa bawat 10 sa lingguhang 12 dosis na plano.",
+      ] },
+    ru: { title: "Сравнение схем лечения ЛТБИ", summary: "Названия препаратов, количество таблеток, побочные эффекты и насколько хорошо люди завершают лечение.",
+      simple: [
+        "Лечение ЛТБИ обычно основано на трёх препаратах: изониазид, рифапентин и рифампицин. Все они эффективны; различия в основном в длительности, числе таблеток и побочных эффектах.",
+        "Рифампицин отдельно, ежедневно в течение 4 месяцев — простой короткий вариант: обычно около 2 таблеток в день для большинства взрослых. Частые побочные эффекты — лёгкая головная боль, дискомфорт в желудке в течение часа после приёма и оранжевый оттенок жидкостей тела, чаще всего мочи.",
+        "Изониазид плюс рифапентин, раз в неделю в течение 12 недель, означает меньше доз всего, но больше таблеток за раз (иногда 7–9 таблеток одновременно). У некоторых людей после приёма бывают гриппоподобные симптомы.",
+        "Изониазид отдельно в течение 6–9 месяцев — самый старый вариант, используемый, когда остальные не подходят; он чаще вызывает покалывание или онемение в руках и ногах, поэтому обычно назначается вместе с витамином B6.",
+        "Более короткие схемы завершают чаще: в реальных исследованиях примерно половина людей закончила 9-месячный курс изониазида, по сравнению с примерно 7 из 10 на 4-месячном рифампицине и примерно 8 из 10 на еженедельной 12-дозовой схеме.",
+      ] },
+  },
+  "treating-active": {
+    es: { title: "Tratamiento de la TB activa", summary: "Varios medicamentos juntos, durante varios meses.",
+      simple: [
+        "La TB activa se trata con una combinación de varios medicamentos tomados juntos, normalmente durante seis meses o más.",
+        "Tomar más de un medicamento a la vez ayuda a eliminar los gérmenes por completo y evita que se vuelvan resistentes a los medicamentos.",
+        "Algunas personas toman su medicamento con la ayuda de un trabajador de salud que observa cada dosis, lo cual se llama terapia bajo observación directa.",
+        "Terminar todo el tratamiento, incluso después de que los síntomas desaparecen, es esencial, ya que dejarlo antes de tiempo es una de las principales razones por las que la TB se vuelve más difícil de tratar.",
+      ] },
+    "zh-Hans": { title: "活动性结核病的治疗", summary: "多种药物联合使用，持续数月。",
+      simple: [
+        "活动性结核病通常需要联合使用几种药物治疗，一般持续六个月或更长时间。",
+        "同时服用多种药物有助于彻底杀灭细菌，并防止产生耐药性结核病。",
+        "有些患者会在医护人员的监督下服药，每次服药都有人看着，这称为“直接观察治疗”。",
+        "即使症状消失，也必须完成整个疗程，因为提前停药是导致结核病变得更难治疗的主要原因之一。",
+      ] },
+    "zh-Hant": { title: "活動性結核病的治療", summary: "多種藥物聯合使用，持續數月。",
+      simple: [
+        "活動性結核病通常需要聯合使用幾種藥物治療，一般持續六個月或更長時間。",
+        "同時服用多種藥物有助於徹底殺滅細菌，並防止產生抗藥性結核病。",
+        "有些患者會在醫護人員的監督下服藥，每次服藥都有人看著，這稱為「直接觀察治療」。",
+        "即使症狀消失，也必須完成整個療程，因為提前停藥是導致結核病變得更難治療的主要原因之一。",
+      ] },
+    vi: { title: "Điều Trị Bệnh Lao Hoạt Động", summary: "Nhiều loại thuốc kết hợp, dùng trong nhiều tháng.",
+      simple: [
+        "Lao hoạt động được điều trị bằng cách kết hợp nhiều loại thuốc lao, thường trong sáu tháng hoặc lâu hơn.",
+        "Dùng nhiều thuốc cùng lúc giúp tiêu diệt vi khuẩn hoàn toàn và giúp ngăn ngừa lao kháng thuốc.",
+        "Một số người uống thuốc dưới sự giám sát của nhân viên y tế, người sẽ quan sát từng liều thuốc; đây gọi là điều trị có giám sát trực tiếp.",
+        "Hoàn thành toàn bộ liệu trình, ngay cả sau khi triệu chứng đã hết, là điều thiết yếu, vì ngừng thuốc sớm là một trong những nguyên nhân chính khiến lao trở nên khó điều trị hơn.",
+      ] },
+    ko: { title: "활동성 결핵 치료", summary: "여러 약을 함께, 여러 달 동안 복용합니다.",
+      simple: [
+        "활동성 결핵은 보통 여러 결핵약을 함께 사용하여 6개월 이상 치료합니다.",
+        "여러 약을 동시에 복용하면 균을 완전히 제거하고 약제내성 결핵이 생기는 것을 막는 데 도움이 됩니다.",
+        "일부 환자는 의료진이 매 복용을 지켜보는 '직접관찰치료' 방식으로 약을 복용합니다.",
+        "증상이 사라진 후에도 전체 치료 과정을 끝내는 것이 매우 중요합니다. 조기에 중단하는 것이 결핵 치료를 더 어렵게 만드는 주요 원인이기 때문입니다.",
+      ] },
+    tl: { title: "Paggamot sa Active TB Disease", summary: "Maraming gamot na sabay na iniinom, sa loob ng ilang buwan.",
+      simple: [
+        "Ang active TB ay ginagamot gamit ang kombinasyon ng ilang gamot na sabay na iniinom, karaniwang sa loob ng anim na buwan o higit pa.",
+        "Ang pag-inom ng higit sa isang gamot nang sabay ay tumutulong upang lubusang mapatay ang mikrobyo ng TB at maiwasan ang drug-resistant TB.",
+        "May mga taong umiinom ng gamot na may suporta ng isang health worker na nagmamasid sa bawat dosis; tinatawag itong directly observed therapy.",
+        "Mahalagang tapusin ang buong paggamot, kahit pagkawala na ng mga sintomas, dahil ang pagtigil nang maaga ay isa sa pangunahing dahilan kung bakit nagiging mas mahirap gamutin ang TB.",
+      ] },
+    ru: { title: "Лечение активного туберкулёза", summary: "Несколько препаратов вместе, в течение нескольких месяцев.",
+      simple: [
+        "Активный туберкулёз лечат комбинацией из нескольких препаратов, обычно в течение шести месяцев и более.",
+        "Приём нескольких препаратов одновременно помогает полностью уничтожить микробы и предотвращает развитие лекарственно-устойчивого туберкулёза.",
+        "Некоторые пациенты принимают лекарства под наблюдением медработника, который следит за каждым приёмом; это называется лечением под непосредственным наблюдением.",
+        "Завершение полного курса, даже после исчезновения симптомов, крайне важно, поскольку преждевременное прекращение — одна из главных причин, по которым туберкулёз становится труднее лечить.",
+      ] },
+  },
+  "active-tb-regimens": {
+    es: { title: "Comparación de los tratamientos para la TB activa", summary: "El plan estándar de 4 medicamentos, una opción más nueva de 4 meses, y qué efectos secundarios esperar.",
+      simple: [
+        "La TB activa se trata normalmente con cuatro medicamentos juntos: rifampina, isoniazida, pirazinamida y etambutol, durante seis meses en total.",
+        "Cada medicamento puede causar sus propios efectos secundarios: la rifampina puede volver naranja la orina y otros líquidos; la isoniazida puede causar hormigueo en manos o pies (por eso se da vitamina B6); la pirazinamida puede causar dolor en las articulaciones; el etambutol puede afectar la vista, por lo que se recomiendan revisiones oculares periódicas.",
+        "Una opción más nueva, aprobada en 2022, trata a algunos pacientes en solo 4 meses usando rifapentina y moxifloxacina en lugar de rifampina y etambutol, con resultados similares para la TB que no es resistente a los medicamentos.",
+        "Terminar cada dosis es fundamental, sin importar si el tratamiento dura 4 o 6 meses, ya que dejarlo antes de tiempo es una de las principales causas de que la TB se vuelva resistente a los medicamentos.",
+      ] },
+    "zh-Hans": { title: "活动性结核治疗方案比较", summary: "标准四联疗法、较新的4个月方案，以及应留意的副作用。",
+      simple: [
+        "活动性结核通常联合使用四种药物治疗：利福平、异烟肼、吡嗪酰胺和乙胺丁醇，总疗程为六个月。",
+        "每种药物都有各自的副作用：利福平可能使尿液等体液变橙色；异烟肼可能引起手脚麻木或刺痛（因此会补充维生素B6）；吡嗪酰胺可能引起关节疼痛；乙胺丁醇可能影响视力，因此建议定期检查眼睛。",
+        "2022年批准的新方案，使用利福喷丁和莫西沙星取代利福平和乙胺丁醇，可让部分患者在4个月内完成治疗，对非耐药结核病的效果与六个月方案相当。",
+        "无论疗程是4个月还是6个月，按时完成每一剂药物都至关重要，因为提前停药是导致结核病产生耐药性的主要原因之一。",
+      ] },
+    "zh-Hant": { title: "活動性結核治療方案比較", summary: "標準四聯療法、較新的4個月方案，以及應留意的副作用。",
+      simple: [
+        "活動性結核通常聯合使用四種藥物治療：利福平、異菸鹼醯胼、吡嗪醯胺和乙胺丁醇，總療程為六個月。",
+        "每種藥物都有各自的副作用：利福平可能使尿液等體液變橙色；異菸鹼醯胼可能引起手腳麻木或刺痛（因此會補充維他命B6）；吡嗪醯胺可能引起關節疼痛；乙胺丁醇可能影響視力，因此建議定期檢查眼睛。",
+        "2022年核准的新方案，使用利福噴汀和莫西沙星取代利福平和乙胺丁醇，可讓部分患者在4個月內完成治療，對非抗藥性結核病的效果與六個月方案相當。",
+        "無論療程是4個月還是6個月，按時完成每一劑藥物都至關重要，因為提前停藥是導致結核病產生抗藥性的主要原因之一。",
+      ] },
+    vi: { title: "So Sánh Các Liệu Trình Điều Trị Lao Hoạt Động", summary: "Phác đồ 4 thuốc tiêu chuẩn, lựa chọn 4 tháng mới hơn, và các tác dụng phụ cần lưu ý.",
+      simple: [
+        "Lao hoạt động thường được điều trị bằng bốn loại thuốc kết hợp: rifampin, isoniazid, pyrazinamide, và ethambutol, trong tổng cộng sáu tháng.",
+        "Mỗi loại thuốc có tác dụng phụ riêng: rifampin có thể làm nước tiểu và các dịch khác chuyển màu cam; isoniazid có thể gây tê hoặc ngứa ran ở tay chân (nên được bổ sung vitamin B6); pyrazinamide có thể gây đau khớp; ethambutol có thể ảnh hưởng thị lực, nên cần khám mắt định kỳ.",
+        "Một lựa chọn mới hơn, được phê duyệt năm 2022, điều trị một số bệnh nhân chỉ trong 4 tháng bằng cách dùng rifapentine và moxifloxacin thay cho rifampin và ethambutol, hiệu quả tương đương đối với lao không kháng thuốc.",
+        "Hoàn thành mỗi liều thuốc là điều cốt yếu, dù liệu trình kéo dài 4 hay 6 tháng, vì ngừng thuốc sớm là một trong những nguyên nhân chính khiến lao trở nên kháng thuốc.",
+      ] },
+    ko: { title: "활동성 결핵 치료 요법 비교", summary: "표준 4제 요법, 새로운 4개월 옵션, 그리고 예상되는 부작용.",
+      simple: [
+        "활동성 결핵은 보통 리팜핀, 이소니아지드, 피라진아미드, 에탐부톨 네 가지 약을 함께 사용해 총 6개월간 치료합니다.",
+        "각 약마다 고유한 부작용이 있습니다: 리팜핀은 소변 등 체액을 주황색으로 만들 수 있고, 이소니아지드는 손발 저림을 일으킬 수 있어 비타민 B6를 함께 복용하며, 피라진아미드는 관절통을, 에탐부톨은 시력에 영향을 줄 수 있어 정기적인 안과 검진이 권장됩니다.",
+        "2022년에 승인된 새로운 옵션은 리팜핀과 에탐부톨 대신 리파펜틴과 목시플록사신을 사용해 일부 환자를 단 4개월 만에 치료하며, 내성이 없는 결핵에서는 6개월 요법과 비슷한 효과를 보입니다.",
+        "치료 기간이 4개월이든 6개월이든 모든 용량을 다 복용하는 것이 중요합니다. 조기 중단은 결핵이 약제내성을 갖게 되는 주요 원인 중 하나이기 때문입니다.",
+      ] },
+    tl: { title: "Paghahambing ng mga Regimen sa Paggamot ng Active TB", summary: "Ang standard na 4-gamot na plano, isang mas bagong opsyon na 4 na buwan, at mga side effect na aasahan.",
+      simple: [
+        "Ang active TB ay karaniwang ginagamot gamit ang apat na gamot na sabay: rifampin, isoniazid, pyrazinamide, at ethambutol, sa loob ng anim na buwan sa kabuuan.",
+        "Bawat gamot ay may sariling side effects: maaaring mapakahel-kahel ng rifampin ang ihi at iba pang likido; maaaring magdulot ng pangingimay ang isoniazid (kaya binibigyan ng bitamina B6); maaaring magdulot ng sakit sa kasukasuan ang pyrazinamide; at maaaring makaapekto sa paningin ang ethambutol, kaya inirerekomenda ang regular na pagsusuri sa mata.",
+        "Isang mas bagong opsyon, na inaprubahan noong 2022, ay ginagamot ang ilang pasyente sa loob lamang ng 4 na buwan gamit ang rifapentine at moxifloxacin sa halip na rifampin at ethambutol, na may katulad na resulta para sa TB na hindi lumalaban sa gamot.",
+        "Mahalagang tapusin ang bawat dosis, maging 4 o 6 na buwan man ang tagal ng paggamot, dahil ang pagtigil nang maaga ay isa sa pangunahing dahilan kung bakit nagiging lumalaban sa gamot ang TB.",
+      ] },
+    ru: { title: "Сравнение схем лечения активного туберкулёза", summary: "Стандартная схема из 4 препаратов, новый 4-месячный вариант и каких побочных эффектов ожидать.",
+      simple: [
+        "Активный туберкулёз обычно лечат четырьмя препаратами вместе: рифампицин, изониазид, пиразинамид и этамбутол, в течение шести месяцев в общей сложности.",
+        "У каждого препарата свои побочные эффекты: рифампицин может окрасить мочу и другие жидкости в оранжевый цвет; изониазид может вызывать покалывание в руках или ногах (поэтому назначают витамин B6); пиразинамид может вызывать боль в суставах; этамбутол может влиять на зрение, поэтому рекомендуются регулярные проверки у окулиста.",
+        "Новый вариант, одобренный в 2022 году, позволяет лечить некоторых пациентов всего за 4 месяца, используя рифапентин и моксифлоксацин вместо рифампицина и этамбутола, с результатами, сравнимыми с 6-месячной схемой при отсутствии лекарственной устойчивости.",
+        "Завершение каждой дозы крайне важно, независимо от того, длится лечение 4 или 6 месяцев, поскольку преждевременное прекращение — одна из главных причин развития лекарственно-устойчивого туберкулёза.",
+      ] },
+  },
+  myths: {
+    es: { title: "Mitos comunes sobre la TB", summary: "Separando lo verdadero de lo que la gente suele asumir.",
+      simple: [
+        "Mito: la TB es una enfermedad del pasado. Realidad: la TB todavía afecta a millones de personas cada año en todo el mundo, incluso en Estados Unidos.",
+        "Mito: cualquier diagnóstico de TB significa que eres contagioso. Realidad: la TB latente no se puede contagiar a nadie.",
+        "Mito: puedes contagiarte de TB al dar la mano o compartir un plato. Realidad: la TB se contagia por el aire, generalmente solo después de horas de contacto cercano.",
+        "Mito: un diagnóstico de TB es una sentencia de muerte. Realidad: con el tratamiento adecuado, la TB es curable para la gran mayoría de las personas.",
+      ] },
+    "zh-Hans": { title: "关于结核病的常见误区", summary: "分辨事实与常见的错误假设。",
+      simple: [
+        "误区：结核病是过去的疾病。事实：结核病如今仍在全球每年影响数百万人，包括美国。",
+        "误区：任何结核病诊断都意味着具有传染性。事实：潜伏结核不会传染给任何人。",
+        "误区：握手或共用餐具会感染结核病。事实：结核病通过空气传播，通常需要数小时的密切接触。",
+        "误区：结核病诊断等于被判死刑。事实：只要接受适当治疗，绝大多数结核病患者都能治愈。",
+      ] },
+    "zh-Hant": { title: "關於結核病的常見迷思", summary: "分辨事實與常見的錯誤假設。",
+      simple: [
+        "迷思：結核病是過去的疾病。事實：結核病如今仍在全球每年影響數百萬人，包括美國。",
+        "迷思：任何結核病診斷都代表具有傳染性。事實：潛伏結核不會傳染給任何人。",
+        "迷思：握手或共用餐具會感染結核病。事實：結核病透過空氣傳播，通常需要數小時的密切接觸。",
+        "迷思：結核病診斷等於被判死刑。事實：只要接受適當治療，絕大多數結核病患者都能治癒。",
+      ] },
+    vi: { title: "Những Quan Niệm Sai Lầm Thường Gặp về Bệnh Lao", summary: "Phân biệt sự thật với những điều người ta thường lầm tưởng.",
+      simple: [
+        "Lầm tưởng: Lao là bệnh của quá khứ. Sự thật: lao vẫn ảnh hưởng đến hàng triệu người mỗi năm trên toàn thế giới, kể cả ở Hoa Kỳ.",
+        "Lầm tưởng: bất kỳ chẩn đoán lao nào cũng có nghĩa là bạn đang lây nhiễm. Sự thật: lao tiềm ẩn không thể lây cho bất kỳ ai.",
+        "Lầm tưởng: bạn có thể bị lây lao khi bắt tay hoặc dùng chung đĩa. Sự thật: lao lây qua không khí, thường chỉ sau nhiều giờ tiếp xúc gần.",
+        "Lầm tưởng: chẩn đoán lao là án tử. Sự thật: với điều trị đúng cách, lao có thể chữa khỏi cho đại đa số mọi người.",
+      ] },
+    ko: { title: "결핵에 대한 흔한 오해", summary: "사실과 사람들이 흔히 가정하는 것을 구분합니다.",
+      simple: [
+        "오해: 결핵은 과거의 질병이다. 사실: 결핵은 여전히 미국을 포함해 전 세계 수백만 명에게 매년 영향을 미치고 있습니다.",
+        "오해: 결핵 진단을 받으면 무조건 전염성이 있다. 사실: 잠복결핵은 누구에게도 옮기지 않습니다.",
+        "오해: 악수하거나 접시를 같이 쓰면 결핵에 걸린다. 사실: 결핵은 공기로 전염되며, 보통 몇 시간의 밀접 접촉이 있어야 옮습니다.",
+        "오해: 결핵 진단은 곧 사망 선고다. 사실: 적절한 치료를 받으면 대다수의 사람들은 결핵을 완치할 수 있습니다.",
+      ] },
+    tl: { title: "Mga Karaniwang Maling Paniniwala Tungkol sa TB", summary: "Paghihiwalay ng totoo sa karaniwang inaakala ng mga tao.",
+      simple: [
+        "Maling paniniwala: ang TB ay sakit na noong unang panahon lamang. Katotohanan: apektado pa rin ng TB ang milyun-milyong tao sa buong mundo bawat taon, kabilang na ang Estados Unidos.",
+        "Maling paniniwala: ang anumang diagnosis ng TB ay nangangahulugang nakakahawa ka. Katotohanan: hindi makakahawa ang latent TB sa kahit sino.",
+        "Maling paniniwala: maaari kang mahawaan ng TB sa pakikipagkamay o pagbabahagi ng plato. Katotohanan: kumakalat ang TB sa hangin, karaniwan lamang pagkatapos ng ilang oras ng malapitang pakikisalamuha.",
+        "Maling paniniwala: ang diagnosis ng TB ay parusang kamatayan. Katotohanan: sa tamang paggamot, nagagamot ang TB sa nakararaming tao.",
+      ] },
+    ru: { title: "Распространённые мифы о туберкулёзе", summary: "Отделяем правду от того, что люди обычно предполагают.",
+      simple: [
+        "Миф: туберкулёз — болезнь прошлого. Факт: туберкулёз до сих пор ежегодно поражает миллионы людей во всём мире, включая США.",
+        "Миф: любой диагноз туберкулёза означает, что вы заразны. Факт: латентный туберкулёз не может передаваться никому.",
+        "Миф: туберкулёзом можно заразиться через рукопожатие или общую тарелку. Факт: туберкулёз передаётся по воздуху, обычно только после часов близкого контакта.",
+        "Миф: диагноз туберкулёза — это смертный приговор. Факт: при правильном лечении туберкулёз излечим у подавляющего большинства людей.",
+      ] },
+  },
+  "immigration-status": {
+    es: { title: "La TB, la TB latente, y tu estatus migratorio", summary: "Lo que realmente afecta un caso de inmigración, y lo que no.",
+      simple: [
+        "Si te preocupa que una prueba de TB pueda perjudicar una solicitud de inmigración, este es el dato más importante: solo la TB activa y contagiosa ('TB Clase A') puede hacer que alguien sea inadmisible en los Estados Unidos. La TB latente no descalifica a nadie en un examen médico de inmigración.",
+        "Si un examen médico de inmigración encuentra que tienes TB latente, normalmente se te clasificará como alguien que necesita seguimiento médico, no que será rechazado. Se recomienda el tratamiento, no se usa en tu contra.",
+        "Las clínicas de salud pública existen para controlar la propagación de enfermedades, no para hacer cumplir las leyes de inmigración. La información médica está protegida por leyes de privacidad. Si tienes dudas sobre la política de una clínica en particular, es razonable llamar y preguntar antes de tu visita.",
+        "La 'carga pública' es una regla distinta y no relacionada sobre ciertos beneficios del gobierno, y sus detalles han cambiado varias veces en los últimos años y siguen siendo debatidos activamente en los tribunales y en nuevas regulaciones. Como esto sigue cambiando, la información general puede quedar desactualizada rápidamente; una organización de ayuda legal migratoria gratuita o de bajo costo puede darte una respuesta según la regla actual y tu situación específica.",
+        "Hacerte la prueba y, si es necesario, tratarte la TB es algo que los expertos en salud pública quieren para todos, sin importar el estatus migratorio. La TB activa sin tratar es un riesgo mucho mayor para tu salud que cualquier preocupación de papeleo.",
+      ] },
+    "zh-Hans": { title: "结核病、潜伏结核与您的移民身份", summary: "哪些真的会影响移民案件，哪些不会。",
+      simple: [
+        "如果您担心结核病检测会影响移民申请，最重要的事实是：只有活动性、具有传染性的结核病（“A类结核病”）才可能使某人被视为不可入境。潜伏结核不会使任何人在移民体检中被取消资格。",
+        "如果移民体检发现您有潜伏结核，通常会被归类为需要后续医疗跟进，而不是被拒绝入境。建议接受治疗，而不会因此对您不利。",
+        "公共卫生诊所的职责是控制疾病传播，而不是执行移民法律。医疗信息受隐私法保护。如果您对某个诊所的具体政策不确定，可以在就诊前直接致电询问。",
+        "“公共负担”是一项独立且不相关的规定，涉及某些政府福利，其细节近年来多次变化，目前仍在法庭和新法规中被积极讨论。由于这项规定一直在变化，通用信息可能很快过时；免费或低成本的移民法律援助机构可以根据当前规定和您的具体情况给出解答。",
+        "无论移民身份如何，接受检测并在需要时接受治疗，都是公共卫生专家希望每个人都做到的事。未经治疗的活动性结核病对健康的威胁，远大于任何文件方面的顾虑。",
+      ] },
+    "zh-Hant": { title: "結核病、潛伏結核與您的移民身分", summary: "哪些真的會影響移民案件，哪些不會。",
+      simple: [
+        "如果您擔心結核病檢測會影響移民申請，最重要的事實是：只有活動性、具傳染性的結核病（「A類結核病」）才可能使某人被視為不可入境。潛伏結核不會使任何人在移民體檢中被取消資格。",
+        "如果移民體檢發現您有潛伏結核，通常會被歸類為需要後續醫療追蹤，而非被拒絕入境。建議接受治療，並不會因此對您不利。",
+        "公共衛生診所的職責是控制疾病傳播，而非執行移民法律。醫療資訊受隱私法保護。如果您對某診所的具體政策不確定，可以在就診前直接致電詢問。",
+        "「公共負擔」是一項獨立且不相關的規定，涉及某些政府福利，其細節近年多次變化，目前仍在法庭和新法規中被積極討論。由於此規定持續變動，一般資訊可能很快過時；免費或低成本的移民法律援助機構可依目前規定與您的具體情況提供解答。",
+        "無論移民身分為何，接受檢測並在需要時接受治療，都是公共衛生專家希望每個人都做到的事。未經治療的活動性結核病對健康的威脅，遠大於任何文件方面的顧慮。",
+      ] },
+    vi: { title: "Bệnh Lao, Lao Tiềm Ẩn, và Tình Trạng Di Trú Của Bạn", summary: "Điều gì thực sự ảnh hưởng đến hồ sơ di trú — và điều gì không.",
+      simple: [
+        "Nếu bạn lo rằng xét nghiệm lao có thể ảnh hưởng đến đơn xin di trú, đây là điều quan trọng nhất: chỉ có lao đang hoạt động và lây nhiễm ('Lao Loại A') mới có thể khiến ai đó bị coi là không đủ điều kiện nhập cảnh vào Hoa Kỳ. Lao tiềm ẩn không khiến ai bị loại khỏi khám sức khỏe di trú.",
+        "Nếu khám sức khỏe di trú phát hiện bạn mắc lao tiềm ẩn, bạn thường sẽ được xếp vào diện cần theo dõi y tế thêm, chứ không bị từ chối. Việc điều trị được khuyến nghị, không bị dùng để chống lại bạn.",
+        "Các phòng khám y tế công cộng tồn tại để kiểm soát sự lây lan của bệnh, không phải để thực thi luật di trú. Thông tin y tế được bảo vệ bởi luật riêng tư. Nếu bạn không chắc về chính sách của một phòng khám cụ thể, bạn có thể gọi điện hỏi trước khi đến khám.",
+        "'Gánh nặng công cộng' là một quy định riêng biệt, không liên quan, về việc sử dụng một số phúc lợi của chính phủ, và các chi tiết của nó đã thay đổi nhiều lần trong những năm gần đây và vẫn đang được tranh luận tích cực tại tòa án và trong các quy định mới. Vì điều này vẫn đang thay đổi, thông tin chung có thể nhanh chóng lỗi thời — một tổ chức hỗ trợ pháp lý di trú miễn phí hoặc chi phí thấp có thể cho bạn câu trả lời dựa trên quy định hiện hành và hoàn cảnh cụ thể của bạn.",
+        "Việc xét nghiệm và, nếu cần, điều trị lao là điều mà các chuyên gia y tế công cộng mong muốn cho tất cả mọi người, bất kể tình trạng di trú. Lao hoạt động không được điều trị là rủi ro lớn hơn nhiều cho sức khỏe của bạn so với bất kỳ lo ngại nào về giấy tờ.",
+      ] },
+    ko: { title: "결핵, 잠복결핵, 그리고 이민 신분", summary: "실제로 이민 사건에 영향을 미치는 것과 그렇지 않은 것.",
+      simple: [
+        "결핵 검사가 이민 신청에 해를 끼칠까 걱정된다면, 가장 중요한 사실은 이것입니다: 활동성이고 전염성이 있는 결핵('A등급 결핵')만이 미국 입국 부적격 사유가 될 수 있습니다. 잠복결핵은 이민 건강검진에서 누구도 실격시키지 않습니다.",
+        "이민 건강검진에서 잠복결핵이 발견되면, 보통 추가 의료 관찰이 필요한 것으로 분류될 뿐 입국이 거부되지 않습니다. 치료가 권장될 뿐, 불이익으로 이어지지 않습니다.",
+        "공공보건 클리닉의 목적은 질병 확산을 막는 것이지 이민법을 집행하는 것이 아닙니다. 의료 정보는 개인정보 보호법으로 보호됩니다. 특정 클리닉의 방침이 궁금하다면 방문 전에 직접 전화해 물어보는 것도 합리적입니다.",
+        "'공적부담(Public Charge)'은 특정 정부 혜택에 관한 별개의 규정으로, 최근 몇 년간 여러 차례 바뀌었고 현재도 법원과 새로운 규정에서 활발히 논의되고 있습니다. 계속 바뀌고 있기 때문에 일반적인 정보는 금방 낡은 것이 될 수 있습니다 — 무료 또는 저비용 이민 법률 지원 단체가 현재 규정과 당신의 구체적인 상황에 맞는 답을 줄 수 있습니다.",
+        "이민 신분과 관계없이 검사를 받고 필요하다면 치료를 받는 것은 공공보건 전문가들이 모든 사람에게 바라는 일입니다. 치료받지 않은 활동성 결핵은 서류 문제보다 건강에 훨씬 더 큰 위험입니다.",
+      ] },
+    tl: { title: "TB, Latent TB, at ang Iyong Immigration Status", summary: "Ano ang talagang nakaaapekto sa isang immigration case — at kung ano ang hindi.",
+      simple: [
+        "Kung nag-aalala ka na ang pagsusuri sa TB ay maaaring makasama sa isang aplikasyon sa imigrasyon, ito ang pinakamahalagang katotohanan: tanging ang active at nakakahawang TB ('Class A TB') lamang ang maaaring maging dahilan upang ituring na 'inadmissible' ang isang tao sa Estados Unidos. Hindi diskwalipika ang latent TB sa isang medical exam para sa imigrasyon.",
+        "Kung natuklasan sa medical exam na may latent TB ka, karaniwan kang ikakategorya bilang isang nangangailangan ng follow-up na medikal na pangangalaga, hindi tatanggihan. Inirerekomenda ang paggamot, hindi ito gagamitin laban sa iyo.",
+        "Ang mga klinika ng pampublikong kalusugan ay umiiral upang pigilan ang paglaganap ng sakit, hindi upang ipatupad ang batas sa imigrasyon. Protektado ng batas sa privacy ang impormasyong medikal. Kung hindi ka sigurado sa patakaran ng isang partikular na klinika, makatuwiran na tumawag at magtanong bago ang iyong pagbisita.",
+        "Ang 'public charge' ay hiwalay at walang kaugnayang panuntunan tungkol sa ilang benepisyo ng gobyerno, at ang mga detalye nito ay nagbago nang ilang beses sa mga nakaraang taon at aktibong pinagdedebatehan pa rin sa korte at sa mga bagong regulasyon. Dahil patuloy itong nagbabago, maaaring maluma agad ang pangkalahatang impormasyon — isang libre o murang organisasyon ng tulong legal para sa imigrasyon ang makakapagbigay sa iyo ng sagot base sa kasalukuyang patakaran at sa iyong sariling sitwasyon.",
+        "Ang pagpapasuri at, kung kinakailangan, paggamot sa TB ay isang bagay na nais ng mga eksperto sa pampublikong kalusugan para sa lahat, anuman ang immigration status. Ang hindi ginagamot na active TB ay mas malaking panganib sa iyong kalusugan kaysa sa anumang alalahanin tungkol sa papeles.",
+      ] },
+    ru: { title: "Туберкулёз, латентный туберкулёз и ваш иммиграционный статус", summary: "Что действительно влияет на иммиграционное дело, а что нет.",
+      simple: [
+        "Если вы беспокоитесь, что тест на туберкулёз может навредить иммиграционному заявлению, вот самый важный факт: только активный, заразный туберкулёз («туберкулёз класса А») может сделать человека не имеющим права на въезд в США. Латентный туберкулёз не лишает никого права пройти иммиграционный медосмотр.",
+        "Если иммиграционный медосмотр выявляет латентный туберкулёз, вас обычно относят к категории нуждающихся в дальнейшем медицинском наблюдении, а не отказывают во въезде. Лечение рекомендуется, а не используется против вас.",
+        "Клиники общественного здравоохранения существуют для борьбы с распространением болезней, а не для соблюдения иммиграционного законодательства. Медицинская информация защищена законами о конфиденциальности. Если вы не уверены в политике конкретной клиники, разумно позвонить и спросить об этом до визита.",
+        "«Общественное бремя» — это отдельное, не связанное с этим правило, касающееся определённых государственных льгот, и его детали менялись несколько раз за последние годы и до сих пор активно обсуждаются в судах и новых постановлениях. Поскольку это правило постоянно меняется, общая информация может быстро устареть — бесплатная или недорогая организация иммиграционной юридической помощи может дать вам ответ, основанный на текущем правиле и вашей конкретной ситуации.",
+        "Пройти тестирование и, при необходимости, лечение от туберкулёза — это то, чего специалисты общественного здравоохранения хотят для всех, независимо от иммиграционного статуса. Нелеченный активный туберкулёз представляет гораздо больший риск для вашего здоровья, чем любые опасения по поводу документов.",
+      ] },
+  },
+  "employment-rights": {
+    es: { title: "El tratamiento de la TB latente y tu trabajo", summary: "Lo que sí (y no) tienes que decirle a tu empleador, y qué protege la ley.",
+      simple: [
+        "La TB latente no es contagiosa, así que en la mayoría de los trabajos no hay ninguna obligación legal de contárselo a tu empleador, ni ninguna razón para dejar de trabajar o cambiar tus tareas.",
+        "Si necesitas compartir información médica con tu empleador, por ejemplo para pedir tiempo libre para citas médicas, la ley de EE. UU. (la ADA) exige que esa información se mantenga confidencial y se guarde separada de tu archivo de personal normal.",
+        "Algunos trabajos, especialmente en salud, cuidado infantil, educación y correccionales, tienen sus propias reglas de detección de TB establecidas por leyes estatales o locales. Estas son distintas de las protecciones laborales generales y varían según el estado.",
+        "Los empleadores no pueden legalmente negarse a contratar, despedir o excluir del trabajo a alguien solo por tener TB latente y no ser contagioso. Esto ya se ha hecho cumplir contra empleadores que se equivocaron en esto.",
+        "Si crees que has recibido un trato injusto en el trabajo por un diagnóstico de TB, la Comisión para la Igualdad de Oportunidades en el Empleo de EE. UU. (EEOC) y muchas organizaciones locales de derechos laborales ofrecen ayuda gratuita.",
+      ] },
+    "zh-Hans": { title: "潜伏结核治疗与您的工作", summary: "您需要（和不需要）告诉雇主的事，以及法律保护的内容。",
+      simple: [
+        "潜伏结核不具传染性，因此在大多数工作中，没有法律义务告知雇主，也没有必要停止工作或更改工作内容。",
+        "如果您确实需要与雇主分享医疗信息，例如为了请假就医，美国法律（《美国残疾人法》，ADA）要求该信息必须保密，并与您的普通人事档案分开存放。",
+        "某些职业，尤其是医疗保健、托儿、教育和惩教工作，有各州或地方法律规定的结核病筛查要求。这些与一般的劳动保护不同，且因州而异。",
+        "雇主不能仅因为某人患有不具传染性的潜伏结核，就合法拒绝雇用、解雇或将其排除在工作之外。这一点已经有过针对做错这件事的雇主的执法案例。",
+        "如果您认为自己因结核病诊断而在工作中受到不公平对待，美国平等就业机会委员会（EEOC）以及许多地方劳工权益组织都提供免费帮助。",
+      ] },
+    "zh-Hant": { title: "潛伏結核治療與您的工作", summary: "您需要（和不需要）告訴雇主的事，以及法律保護的內容。",
+      simple: [
+        "潛伏結核不具傳染性，因此在大多數工作中，並沒有法律義務告知雇主，也沒有必要停止工作或更改工作內容。",
+        "如果您確實需要與雇主分享醫療資訊，例如為了請假就醫，美國法律（《美國身心障礙者法》，ADA）要求該資訊必須保密，並與您的一般人事檔案分開存放。",
+        "某些職業，尤其是醫療保健、托兒、教育及矯正機構工作，設有各州或地方法律規定的結核病篩檢要求。這些與一般勞動保護不同，且因州而異。",
+        "雇主不能僅因某人患有不具傳染性的潛伏結核，就合法拒絕僱用、解僱或將其排除在工作之外。這一點已有過針對做錯這件事的雇主的執法案例。",
+        "若您認為自己因結核病診斷而在工作中受到不公平對待，美國平等就業機會委員會（EEOC）以及許多地方勞工權益組織都提供免費協助。",
+      ] },
+    vi: { title: "Điều Trị Lao Tiềm Ẩn và Công Việc Của Bạn", summary: "Những gì bạn phải (và không phải) nói với chủ lao động, và những gì pháp luật bảo vệ.",
+      simple: [
+        "Lao tiềm ẩn không lây nhiễm, vì vậy trong hầu hết công việc, không có yêu cầu pháp lý nào buộc bạn phải nói với chủ lao động, và cũng không có lý do gì để bạn phải nghỉ làm hoặc thay đổi nhiệm vụ.",
+        "Nếu bạn cần chia sẻ thông tin y tế với chủ lao động, ví dụ để xin nghỉ đi khám, luật Hoa Kỳ (Đạo luật ADA) yêu cầu thông tin đó phải được giữ bí mật và lưu trữ riêng biệt với hồ sơ nhân sự thông thường của bạn.",
+        "Một số công việc, đặc biệt là y tế, chăm sóc trẻ em, giáo dục, và cải huấn, có quy định xét nghiệm lao riêng do luật tiểu bang hoặc địa phương quy định. Những quy định này khác với các bảo vệ lao động chung và khác nhau tùy theo tiểu bang.",
+        "Chủ lao động không được phép hợp pháp từ chối tuyển dụng, sa thải, hoặc loại một người khỏi công việc chỉ vì họ mắc lao tiềm ẩn và không lây nhiễm. Điều này thực sự đã từng bị xử lý đối với những chủ lao động làm sai điều này.",
+        "Nếu bạn tin rằng mình đã bị đối xử bất công tại nơi làm việc vì chẩn đoán lao, Ủy ban Cơ hội Việc làm Bình đẳng Hoa Kỳ (EEOC) và nhiều tổ chức quyền lợi người lao động tại địa phương cung cấp hỗ trợ miễn phí.",
+      ] },
+    ko: { title: "잠복결핵 치료와 당신의 직장", summary: "고용주에게 말해야 할 것(그리고 말하지 않아도 될 것)과 법이 보호하는 내용.",
+      simple: [
+        "잠복결핵은 전염성이 없기 때문에, 대부분의 직장에서는 고용주에게 알려야 할 법적 의무가 없으며, 일을 그만두거나 업무를 바꿔야 할 이유도 없습니다.",
+        "진료 예약을 위해 휴가를 요청하는 등 고용주와 의료 정보를 공유해야 할 경우, 미국 법(ADA, 미국 장애인법)은 그 정보를 기밀로 유지하고 일반 인사 파일과 별도로 보관하도록 요구합니다.",
+        "특히 의료, 보육, 교육, 교정 시설 등 일부 직종은 주 또는 지방법에 따른 자체 결핵 검진 규정이 있습니다. 이는 일반적인 근로자 보호와는 별개이며 주마다 다릅니다.",
+        "고용주는 전염성이 없는 잠복결핵을 가진 사람이라는 이유만으로 고용을 거부하거나 해고하거나 업무에서 배제할 수 없습니다. 실제로 이를 잘못 적용한 고용주에 대해 연방 규제 기관이 집행 조치를 취한 사례가 있습니다.",
+        "결핵 진단으로 인해 직장에서 부당한 대우를 받았다고 생각되면, 미국 평등고용기회위원회(EEOC)와 여러 지역 노동자 권리 단체가 무료로 도움을 제공합니다.",
+      ] },
+    tl: { title: "Paggamot sa Latent TB at ang Iyong Trabaho", summary: "Ang dapat (at hindi kailangang) sabihin mo sa iyong employer, at kung ano ang pinoprotektahan ng batas.",
+      simple: [
+        "Hindi nakakahawa ang latent TB, kaya sa karamihan ng mga trabaho, walang legal na obligasyon na sabihin ito sa iyong employer, at walang dahilan para tumigil sa trabaho o baguhin ang iyong mga tungkulin.",
+        "Kung kailangan mong ibahagi ang impormasyong medikal sa iyong employer, halimbawa para humingi ng bakasyon para sa mga appointment, hinihiling ng batas ng US (ang ADA) na ang impormasyong iyon ay panatilihing kumpidensyal at itago nang hiwalay sa iyong regular na file ng personnel.",
+        "Ang ilang trabaho, lalo na sa healthcare, pangangalaga ng bata, edukasyon, at mga institusyong pang-koreksyon, ay may sariling mga alituntunin sa TB screening na itinakda ng batas ng estado o lokal. Ito ay hiwalay sa pangkalahatang proteksyon sa trabaho at nag-iiba depende sa estado.",
+        "Hindi maaaring legal na tanggihan ng mga employer na kunin, tanggalin, o ibukod sa trabaho ang isang tao dahil lamang sa mayroon silang latent TB at hindi sila nakakahawa. Ipinatupad na ito laban sa mga employer na nagkamali dito.",
+        "Kung naniniwala ka na hindi ka pantay na tinatrato sa trabaho dahil sa diagnosis ng TB, ang U.S. Equal Employment Opportunity Commission (EEOC) at maraming lokal na organisasyon ng karapatan ng manggagawa ay nag-aalok ng libreng tulong.",
+      ] },
+    ru: { title: "Лечение латентного туберкулёза и ваша работа", summary: "Что вы обязаны (и не обязаны) сообщать работодателю, и что защищает закон.",
+      simple: [
+        "Латентный туберкулёз не заразен, поэтому на большинстве работ нет юридического требования сообщать об этом работодателю, и нет причин прекращать работу или менять обязанности.",
+        "Если вам всё же нужно поделиться медицинской информацией с работодателем, например, чтобы попросить отгул для визитов к врачу, закон США (ADA) требует, чтобы эта информация оставалась конфиденциальной и хранилась отдельно от вашего обычного личного дела.",
+        "Некоторые профессии, особенно в здравоохранении, уходе за детьми, образовании и исправительных учреждениях, имеют собственные правила проверки на туберкулёз, установленные законами штата или местными законами. Они отличаются от общих трудовых прав и варьируются в зависимости от штата.",
+        "Работодатели не могут на законных основаниях отказать в приёме на работу, уволить или отстранить от работы человека только из-за того, что у него латентный туберкулёз и он не заразен. Это уже применялось против работодателей, которые поступали неправильно.",
+        "Если вы считаете, что с вами несправедливо обошлись на работе из-за диагноза туберкулёза, Комиссия США по соблюдению равноправия при трудоустройстве (EEOC) и многие местные организации по защите прав работников предлагают бесплатную помощь.",
+      ] },
+  },
+};
+
+/* ---------------------------------- glossary rendering ---------------------------------- */
+
+function GlossaryWord({ term, definition, sizeClass }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        className={`font-semibold underline decoration-2 underline-offset-4 ${sizeClass}`}
+        style={{ color: "var(--accent)", textDecorationStyle: "dotted", textDecorationColor: "var(--highlight)" }}
+        aria-expanded={open}
+      >
+        {term}
+      </button>
+      {open && (
+        <span
+          className={`block mt-2 mb-1 pl-3 border-l-2 ${sizeClass}`}
+          style={{ borderColor: "var(--highlight)", color: "var(--ink-soft)" }}
+        >
+          {definition}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function renderRichText(text, sizeClass) {
+  const regex = /\[\[(.+?)\|\|(.+?)\]\]/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>);
+    }
+    parts.push(<GlossaryWord key={key++} term={match[1]} definition={match[2]} sizeClass={sizeClass} />);
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(<span key={key++}>{text.slice(lastIndex)}</span>);
+  }
+  return parts;
+}
+
+function plainText(paragraphs) {
+  return paragraphs.map((p) => p.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1")).join(" ");
+}
+
+/* ---------------------------------- research digest (static) ---------------------------------- */
+// This section used to call the Anthropic API live, from the browser, every time someone
+// opened this tab. That worked inside Claude's artifact preview (which authorizes those
+// calls) but breaks once the app is hosted on its own domain, since there's no API key
+// here — and there shouldn't be one hardcoded in client-side code either way.
+//
+// HOW TO REFRESH THIS LIST:
+// Periodically (e.g. every few weeks), ask Claude something like: "search for the latest
+// TB and latent TB research/news and update RESEARCH_ITEMS in tb-honest-research.jsx."
+// Claude will web-search, draft new entries in this exact shape, and you redeploy the
+// updated file. Update RESEARCH_LAST_UPDATED to the date you refreshed it. Each item:
+//   id, headline (plain language, ~7th-grade), source, sourceUrl (must be real),
+//   datePublished, tag, whyItMatters, summary (array of short paragraphs — wrap jargon
+//   in [[term||definition]] the same way the rest of this file does).
+
+const RESEARCH_LAST_UPDATED = "September 2026";
+
+const RESEARCH_ITEMS = [
+  {
+    id: "m72-vaccine-phase3",
+    headline: "New TB vaccine trial could finish by end of decade",
+    source: "EWN (Eyewitness News)",
+    sourceUrl: "https://www.ewn.co.za/new-vaccine-likely-to-eliminate-tb-as-public-health-threat-by-2030-health-dept/",
+    datePublished: "August 2026",
+    tag: "Testing news",
+    whyItMatters: "A vaccine that works for teens and adults with latent TB could prevent active TB before it ever starts — something today's vaccines don't reliably do.",
+    summary: [
+      "A vaccine candidate called [[M72/AS01E||A vaccine candidate designed to help people already infected with TB germs avoid developing active TB disease.]] is now in a large, final-stage study called a [[Phase 3 trial||The last and largest stage of testing before a vaccine or drug can be approved, usually involving thousands of participants.]], running in several countries including South Africa. Unlike the BCG vaccine most people get as infants, this candidate is aimed at teens and adults who already have latent TB, with the goal of stopping it from ever becoming active.",
+      "If the trial shows the vaccine works well and is safe, it could become the first new TB vaccine approved in over 100 years. Health officials in South Africa have said a successful vaccine could help substantially reduce TB as a public health threat within the next several years.",
+      "Results aren't in yet. Large vaccine trials like this typically take several years to reach a clear answer, since researchers need enough time to see whether participants naturally develop TB at different rates with the vaccine versus without it.",
+    ],
+  },
+  {
+    id: "tb-alliance-shorter-treatment",
+    headline: "Researchers aim for much shorter TB treatment",
+    source: "TB Alliance",
+    sourceUrl: "https://www.tballiance.org/",
+    datePublished: "2026",
+    tag: "Treatment news",
+    whyItMatters: "Shorter treatment tends to mean fewer missed doses and an easier recovery for people diagnosed with TB or latent TB down the road.",
+    summary: [
+      "A nonprofit called TB Alliance has set a long-term research goal known as the '1×1 vision': shrinking active TB treatment down to just one month, and latent TB treatment down to a single day, compared to today's six-month and multi-month regimens.",
+      "One newer, shorter regimen already in limited use, called [[BPaL/M||A newer, shorter drug combination used mainly for drug-resistant TB.]], is being studied for its wider impact. Research from Johns Hopkins University estimated that broader use of this regimen could save roughly 191,000 lives and over a billion dollars in treatment costs by 2034, partly because people are more likely to complete a shorter course.",
+      "This is a long-term research direction, not something available yet for standard TB treatment. It signals where the field is heading, but today's approved regimens remain what doctors currently prescribe.",
+    ],
+  },
+  {
+    id: "2026-treatment-review",
+    headline: "Review sums up where new TB drug research stands",
+    source: "Journal of Clinical Tuberculosis and Other Mycobacterial Diseases",
+    sourceUrl: "https://iro.uiowa.edu/esploro/outputs/journalArticle/Recent-advances-in-tuberculosis-treatment-Towards/9985121595402771",
+    datePublished: "2026",
+    tag: "New study",
+    whyItMatters: "Reviews like this pull together many separate studies, giving a wider view of where new TB drugs and shorter regimens are headed.",
+    summary: [
+      "Researchers at the University of Iowa published a review pulling together recent clinical trial results on TB treatment, covering regimens for drug-susceptible TB, [[drug-resistant TB||A form of TB that no longer responds to one or more of the usual medicines. It's harder, and takes longer, to treat.]], and latent TB infection.",
+      "The review found current research is focused on three goals: shorter treatment courses, fewer side effects, and better options for TB that has become resistant to standard drugs, using a mix of newer drugs and existing drugs combined in new ways.",
+      "A review like this doesn't introduce a single new treatment itself — it's a snapshot summarizing where multiple ongoing trials stand, based on World Health Organization guidance and recently published studies.",
+    ],
+  },
+];
+
+function timeAgo(iso) {
+  if (!iso) return "";
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs} hr${hrs === 1 ? "" : "s"} ago`;
+  const days = Math.round(hrs / 24);
+  return `${days} day${days === 1 ? "" : "s"} ago`;
+}
+
+/* ---------------------------------- fonts ---------------------------------- */
+
+function useFonts() {
+  useEffect(() => {
+    const id = "tb-honest-research-fonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&family=Noto+Sans:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Sans+TC:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap";
+    document.head.appendChild(link);
+  }, []);
+}
+
+// Font stacks fall back through Noto Sans variants so Chinese, Korean, Vietnamese,
+// and Cyrillic (Russian) all render with real glyphs instead of tofu boxes, while
+// Atkinson Hyperlegible (chosen for its readability focus) still leads for
+// Latin-script languages.
+const BODY_FONT_STACK =
+  "'Atkinson Hyperlegible','Noto Sans SC','Noto Sans TC','Noto Sans KR','Noto Sans',sans-serif";
+const HEADLINE_FONT_STACK =
+  "'Fraunces','Noto Sans SC','Noto Sans TC','Noto Sans KR','Noto Sans',serif";
+
+/* ---------------------------------- app ---------------------------------- */
+
+const BODY_SIZES = ["text-base", "text-lg", "text-xl"];
+const TITLE_SIZES = ["text-2xl", "text-3xl", "text-4xl"];
+const LIST_TITLE_SIZES = ["text-lg", "text-xl", "text-2xl"];
+const INTRO_SIZES = ["text-xl", "text-2xl", "text-3xl"];
+
+function TBHonestResearchApp() {
+  useFonts();
+
+  const [tab, setTab] = useState("library"); // 'library' | 'research'
+  const [view, setView] = useState("home"); // 'home' | 'article'
+  const [activeId, setActiveId] = useState(null);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [level, setLevel] = useState("simple");
+  const [sizeStep, setSizeStep] = useState(1);
+  const [speaking, setSpeaking] = useState(false);
+  const [lang, setLang] = useState("en");
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [langLoaded, setLangLoaded] = useState(false);
+
+  const strings = UI_STRINGS[lang] || UI_STRINGS.en;
+
+  // load saved language preference once on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("lang-pref");
+      if (saved && UI_STRINGS[saved]) setLang(saved);
+    } catch (e) {
+      // no saved preference yet — default to English
+    }
+    setLangLoaded(true);
+  }, []);
+
+  function changeLang(code) {
+    setLang(code);
+    setLangMenuOpen(false);
+    try {
+      localStorage.setItem("lang-pref", code);
+    } catch (e) {
+      // ignore — persistence is best-effort
+    }
+  }
+
+  // Resolves the right title/summary/category label for the current language,
+  // falling back to English when a translation doesn't exist yet.
+  function localizedArticle(article) {
+    const tr = ARTICLE_TRANSLATIONS[article.id]?.[lang];
+    return {
+      title: tr?.title || article.title,
+      summary: tr?.summary || article.summary,
+      hasSimpleTranslation: Boolean(tr?.simple),
+    };
+  }
+
+  function localizedCategory(cat) {
+    return strings.categories[cat] || cat;
+  }
+
+  // Body paragraphs for the article reading view: translated "Simple" content when
+  // available, otherwise English for both levels (with a note shown separately).
+  function localizedBody(article) {
+    const tr = ARTICLE_TRANSLATIONS[article.id]?.[lang];
+    if (lang !== "en" && level === "simple" && tr?.simple) {
+      return { paragraphs: tr.simple, isFallbackEnglish: false };
+    }
+    return { paragraphs: article[level], isFallbackEnglish: lang !== "en" };
+  }
+
+  const [expandedResearchId, setExpandedResearchId] = useState(null);
+
+  // supports current items ("summary") as well as older cached items
+  // that used separate simple/detailed summaries
+  function researchSummaryFor(item) {
+    return item.summary || item.summarySimple || item.summaryDetailed || [];
+  }
+
+  const bodySize = BODY_SIZES[sizeStep];
+  const titleSize = TITLE_SIZES[sizeStep];
+  const listTitleSize = LIST_TITLE_SIZES[sizeStep];
+  const introSize = INTRO_SIZES[sizeStep];
+
+  const activeArticle = useMemo(() => ARTICLES.find((a) => a.id === activeId) || null, [activeId]);
+
+  // Strips [[term||definition]] markup down to "term definition" so both the
+  // glossary term itself and its plain-language definition are searchable.
+  function unwrapGlossary(text) {
+    return text.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1 $2");
+  }
+
+  function searchableText(article) {
+    const tr = ARTICLE_TRANSLATIONS[article.id]?.[lang];
+    const parts = [
+      article.title,
+      article.summary,
+      tr?.title,
+      tr?.summary,
+      ...(article.simple || []),
+      ...(article.detailed || []),
+      ...(tr?.simple || []),
+      ...(article.sources || []).map((s) => s.label),
+    ].filter(Boolean);
+    return unwrapGlossary(parts.join(" \n ")).toLowerCase();
+  }
+
+  function matchSnippet(article, q) {
+    if (!q) return null;
+    const loc = localizedArticle(article);
+    const alreadyVisible =
+      loc.title.toLowerCase().includes(q) || loc.summary.toLowerCase().includes(q);
+    if (alreadyVisible) return null;
+    const body = unwrapGlossary(
+      [...(article.simple || []), ...(article.detailed || [])].join(" \n ")
+    );
+    const idx = body.toLowerCase().indexOf(q);
+    if (idx === -1) return null;
+    const start = Math.max(0, idx - 40);
+    const end = Math.min(body.length, idx + q.length + 60);
+    return (start > 0 ? "…" : "") + body.slice(start, end).trim() + (end < body.length ? "…" : "");
+  }
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ARTICLES.filter((a) => {
+      const matchesCategory = category === "All" || a.category === category;
+      const matchesQuery = !q || searchableText(a).includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  }, [query, category, lang]);
+
+  function openArticle(id) {
+    stopSpeaking();
+    setActiveId(id);
+    setLevel("simple");
+    setView("article");
+  }
+
+  function goHome() {
+    stopSpeaking();
+    setView("home");
+    setActiveId(null);
+  }
+
+  function stopSpeaking() {
+    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+    setSpeaking(false);
+  }
+
+  const SPEECH_LANG_MAP = {
+    en: "en-US", es: "es-ES", ru: "ru-RU", vi: "vi-VN", ko: "ko-KR",
+    tl: "fil-PH", "zh-Hans": "zh-CN", "zh-Hant": "zh-TW",
+  };
+
+  function toggleSpeak() {
+    if (!activeArticle) return;
+    if (speaking) {
+      stopSpeaking();
+      return;
+    }
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const title = localizedArticle(activeArticle).title;
+    const body = localizedBody(activeArticle);
+    const text = `${title}. ${plainText(body.paragraphs)}`;
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.rate = 0.95;
+    utter.lang = SPEECH_LANG_MAP[lang] || "en-US";
+    utter.onend = () => setSpeaking(false);
+    utter.onerror = () => setSpeaking(false);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+    setSpeaking(true);
+  }
+
+  useEffect(() => stopSpeaking, []);
+
+  return (
+    <div
+      style={{
+        "--bg": "#F5F1E6",
+        "--bg-alt": "#ECE6D4",
+        "--ink": "#1C2B2A",
+        "--ink-soft": "#4B5B58",
+        "--accent": "#2B6E68",
+        "--accent-soft": "#DCEAE7",
+        "--highlight": "#B8791F",
+        "--line": "#D9D2BE",
+        backgroundColor: "var(--bg)",
+        color: "var(--ink)",
+        fontFamily: BODY_FONT_STACK,
+        minHeight: "100%",
+      }}
+      className="w-full"
+    >
+      <div className="max-w-2xl mx-auto px-5 pb-16">
+        {/* top bar */}
+        <div className="sticky top-0 z-10 flex items-center justify-between py-4" style={{ backgroundColor: "var(--bg)" }}>
+          {view === "article" ? (
+            <button onClick={goHome} className="flex items-center gap-1 font-semibold" style={{ color: "var(--accent)" }}>
+              <ChevronLeft size={20} />
+              <span>Back</span>
+            </button>
+          ) : (
+            <span className="font-semibold" style={{ fontFamily: HEADLINE_FONT_STACK, fontSize: "1.3rem", fontWeight: 600 }}>
+              TB Honest
+            </span>
+          )}
+
+          <div className="flex items-center gap-2 relative">
+            {view === "article" && (
+              <button
+                onClick={toggleSpeak}
+                aria-pressed={speaking}
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold border"
+                style={{
+                  borderColor: speaking ? "var(--accent)" : "var(--line)",
+                  color: speaking ? "white" : "var(--ink)",
+                  backgroundColor: speaking ? "var(--accent)" : "transparent",
+                }}
+              >
+                {speaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                {speaking ? strings.stop : strings.listen}
+              </button>
+            )}
+            <button
+              onClick={() => setSizeStep((s) => (s + 1) % 3)}
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold border"
+              style={{ borderColor: "var(--line)" }}
+              aria-label="Change text size"
+              title="Change text size"
+            >
+              <Type size={16} />
+              {["S", "M", "L"][sizeStep]}
+            </button>
+            <button
+              onClick={() => setLangMenuOpen((o) => !o)}
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold border"
+              style={{ borderColor: "var(--line)" }}
+              aria-haspopup="listbox"
+              aria-expanded={langMenuOpen}
+              aria-label="Change language"
+              title="Change language"
+            >
+              <Globe size={16} />
+            </button>
+            {langMenuOpen && (
+              <div
+                role="listbox"
+                className="absolute right-0 top-full mt-2 rounded-xl border overflow-hidden z-20"
+                style={{ borderColor: "var(--line)", backgroundColor: "var(--bg)", minWidth: 180, boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
+              >
+                {LANGUAGES.map((l) => (
+                  <button
+                    key={l.code}
+                    role="option"
+                    aria-selected={lang === l.code}
+                    onClick={() => changeLang(l.code)}
+                    className="w-full text-left px-4 py-2.5 text-sm"
+                    style={{
+                      backgroundColor: lang === l.code ? "var(--accent-soft)" : "transparent",
+                      color: "var(--ink)",
+                      fontWeight: lang === l.code ? 700 : 400,
+                    }}
+                  >
+                    {l.native}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* AI-translation notice */}
+        {lang !== "en" && (
+          <div
+            className="rounded-lg px-4 py-3 mb-4 text-sm"
+            style={{ backgroundColor: "var(--accent-soft)", color: "var(--ink)" }}
+          >
+            {strings.reviewBanner}
+          </div>
+        )}
+
+        {/* top-level tabs */}
+        {view === "home" && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {[
+              ["library", strings.library],
+              ["research", strings.latestResearch],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`rounded-full px-4 py-1.5 font-semibold border ${bodySize}`}
+                style={{
+                  borderColor: tab === key ? "var(--highlight)" : "var(--line)",
+                  backgroundColor: tab === key ? "var(--accent-soft)" : "transparent",
+                  color: tab === key ? "var(--ink)" : "var(--ink-soft)",
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ---------------- library / home ---------------- */}
+        {view === "home" && tab === "library" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              {strings.tagline}
+            </p>
+
+            <div className="flex items-center gap-2 rounded-full px-4 py-2.5 mb-4" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <Search size={18} style={{ color: "var(--ink-soft)" }} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={strings.searchPlaceholder}
+                className={`bg-transparent outline-none w-full ${bodySize}`}
+                style={{ color: "var(--ink)" }}
+              />
+              {query && (
+                <button onClick={() => setQuery("")} aria-label="Clear search">
+                  <X size={16} style={{ color: "var(--ink-soft)" }} />
+                </button>
+              )}
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 mb-6" style={{ scrollbarWidth: "none" }}>
+              {CATEGORIES.map((c) => {
+                const activeCat = c === category;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategory(c)}
+                    className={`shrink-0 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                    style={{
+                      borderColor: activeCat ? "var(--highlight)" : "var(--line)",
+                      backgroundColor: activeCat ? "var(--accent-soft)" : "transparent",
+                      color: activeCat ? "var(--ink)" : "var(--ink-soft)",
+                    }}
+                  >
+                    {localizedCategory(c)}
+                  </button>
+                );
+              })}
+            </div>
+
+            {filtered.length === 0 ? (
+              <p className={`${bodySize} py-8`} style={{ color: "var(--ink-soft)" }}>
+                {strings.noResults}
+              </p>
+            ) : (
+              <div>
+                {filtered.map((a, i) => {
+                  const loc = localizedArticle(a);
+                  const snippet = matchSnippet(a, query.trim().toLowerCase());
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => openArticle(a.id)}
+                      className="w-full text-left py-5"
+                      style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}
+                    >
+                      <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                        {loc.title}
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {loc.summary}
+                      </div>
+                      {snippet && (
+                        <div className="text-sm mt-1.5 italic" style={{ color: "var(--ink-soft)" }}>
+                          "{snippet}"
+                        </div>
+                      )}
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {localizedCategory(a.category)} · {a.readTime}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              {strings.libraryDisclaimer}
+            </p>
+          </>
+        )}
+
+        {/* ---------------- latest research ---------------- */}
+        {view === "home" && tab === "research" && (
+          <>
+            <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Real TB research, explained simply.
+            </p>
+            <p className={`${bodySize} mb-1`} style={{ color: "var(--ink-soft)" }}>
+              We periodically review current studies, guidelines, and health news about TB, then rewrite what
+              we find in plain language. Every item links back to its real source.
+            </p>
+            <p className="text-sm mb-6" style={{ color: "var(--ink-soft)" }}>
+              Last updated: {RESEARCH_LAST_UPDATED}
+            </p>
+
+            <div>
+              {RESEARCH_ITEMS.map((r, i) => {
+                const expanded = expandedResearchId === r.id;
+                return (
+                  <div key={r.id || i} style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setExpandedResearchId(expanded ? null : r.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setExpandedResearchId(expanded ? null : r.id);
+                        }
+                      }}
+                      aria-expanded={expanded}
+                      className="w-full text-left py-5 cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                          {r.headline}
+                        </div>
+                        <ChevronDown
+                          size={20}
+                          style={{ color: "var(--ink-soft)", transform: expanded ? "rotate(180deg)" : "none", flexShrink: 0, marginTop: 4 }}
+                        />
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {renderRichText(r.whyItMatters || "", bodySize)}
+                      </div>
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {r.tag ? `${r.tag} · ` : ""}
+                        {r.source}
+                        {r.datePublished ? ` · ${r.datePublished}` : ""}
+                      </div>
+                    </div>
+
+                    {expanded && (
+                      <div className="pb-5">
+                        <div className={`${bodySize} space-y-3`} style={{ lineHeight: 1.7 }}>
+                          {researchSummaryFor(r).map((p, idx) => (
+                            <p key={idx}>{renderRichText(p, bodySize)}</p>
+                          ))}
+                        </div>
+                        {r.sourceUrl && (
+                          <a
+                            href={r.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1.5 mt-3 font-semibold ${bodySize}`}
+                            style={{ color: "var(--accent)" }}
+                          >
+                            Read the source
+                            <ExternalLink size={15} />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              These summaries are written by AI from current research and news, and may contain mistakes. Use
+              the source link to check the original, and always talk with your doctor or nurse about your own
+              health.
+            </p>
+          </>
+        )}
+
+
+        {/* ---------------- article ---------------- */}
+        {view === "article" && activeArticle && (
+          <div>
+            <div className="text-sm font-semibold mb-2" style={{ color: "var(--highlight)" }}>
+              {localizedCategory(activeArticle.category)} · {activeArticle.readTime}
+            </div>
+            <h1 className={`${titleSize} mb-4 leading-tight`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+              {localizedArticle(activeArticle).title}
+            </h1>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", strings.simple],
+                ["detailed", strings.moreDetail],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={level === key}
+                  onClick={() => setLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: level === key ? "var(--accent)" : "transparent", color: level === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {(() => {
+              const body = localizedBody(activeArticle);
+              return (
+                <>
+                  {body.isFallbackEnglish && (
+                    <p className="text-sm mb-4 italic" style={{ color: "var(--ink-soft)" }}>
+                      {strings.detailFallback}
+                    </p>
+                  )}
+                  <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+                    {body.paragraphs.map((p, idx) => (
+                      <p key={idx}>{renderRichText(p, bodySize)}</p>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
+
+            {activeArticle.sources && activeArticle.sources.length > 0 && (
+              <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+                <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                  {strings.sources}
+                </div>
+                <ul className="space-y-1">
+                  {activeArticle.sources.map((s, idx) => (
+                    <li key={idx}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm inline-flex items-center gap-1"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {s.label}
+                        <ExternalLink size={12} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <p className="text-sm mt-6 pt-6" style={{ color: "var(--ink-soft)", borderTop: activeArticle.sources ? "none" : "1px solid var(--line)" }}>
+              {strings.articleDisclaimer}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<TBHonestResearchApp />);
+
+</script>
+</body>
+</html>
