@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>COVID Honest</title>
+<meta name="description" content="Clear, simple, sourced answers about COVID-19." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  html, body, #root { height: 100%; }
+  body { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-source">
+const { useState, useEffect, useMemo, useRef } = React;
+
+function Icon({ children, size = 24, style, className }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+      {children}
+    </svg>
+  );
+}
+function ChevronLeft(props) { return <Icon {...props}><polyline points="15 18 9 12 15 6" /></Icon>; }
+function ChevronDown(props) { return <Icon {...props}><polyline points="6 9 12 15 18 9" /></Icon>; }
+function Search(props) { return <Icon {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></Icon>; }
+function Volume2(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></Icon>; }
+function VolumeX(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></Icon>; }
+function Type(props) { return <Icon {...props}><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></Icon>; }
+function X(props) { return <Icon {...props}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>; }
+function ExternalLink(props) { return <Icon {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></Icon>; }
+
+/* ====================================================================
+   COVID HONEST
+   Built from the "Honest" template (see TB Honest / Hep B Honest) —
+   same structure, fonts, and interaction patterns, new content and
+   color scheme. English only for now.
+   ==================================================================== */
+
+/* ---------------------------------- content: library articles ---------------------------------- */
+
+const ARTICLES = [
+  {
+    id: "what-is-covid",
+    category: "Basics",
+    title: "What Is COVID-19?",
+    summary: "The basics of COVID-19, in plain words.",
+    readTime: "2 min",
+    simple: [
+      "COVID-19 is a respiratory illness caused by a virus called [[SARS-CoV-2||The virus that causes COVID-19. Short for 'severe acute respiratory syndrome coronavirus 2.']]. It was first identified in late 2019 and quickly spread worldwide, leading the World Health Organization to declare a global pandemic in March 2020.",
+      "COVID-19 mainly affects the lungs and airways, though it can affect other parts of the body too. Most people who get infected have mild to moderate symptoms and recover within a couple of weeks, but some people, especially older adults and people with certain health conditions, can become seriously ill.",
+      "COVID-19 is no longer classified as a global health emergency, but the virus is still circulating and still evolving into new variants. It has moved from a pandemic emergency into something more like an ongoing, manageable respiratory illness, similar to how the flu is treated each year, though it's still a distinct virus.",
+    ],
+    detailed: [
+      "COVID-19 is a respiratory illness caused by [[SARS-CoV-2||The virus that causes COVID-19. Short for 'severe acute respiratory syndrome coronavirus 2.']], a coronavirus first identified in Wuhan, China, in late 2019. It spread globally within months, leading the World Health Organization to declare a pandemic in March 2020, a designation WHO formally ended in May 2023 as the acute global health emergency phase concluded.",
+      "The virus primarily targets the respiratory tract, but COVID-19 is now understood to be capable of affecting many organ systems, including the cardiovascular and nervous systems, which helps explain the wide range of symptoms and complications some people experience.",
+      "The large majority of people who contract COVID-19 experience mild to moderate illness and recover within one to two weeks. Risk of severe illness rises significantly with age and with certain underlying health conditions (such as heart disease, diabetes, obesity, and immune suppression), which is why public health guidance has increasingly focused on protecting higher-risk groups specifically, rather than treating everyone's risk as equal.",
+      "Since 2023, COVID-19 has transitioned from a global emergency into an endemic respiratory illness that continues to circulate seasonally and evolve into new variants, in some ways similar to influenza, though it remains a biologically distinct virus with its own transmission patterns and risks.",
+    ],
+    sources: [
+      { label: "World Health Organization — Coronavirus disease (COVID-19)", url: "https://www.who.int/health-topics/coronavirus" },
+    ],
+  },
+  {
+    id: "how-covid-spreads",
+    category: "Basics",
+    title: "How COVID-19 Spreads",
+    summary: "Mostly through the air — indoors, and in close contact.",
+    readTime: "3 min",
+    simple: [
+      "COVID-19 spreads mainly through the air, when an infected person breathes, talks, coughs, or sneezes, releasing tiny respiratory droplets and particles that others can breathe in.",
+      "It spreads most easily in close, indoor, poorly ventilated spaces, and less easily outdoors or in well-ventilated areas.",
+      "A person can spread COVID-19 even before they have symptoms, and some people who test positive never develop symptoms at all but can still pass the virus to others.",
+      "Good ventilation, air filtration, staying home when sick, and masks (particularly well-fitting ones like N95s) can all reduce the chance of spreading or catching COVID-19, especially in higher-risk settings.",
+    ],
+    detailed: [
+      "COVID-19 spreads primarily through respiratory particles released when an infected person breathes, talks, coughs, sneezes, or sings. These range from larger droplets that fall quickly to smaller aerosol particles that can linger and travel further in the air, particularly indoors.",
+      "Transmission risk is highest in close, prolonged, indoor contact with poor ventilation, and substantially lower outdoors or in well-ventilated spaces, which is why many mitigation strategies have focused on improving indoor air quality and ventilation.",
+      "People can transmit the virus before symptoms appear ([[pre-symptomatic transmission||Spreading a virus to someone else before you notice any symptoms yourself.]]) and some infected people never develop symptoms at all ([[asymptomatic transmission||Spreading a virus to someone else without ever having symptoms yourself.]]) yet can still spread it, which is part of why COVID-19 proved so difficult to contain through symptom-screening alone.",
+      "Layered protective measures, improving ventilation and filtration, staying home while symptomatic or recently exposed, and wearing well-fitting masks (particularly respirator-type masks like N95s or KN95s) in higher-risk settings, each reduce transmission risk, with effectiveness generally increasing when multiple measures are combined rather than relied on individually.",
+    ],
+    sources: [
+      { label: "World Health Organization — Coronavirus disease (COVID-19)", url: "https://www.who.int/health-topics/coronavirus" },
+    ],
+  },
+  {
+    id: "symptoms",
+    category: "Symptoms",
+    title: "Signs and Symptoms",
+    summary: "A wide range, from nothing at all to serious illness.",
+    readTime: "2 min",
+    simple: [
+      "COVID-19 symptoms vary a lot from person to person; some people have no symptoms at all, others have a mild cold-like illness, and some become seriously ill.",
+      "Common symptoms include fever or chills, cough, sore throat, congestion or runny nose, fatigue, muscle aches, headache, and loss of taste or smell (though loss of taste or smell is less common with more recent variants than it was earlier in the pandemic).",
+      "Warning signs that need urgent medical attention include trouble breathing, persistent chest pain or pressure, confusion, or bluish lips or face.",
+      "Symptoms usually appear 2 to 14 days after exposure, most often around 3 to 5 days with more recent variants.",
+    ],
+    detailed: [
+      "COVID-19 produces a wide spectrum of presentations, ranging from no symptoms at all to mild illness resembling a common cold, to severe disease requiring hospitalization. This variability depends on factors including age, underlying health conditions, vaccination and prior infection history, and which viral variant is involved.",
+      "Commonly reported symptoms include fever or chills, cough, sore throat, nasal congestion, fatigue, muscle or body aches, headache, and gastrointestinal symptoms like nausea or diarrhea in some cases. Loss of taste or smell, a hallmark symptom associated with early pandemic variants, has become less common with more recent variants, though it can still occur.",
+      "Emergency warning signs, which warrant immediate medical care, include difficulty breathing, persistent chest pain or pressure, new confusion, inability to stay awake, and bluish or grey discoloration of the lips, skin, or nail beds, all signals of potentially serious illness that shouldn't wait for a routine appointment.",
+      "The incubation period (time between exposure and symptom onset) is typically 2 to 14 days, with more recent variants tending toward a shorter average of around 3 to 5 days compared to the original strain.",
+    ],
+    sources: [
+      { label: "World Health Organization — Coronavirus disease (COVID-19)", url: "https://www.who.int/health-topics/coronavirus" },
+    ],
+  },
+  {
+    id: "long-covid",
+    category: "Symptoms",
+    title: "Long COVID",
+    summary: "When symptoms linger for weeks or months after infection.",
+    readTime: "3 min",
+    simple: [
+      "Long COVID refers to new or ongoing symptoms that continue for weeks or months after the initial COVID-19 infection has cleared.",
+      "Symptoms vary widely and can include fatigue, brain fog, shortness of breath, heart palpitations, and many others. It can affect people who had mild initial illness, not just those who were severely sick.",
+      "There's no single test for long COVID; it's generally diagnosed based on ongoing symptoms after ruling out other causes, which can make getting a diagnosis and support frustratingly slow for some people.",
+      "Long COVID is a real, recognized medical condition, even though it's still being actively researched and doesn't yet have one standard treatment. If you're dealing with ongoing symptoms after COVID-19, it's worth bringing them up with your provider, ideally one experienced with post-COVID care.",
+    ],
+    detailed: [
+      "Long COVID (also called post-COVID condition) refers to new, returning, or ongoing symptoms that persist for weeks or months after the acute COVID-19 infection has resolved. Estimates of how many people are affected vary by study and population, but it represents a substantial ongoing public health concern; the UK's Office for National Statistics has estimated around 1.9 million people living with long COVID in that country alone.",
+      "Reported symptoms are diverse and can include persistent fatigue, cognitive difficulties often described as [[brain fog||Trouble with memory, focus, or clear thinking that some people experience after a COVID-19 infection.]], shortness of breath, heart palpitations, joint or muscle pain, sleep disturbances, and post-exertional malaise (a worsening of symptoms after physical or mental exertion). Long COVID can affect people who had only mild acute illness, not exclusively those who were hospitalized.",
+      "There is no single diagnostic test for long COVID; diagnosis typically relies on a persistent symptom pattern following infection, after other explanations have been reasonably ruled out. This diagnostic ambiguity has real consequences: research has found that insufficiently specific clinical guidelines contribute to underdiagnosis, which in turn can prevent people from qualifying for sick leave or disability support they may need.",
+      "Long COVID research is active but still evolving, and there is no single standardized treatment; care typically focuses on managing individual symptoms and is best coordinated through a provider or clinic experienced with post-COVID care. Multiple studies have also documented that people from minoritized and lower-income groups, who are disproportionately represented among essential and key workers, face compounded barriers to long COVID diagnosis and care, an equity issue covered further on this app's Stigma page.",
+    ],
+    sources: [
+      { label: "University of Southampton — Ethnic Minorities Experience Stigma and Discrimination Accessing Long Covid Care", url: "https://www.southampton.ac.uk/news/2024/06/long-covid-ethnic-minorities.page" },
+      { label: "BMJ Opinion — The Stigma Is Real for People Living With Long Covid", url: "https://blogs.bmj.com/bmj/2021/03/25/marija-pantelic-and-nisreen-alwan-the-stigma-is-real-for-people-living-with-long-covid" },
+    ],
+  },
+  {
+    id: "testing",
+    category: "Testing",
+    title: "Getting Tested for COVID-19",
+    summary: "Rapid antigen tests vs. PCR, and what a result actually tells you.",
+    readTime: "3 min",
+    simple: [
+      "There are two main types of COVID-19 tests: rapid antigen tests (often done at home) and PCR tests (usually done at a lab or clinic), which are more sensitive but take longer to get results.",
+      "A positive test, of either type, means you currently have COVID-19. A negative rapid antigen test doesn't fully rule out infection, especially early in illness, so retesting a day or two later is often recommended if you still have symptoms.",
+      "Testing is a good idea if you have symptoms, were recently exposed to someone with COVID-19, or are about to be around someone at higher risk of severe illness.",
+      "At-home rapid tests are widely available at pharmacies, and some public health programs have offered free tests at different points since 2020.",
+    ],
+    detailed: [
+      "Two main categories of COVID-19 tests are in common use: rapid antigen tests, which detect viral proteins and can be done at home with results in about 15 minutes, and molecular tests (most often [[PCR||Short for 'polymerase chain reaction,' a lab method that detects even small amounts of viral genetic material. PCR tests for COVID-19 are more sensitive than rapid antigen tests but usually take longer to get results.]] tests), which detect viral genetic material, are more sensitive, and are typically processed in a lab, taking anywhere from same-day to a few days for results.",
+      "A positive result on either test type is considered a reliable indicator of current infection. Antigen tests, however, are less sensitive than PCR, particularly early in infection when viral levels may still be low, which is why a single negative antigen test doesn't fully rule out infection if symptoms are present; testing again 24 to 48 hours later, or using a PCR test, is often recommended in that situation.",
+      "Testing is generally recommended for anyone with COVID-19 symptoms, anyone with a known recent exposure to someone infected (particularly before being around higher-risk individuals), and before or after gatherings involving people at increased risk of severe illness.",
+      "At-home rapid antigen tests are widely available over the counter at pharmacies. Government-sponsored free testing programs have been offered at various points since 2020, though availability and funding for such programs has varied over time, so checking current local availability is worthwhile if cost is a barrier.",
+    ],
+    sources: [
+      { label: "World Health Organization — Coronavirus disease (COVID-19)", url: "https://www.who.int/health-topics/coronavirus" },
+    ],
+  },
+  {
+    id: "vaccine",
+    category: "Vaccines",
+    title: "The COVID-19 Vaccine",
+    summary: "What the vaccine does — and an honest look at a genuinely unsettled debate.",
+    readTime: "4 min",
+    simple: [
+      "COVID-19 vaccines work by training your immune system to recognize the virus, lowering the chance of severe illness, hospitalization, and death if you do get infected.",
+      "As of the 2025–2026 season, the official U.S. recommendation is based on shared decision-making between a person (or parent) and their healthcare provider, for everyone 6 months and older, rather than a blanket recommendation for everyone. The guidance specifically notes the benefit is greatest for people at higher risk of severe COVID-19.",
+      "This is a significant, actively debated change: major medical organizations, including the American Academy of Pediatrics and the American College of Obstetricians and Gynecologists, have issued their own recommendations that differ from current federal guidance, favoring continued routine vaccination for children and pregnant people.",
+      "Because vaccine recommendations have changed multiple times recently and remain a subject of real, ongoing debate among health authorities and medical organizations, it's worth checking current official guidance and talking with your own healthcare provider about what makes sense for you or your family, rather than relying on any one static source, including this one.",
+    ],
+    detailed: [
+      "COVID-19 vaccines are designed to train the immune system to recognize [[SARS-CoV-2||The virus that causes COVID-19. Short for 'severe acute respiratory syndrome coronavirus 2.']], reducing the risk of severe illness, hospitalization, and death upon infection, even though they don't fully prevent infection or transmission, particularly against newer variants.",
+      "COVID-19 vaccine policy in the United States has changed substantially and repeatedly since 2024. Historically, the CDC recommended annual updated COVID-19 vaccination for everyone aged 6 months and older. In 2025, the U.S. Department of Health and Human Services made a series of changes to this guidance, in some cases without the standard review process through the CDC's Advisory Committee on Immunization Practices ([[ACIP||The CDC's Advisory Committee on Immunization Practices, an independent panel of experts that normally reviews evidence and recommends vaccine policy.]]), including announcing in May 2025 that vaccination would no longer be routinely recommended for healthy children and pregnant people specifically.",
+      "Following further review, ACIP voted in September 2025 to recommend COVID-19 vaccination based on individual, shared clinical decision-making between a patient (or parent) and a healthcare provider for everyone 6 months and older, with specific emphasis that the benefit-risk balance is most favorable for people at increased risk of severe COVID-19 and least favorable for those not at increased risk. This differs from a standard, routine recommendation for the general population.",
+      "This shift has been genuinely controversial within medicine. Major professional organizations, including the American Academy of Pediatrics and the American College of Obstetricians and Gynecologists, have issued their own guidance continuing to recommend routine COVID-19 vaccination for children and pregnant people respectively, diverging from the current federal position; ACOG specifically has cited concerns about COVID-19's risks during pregnancy and for newborns who rely on maternal antibodies. Several of the broader 2025–2026 changes to federal vaccine policy have also faced legal challenges, with a federal court blocking implementation of some changes as of early 2026.",
+      "Given how actively this area continues to change and how much disagreement currently exists between federal guidance and major medical societies, this is a topic where checking current, official sources and discussing your specific situation with your own healthcare provider matters more than usual. This app aims to describe the state of the debate accurately rather than take a side in it.",
+    ],
+    sources: [
+      { label: "Immunize.org — CDC's 2025–26 Season COVID-19 Vaccination Recommendations", url: "https://www.immunize.org/ask-experts/what-are-cdcs-2025-26-season-routine-covid-19-vaccination-recommendations-for-people-age-6-months-and-older" },
+      { label: "EveryCRSReport — Changes to CDC Vaccine Recommendations in 2025 and 2026", url: "https://www.everycrsreport.com/files/2026-04-28_IN12684_93939a9e87a2769da1455519bfb049074da5c21a.html" },
+    ],
+  },
+  {
+    id: "treatment",
+    category: "Treatment",
+    title: "Treatment for COVID-19",
+    summary: "Home care for most, antivirals for those at higher risk.",
+    readTime: "3 min",
+    simple: [
+      "Most people with COVID-19 recover at home with rest, fluids, and over-the-counter medicine for symptoms like fever or aches.",
+      "For people at higher risk of severe illness, an antiviral pill called [[Paxlovid||An antiviral medicine (nirmatrelvir/ritonavir) that can reduce the risk of severe COVID-19 illness if started within the first few days of symptoms.]] (nirmatrelvir/ritonavir) can lower the risk of hospitalization if started within the first few days of symptoms. It requires a prescription, so it's worth contacting a provider quickly if you're at higher risk and test positive.",
+      "As of current guidance, there's no fixed number of isolation days after testing positive. Instead, you can return to normal activities once your symptoms are improving overall and you've been fever-free for 24 hours without fever-reducing medicine. Wearing a mask around others for a while after is still a reasonable precaution.",
+      "Seek urgent medical care for warning signs like trouble breathing, persistent chest pain, confusion, or bluish lips or face.",
+    ],
+    detailed: [
+      "The majority of COVID-19 cases are managed at home with supportive care: rest, hydration, and over-the-counter medications to manage fever, aches, or congestion. Most people recover within one to two weeks.",
+      "For people at higher risk of progressing to severe illness (including older adults and people with certain underlying health conditions), the antiviral [[Paxlovid||An antiviral medicine (nirmatrelvir/ritonavir) that can reduce the risk of severe COVID-19 illness if started within the first few days of symptoms.]] (nirmatrelvir/ritonavir) has been shown to meaningfully reduce the risk of hospitalization and death when started within 5 days of symptom onset. Because early treatment matters for effectiveness, contacting a healthcare provider promptly after a positive test is important for anyone who may be eligible.",
+      "U.S. isolation guidance shifted in March 2024 from a fixed-duration approach to a symptom-based one, aligning with guidance for other common respiratory illnesses like flu and RSV. Under current guidance, people can resume normal activities once symptoms have been improving overall and they've been fever-free for 24 hours without the use of fever-reducing medication, with continued mask use around others recommended for a period afterward as an added precaution.",
+      "Emergency warning signs that require immediate medical attention include difficulty breathing, persistent chest pain or pressure, new confusion, inability to stay awake, and bluish or grey discoloration of the lips, skin, or nail beds.",
+    ],
+    sources: [
+      { label: "World Health Organization — Coronavirus disease (COVID-19)", url: "https://www.who.int/health-topics/coronavirus" },
+    ],
+  },
+  {
+    id: "myths",
+    category: "Myths",
+    title: "Common Myths About COVID-19",
+    summary: "Separating what's true from what people often assume.",
+    readTime: "3 min",
+    simple: [
+      "Myth: COVID-19 is 'just a cold' or 'just the flu.' Fact: while many cases are mild, COVID-19 has caused millions of deaths worldwide and can cause complications, including long COVID, that are distinct from a typical cold or flu.",
+      "Myth: if you're vaccinated, you can't get or spread COVID-19. Fact: vaccines significantly reduce the risk of severe illness, hospitalization, and death, but they don't provide complete protection against infection or transmission, especially against newer variants.",
+      "Myth: COVID-19 only seriously affects older adults. Fact: while risk does rise sharply with age, healthy younger people have also experienced severe illness, long COVID, and rare but serious complications.",
+      "Myth: someone's race or ethnicity has anything to do with how likely they are to spread COVID-19. Fact: this belief fueled a documented surge in anti-Asian racism and discrimination during the pandemic, despite having no basis in how the virus actually spreads.",
+      "Myth: long COVID isn't a real medical condition. Fact: it's a recognized, actively studied condition affecting millions of people worldwide, even though it doesn't yet have one standard test or treatment.",
+    ],
+    detailed: [
+      "Myth: COVID-19 is 'just a cold' or 'just the flu.' Fact: while a large share of cases are mild, COVID-19 has caused millions of deaths worldwide and can cause complications, including [[long COVID||New or ongoing symptoms that continue for weeks or months after a COVID-19 infection has cleared.]], that are distinct from a typical cold or flu illness.",
+      "Myth: vaccinated people can't get or spread COVID-19. Fact: vaccines significantly reduce the risk of severe illness, hospitalization, and death, but they don't provide complete protection against infection or transmission, particularly against newer variants that have evolved since the original vaccines were developed.",
+      "Myth: COVID-19 only seriously affects older adults. Fact: while risk of severe illness does rise sharply with age, healthy younger people have also experienced severe illness, long COVID, and rare but serious complications.",
+      "Myth: someone's race or ethnicity has anything to do with how likely they are to spread COVID-19. Fact: this belief has no basis in how the virus actually spreads, yet it fueled a well-documented surge in anti-Asian racism and discrimination during the pandemic, covered in more detail on this app's Stigma page.",
+      "Myth: long COVID isn't a real medical condition. Fact: it's a recognized, actively studied condition estimated to affect millions of people worldwide, even though it doesn't yet have one standard diagnostic test or treatment.",
+    ],
+    sources: [
+      { label: "World Health Organization — Coronavirus disease (COVID-19)", url: "https://www.who.int/health-topics/coronavirus" },
+      { label: "Frontiers in Public Health — Anti-Asian Racism Related Stigma During the COVID-19 Pandemic", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10524265/" },
+    ],
+  },
+];
+
+const CATEGORIES = ["All", "Basics", "Symptoms", "Testing", "Vaccines", "Treatment", "Myths"];
+
+/* ---------------------------------- content: stigma ---------------------------------- */
+
+const STIGMA_CONTENT = {
+  title: "COVID-19 Stigma, Explained",
+  simple: [
+    "COVID-19 stigma took several different forms during the pandemic: racism directed at Asian communities, shame or shunning for testing positive, and dismissal of people struggling with long-term symptoms.",
+    "One of the most documented harms was a sharp rise in anti-Asian racism. Between March 2020 and March 2022, the tracking coalition Stop AAPI Hate recorded over 11,500 reported incidents in the U.S. alone, ranging from harassment and being refused service to physical assault. Surveys during the pandemic found that most Asian American and Pacific Islander respondents experienced some form of COVID-related discrimination.",
+    "This happened even though a virus has no relationship to anyone's race or ethnicity. The stigma was fueled entirely by fear and false blame, not by anything about how COVID-19 actually spreads.",
+    "A different kind of stigma has affected people living with long COVID: ongoing symptoms that last weeks or months after infection. Because there's no single test for long COVID, many people have described being dismissed by doctors, employers, or even family members, sometimes being told their symptoms are exaggerated or 'all in their head.'",
+    "Research has found this dismissal falls unevenly: people from minority and lower-income communities, who are also more likely to work essential jobs without paid sick leave, face extra barriers to being believed and getting care for long COVID.",
+    "In both cases, the fix is the same: accurate information and taking people's real experiences seriously, rather than filling the gaps in understanding with blame or disbelief.",
+  ],
+  detailed: [
+    "COVID-19 stigma has taken several distinct forms over the course of the pandemic: racialized blame directed at Asian communities, social shunning of people who tested positive, and dismissal of people experiencing long-term symptoms after infection.",
+    "The most extensively documented harm has been a sharp rise in anti-Asian racism and discrimination. The tracking coalition Stop AAPI Hate recorded more than 11,500 reported anti-Asian American and Pacific Islander (AAPI) hate incidents in the U.S. between March 2020 and March 2022, including harassment, verbal abuse, refusal of service, shunning, physical assault, and property damage; harassment alone accounted for 67% of reported incidents. In a separate national survey, 60% of AAPI respondents reported experiencing discrimination within the pandemic's first year, and 74% agreed with at least one COVID-related racial bias belief. A 2023 study of college students similarly found AAPI students experienced significantly more COVID-related [[stigma||Negative attitudes, shame, or social rejection directed at someone because of a health condition or other trait.]] than students of other racial and ethnic backgrounds.",
+    "This discrimination had no basis in how the virus actually spreads; a virus does not check someone's ethnicity before infecting them. Researchers studying this phenomenon describe it as 'stigma spillover,' where a health crisis becomes racialized through blame narratives that have nothing to do with actual biological transmission.",
+    "A different, ongoing form of stigma affects people living with [[long COVID||New or ongoing symptoms that continue for weeks or months after a COVID-19 infection has cleared.]], persistent symptoms lasting weeks or months after the initial infection clears. Because long COVID lacks a single diagnostic test and clinical guidelines have historically been imprecise, many patients have described being dismissed by clinicians, employers, and even family members, sometimes told their symptoms are exaggerated, psychological, or simply 'the medicalization of modern life,' a characterization some physicians have publicly pushed back against as failing to reflect what patients are actually experiencing.",
+    "This dismissal doesn't fall evenly. Research from the UK found that ethnic minority patients face compounded stigma and discrimination when trying to access long COVID care, including feeling unworthy of treatment and encountering a documented lack of trust in the healthcare system. Separate analysis has noted that minoritized populations are disproportionately represented among essential and key workers, many without paid sick leave, meaning the practical consequences of not being believed, being unable to access disability support or time off, can be especially severe for exactly the people already facing the most structural disadvantage.",
+    "In both cases, racialized blame and long COVID dismissal, the underlying fix mirrors what works for other stigmatized health conditions: accurate public information to counter fear-based blame, and taking people's lived symptoms seriously rather than filling clinical uncertainty with disbelief.",
+  ],
+  sources: [
+    { label: "Frontiers in Public Health — Anti-Asian Racism Related Stigma During the COVID-19 Pandemic", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10524265/" },
+    { label: "University of Southampton — Ethnic Minorities Experience Stigma and Discrimination Accessing Long Covid Care", url: "https://www.southampton.ac.uk/news/2024/06/long-covid-ethnic-minorities.page" },
+    { label: "BMJ Opinion — The Stigma Is Real for People Living With Long Covid", url: "https://blogs.bmj.com/bmj/2021/03/25/marija-pantelic-and-nisreen-alwan-the-stigma-is-real-for-people-living-with-long-covid" },
+  ],
+};
+
+/* ---------------------------------- new research (static — refresh periodically) ---------------------------------- */
+
+const RESEARCH_LAST_UPDATED = "September 2026";
+
+const RESEARCH_ITEMS = [
+  {
+    id: "acip-2025-shift",
+    headline: "Official COVID vaccine guidance shifted to \u2018shared decision-making\u2019",
+    source: "CDC / Advisory Committee on Immunization Practices",
+    sourceUrl: "https://www.immunize.org/ask-experts/what-are-cdcs-2025-26-season-routine-covid-19-vaccination-recommendations-for-people-age-6-months-and-older",
+    datePublished: "September\u2013October 2025",
+    tag: "Guideline update",
+    whyItMatters: "This changes how COVID vaccination is now framed for the general public, and it's a source of real disagreement between the federal government and major medical organizations.",
+    summary: [
+      "In September 2025, the CDC's vaccine advisory committee voted to recommend COVID-19 vaccination for everyone 6 months and older based on individual, shared decision-making with a healthcare provider, rather than as a routine recommendation for the general population. The guidance specifically notes that the benefit is greatest for people at increased risk of severe COVID-19.",
+      "This followed an earlier, more disruptive change: in May 2025, the U.S. Department of Health and Human Services announced that COVID-19 vaccines would no longer be routinely recommended for healthy children and pregnant people, a decision made without the standard advisory committee review process.",
+      "Major medical organizations have pushed back. The American Academy of Pediatrics and the American College of Obstetricians and Gynecologists have each issued their own guidance continuing to recommend routine vaccination for children and pregnant people, respectively, citing concerns about COVID-19's risks during pregnancy and for newborns.",
+    ],
+  },
+  {
+    id: "vaccine-policy-court-block",
+    headline: "Court blocks parts of federal vaccine policy changes",
+    source: "Multiple news outlets, citing federal court filings",
+    sourceUrl: "https://www.contagionlive.com/view/understanding-the-current-acip",
+    datePublished: "March 2026",
+    tag: "Guideline update",
+    whyItMatters: "This shows the vaccine guidance debate is still legally and politically unresolved, so official recommendations may keep shifting.",
+    summary: [
+      "In March 2026, a federal district court blocked implementation of a series of vaccine policy changes made by the Department of Health and Human Services over the prior year, including some related to COVID-19 vaccine recommendations. The ruling meant those specific changes had no legal effect while the case proceeds.",
+      "The decision also delayed a scheduled meeting of the CDC's vaccine advisory committee, which had been set to discuss COVID-19 vaccines and long COVID.",
+      "This is a fast-moving, unresolved legal and political situation. Anyone trying to figure out current official guidance should check original sources, like cdc.gov, for the latest status rather than relying on any single snapshot in time, including this one.",
+    ],
+  },
+  {
+    id: "anti-asian-stigma-spillover-study",
+    headline: "Two-year study tracks how COVID blame turned into anti-Asian hostility online",
+    source: "Association for Psychological Science (2026 Annual Convention)",
+    sourceUrl: "https://www.psychologicalscience.org/conventions/archive/2026annual/paper/61325/",
+    datePublished: "May 2026",
+    tag: "New study",
+    whyItMatters: "This research helps explain exactly how a health crisis turned into racialized blame, which is the first step toward preventing it happening again with a future outbreak.",
+    summary: [
+      "Researchers analyzed two years of Twitter (now X) posts about COVID-19 to track how discussion of the virus became racialized over time, a pattern they call [[stigma spillover||When blame for a health crisis gets redirected toward an entire group of people, like an ethnicity, instead of staying focused on the actual disease.]]: blame for a health crisis getting redirected toward an entire ethnic group rather than staying focused on the virus itself.",
+      "The study found persistent, multilayered hostility toward Asian people throughout the two-year period studied, not just a brief early-pandemic spike, suggesting the underlying attitudes proved durable rather than fading quickly.",
+      "The researchers argue this points to a need for active, context-aware monitoring during future disease outbreaks, so that racialized blame narratives can be identified and addressed early, rather than allowed to take hold the way they did with COVID-19.",
+    ],
+  },
+  {
+    id: "long-covid-minority-care-access",
+    headline: "Study finds ethnic minority patients face extra barriers to long COVID care",
+    source: "University of Southampton",
+    sourceUrl: "https://www.southampton.ac.uk/news/2024/06/long-covid-ethnic-minorities.page",
+    datePublished: "June 2024",
+    tag: "New study",
+    whyItMatters: "This highlights that long COVID stigma doesn't affect everyone equally, which matters for making care genuinely accessible.",
+    summary: [
+      "Researchers at the University of Southampton and collaborating institutions found that stigma, racism, and discrimination within healthcare settings have made it harder for ethnic minority patients in the UK to get care for long COVID symptoms.",
+      "Patients described feeling unworthy of receiving care, having too little information about long COVID, and not knowing what healthcare options existed for managing the condition, on top of a broader lack of trust in the healthcare system among minority ethnic patients.",
+      "The study's authors called for clinicians and healthcare services to better recognize the complex, compounded nature of long COVID stigma, including patients' self-doubt and experiences of dismissal, in order to rebuild trust and improve access to care.",
+    ],
+  },
+];
+
+/* ---------------------------------- glossary rendering ---------------------------------- */
+
+function GlossaryWord({ term, definition, sizeClass }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        className={`font-semibold underline decoration-2 underline-offset-4 ${sizeClass}`}
+        style={{ color: "var(--accent)", textDecorationStyle: "dotted", textDecorationColor: "var(--highlight)" }}
+        aria-expanded={open}
+      >
+        {term}
+      </button>
+      {open && (
+        <span
+          className={`block mt-2 mb-1 pl-3 border-l-2 ${sizeClass}`}
+          style={{ borderColor: "var(--highlight)", color: "var(--ink-soft)" }}
+        >
+          {definition}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function renderRichText(text, sizeClass) {
+  const regex = /\[\[(.+?)\|\|(.+?)\]\]/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>);
+    }
+    parts.push(<GlossaryWord key={key++} term={match[1]} definition={match[2]} sizeClass={sizeClass} />);
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(<span key={key++}>{text.slice(lastIndex)}</span>);
+  }
+  return parts;
+}
+
+/* ---------------------------------- fonts ---------------------------------- */
+
+function useFonts() {
+  useEffect(() => {
+    const id = "covid-honest-fonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+    document.head.appendChild(link);
+  }, []);
+}
+
+const BODY_FONT_STACK = "'Atkinson Hyperlegible', sans-serif";
+const HEADLINE_FONT_STACK = "'Fraunces', serif";
+
+/* ---------------------------------- app ---------------------------------- */
+
+const BODY_SIZES = ["text-base", "text-lg", "text-xl"];
+const TITLE_SIZES = ["text-2xl", "text-3xl", "text-4xl"];
+const LIST_TITLE_SIZES = ["text-lg", "text-xl", "text-2xl"];
+const INTRO_SIZES = ["text-xl", "text-2xl", "text-3xl"];
+
+function CovidHonestApp() {
+  useFonts();
+
+  const [tab, setTab] = useState("library"); // 'library' | 'research' | 'stigma'
+  const [view, setView] = useState("home"); // 'home' | 'article'
+  const [activeId, setActiveId] = useState(null);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [level, setLevel] = useState("simple");
+  const [sizeStep, setSizeStep] = useState(1);
+  const [speaking, setSpeaking] = useState(false);
+  const [stigmaLevel, setStigmaLevel] = useState("simple");
+  const [expandedResearchId, setExpandedResearchId] = useState(null);
+
+  const bodySize = BODY_SIZES[sizeStep];
+  const titleSize = TITLE_SIZES[sizeStep];
+  const listTitleSize = LIST_TITLE_SIZES[sizeStep];
+  const introSize = INTRO_SIZES[sizeStep];
+
+  const activeArticle = useMemo(() => ARTICLES.find((a) => a.id === activeId) || null, [activeId]);
+
+  function unwrapGlossary(text) {
+    return text.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1 $2");
+  }
+
+  function searchableText(article) {
+    const parts = [
+      article.title,
+      article.summary,
+      ...(article.simple || []),
+      ...(article.detailed || []),
+      ...(article.sources || []).map((s) => s.label),
+    ].filter(Boolean);
+    return unwrapGlossary(parts.join(" \n ")).toLowerCase();
+  }
+
+  function matchSnippet(article, q) {
+    if (!q) return null;
+    const alreadyVisible = article.title.toLowerCase().includes(q) || article.summary.toLowerCase().includes(q);
+    if (alreadyVisible) return null;
+    const body = unwrapGlossary([...(article.simple || []), ...(article.detailed || [])].join(" \n "));
+    const idx = body.toLowerCase().indexOf(q);
+    if (idx === -1) return null;
+    const start = Math.max(0, idx - 40);
+    const end = Math.min(body.length, idx + q.length + 60);
+    return (start > 0 ? "…" : "") + body.slice(start, end).trim() + (end < body.length ? "…" : "");
+  }
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ARTICLES.filter((a) => {
+      const matchesCategory = category === "All" || a.category === category;
+      const matchesQuery = !q || searchableText(a).includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  }, [query, category]);
+
+  function openArticle(id) {
+    stopSpeaking();
+    setActiveId(id);
+    setLevel("simple");
+    setView("article");
+  }
+
+  function goHome() {
+    stopSpeaking();
+    setView("home");
+    setActiveId(null);
+  }
+
+  function stopSpeaking() {
+    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+    setSpeaking(false);
+  }
+
+  function toggleSpeak() {
+    if (!activeArticle) return;
+    if (speaking) {
+      stopSpeaking();
+      return;
+    }
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const plain = (activeArticle[level] || []).map((p) => p.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1")).join(" ");
+    const text = `${activeArticle.title}. ${plain}`;
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.rate = 0.95;
+    utter.onend = () => setSpeaking(false);
+    utter.onerror = () => setSpeaking(false);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+    setSpeaking(true);
+  }
+
+  useEffect(() => stopSpeaking, []);
+
+  return (
+    <div
+      style={{
+        "--bg": "#F3F1F6",
+        "--bg-alt": "#E6E1ED",
+        "--ink": "#2A2438",
+        "--ink-soft": "#6B5F7A",
+        "--accent": "#6B3FA0",
+        "--accent-soft": "#E3D6F0",
+        "--highlight": "#C08A3E",
+        "--line": "#DDD5E8",
+        backgroundColor: "var(--bg)",
+        color: "var(--ink)",
+        fontFamily: BODY_FONT_STACK,
+        minHeight: "100%",
+      }}
+      className="w-full"
+    >
+      <div className="max-w-2xl mx-auto px-5 pb-16">
+        {/* top bar */}
+        <div className="sticky top-0 z-10 flex items-center justify-between py-4" style={{ backgroundColor: "var(--bg)" }}>
+          {view === "article" ? (
+            <button onClick={goHome} className="flex items-center gap-1 font-semibold" style={{ color: "var(--accent)" }}>
+              <ChevronLeft size={20} />
+              <span>Back</span>
+            </button>
+          ) : (
+            <span className="font-semibold" style={{ fontFamily: HEADLINE_FONT_STACK, fontSize: "1.3rem", fontWeight: 600 }}>
+              COVID Honest
+            </span>
+          )}
+
+          <div className="flex items-center gap-2">
+            {view === "article" && (
+              <button
+                onClick={toggleSpeak}
+                aria-pressed={speaking}
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold border"
+                style={{
+                  borderColor: speaking ? "var(--accent)" : "var(--line)",
+                  color: speaking ? "white" : "var(--ink)",
+                  backgroundColor: speaking ? "var(--accent)" : "transparent",
+                }}
+              >
+                {speaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                {speaking ? "Stop" : "Listen"}
+              </button>
+            )}
+            <button
+              onClick={() => setSizeStep((s) => (s + 1) % 3)}
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold border"
+              style={{ borderColor: "var(--line)" }}
+              aria-label="Change text size"
+              title="Change text size"
+            >
+              <Type size={16} />
+              {["S", "M", "L"][sizeStep]}
+            </button>
+          </div>
+        </div>
+
+        {/* mission hero */}
+        {view === "home" && (
+          <div className="mb-8 pb-8" style={{ borderBottom: "1px solid var(--line)" }}>
+            <h1 className={titleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600, lineHeight: 1.15 }}>
+              Understanding COVID-19 shouldn't require a medical degree.
+            </h1>
+            <p className={`${bodySize} mt-3`} style={{ color: "var(--ink-soft)", maxWidth: "42rem" }}>
+              COVID Honest turns real, sourced research on COVID-19 into plain language you can actually use —
+              including the facts that cut through stigma, and an honest account of where official guidance is
+              still genuinely unsettled.
+            </p>
+          </div>
+        )}
+
+        {/* top-level tabs */}
+        {view === "home" && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {[
+              ["research", "New Research"],
+              ["library", "Library"],
+              ["stigma", "Stigma"],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`rounded-full px-4 py-1.5 font-semibold border ${bodySize}`}
+                style={{
+                  borderColor: tab === key ? "var(--highlight)" : "var(--line)",
+                  backgroundColor: tab === key ? "var(--accent-soft)" : "transparent",
+                  color: tab === key ? "var(--ink)" : "var(--ink-soft)",
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ---------------- library / home ---------------- */}
+        {view === "home" && tab === "library" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Browse articles on transmission, testing, vaccination, and treatment — written in plain language
+              and backed by real sources.
+            </p>
+
+            <div className="flex items-center gap-2 rounded-full px-4 py-2.5 mb-4" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <Search size={18} style={{ color: "var(--ink-soft)" }} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search topics, like 'vaccine' or 'long COVID'"
+                className={`bg-transparent outline-none w-full ${bodySize}`}
+                style={{ color: "var(--ink)" }}
+              />
+              {query && (
+                <button onClick={() => setQuery("")} aria-label="Clear search">
+                  <X size={16} style={{ color: "var(--ink-soft)" }} />
+                </button>
+              )}
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 mb-6" style={{ scrollbarWidth: "none" }}>
+              {CATEGORIES.map((c) => {
+                const activeCat = c === category;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategory(c)}
+                    className={`shrink-0 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                    style={{
+                      borderColor: activeCat ? "var(--highlight)" : "var(--line)",
+                      backgroundColor: activeCat ? "var(--accent-soft)" : "transparent",
+                      color: activeCat ? "var(--ink)" : "var(--ink-soft)",
+                    }}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+            </div>
+
+            {filtered.length === 0 ? (
+              <p className={`${bodySize} py-8`} style={{ color: "var(--ink-soft)" }}>
+                No articles match your search. Try a different word or category.
+              </p>
+            ) : (
+              <div>
+                {filtered.map((a, i) => {
+                  const snippet = matchSnippet(a, query.trim().toLowerCase());
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => openArticle(a.id)}
+                      className="w-full text-left py-5"
+                      style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}
+                    >
+                      <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                        {a.title}
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {a.summary}
+                      </div>
+                      {snippet && (
+                        <div className="text-sm mt-1.5 italic" style={{ color: "var(--ink-soft)" }}>
+                          "{snippet}"
+                        </div>
+                      )}
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {a.category} · {a.readTime}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              This app explains general health information in plain language. It is not medical advice and
+              doesn't replace a visit with your doctor or nurse.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- new research ---------------- */}
+        {view === "home" && tab === "research" && (
+          <>
+            <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Real COVID-19 research, explained simply.
+            </p>
+            <p className={`${bodySize} mb-1`} style={{ color: "var(--ink-soft)" }}>
+              We periodically review current studies, guidelines, and health news about COVID-19, then rewrite
+              what we find in plain language. Every item links back to its real source.
+            </p>
+            <p className="text-sm mb-6" style={{ color: "var(--ink-soft)" }}>
+              Last updated: {RESEARCH_LAST_UPDATED}
+            </p>
+
+            <div>
+              {RESEARCH_ITEMS.map((r, i) => {
+                const expanded = expandedResearchId === r.id;
+                return (
+                  <div key={r.id || i} style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setExpandedResearchId(expanded ? null : r.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setExpandedResearchId(expanded ? null : r.id);
+                        }
+                      }}
+                      aria-expanded={expanded}
+                      className="w-full text-left py-5 cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                          {r.headline}
+                        </div>
+                        <ChevronDown
+                          size={20}
+                          style={{ color: "var(--ink-soft)", transform: expanded ? "rotate(180deg)" : "none", flexShrink: 0, marginTop: 4 }}
+                        />
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {renderRichText(r.whyItMatters || "", bodySize)}
+                      </div>
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {r.tag ? `${r.tag} · ` : ""}
+                        {r.source}
+                        {r.datePublished ? ` · ${r.datePublished}` : ""}
+                      </div>
+                    </div>
+
+                    {expanded && (
+                      <div className="pb-5">
+                        <div className={`${bodySize} space-y-3`} style={{ lineHeight: 1.7 }}>
+                          {(r.summary || []).map((p, idx) => (
+                            <p key={idx}>{renderRichText(p, bodySize)}</p>
+                          ))}
+                        </div>
+                        {r.sourceUrl && (
+                          <a
+                            href={r.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1.5 mt-3 font-semibold ${bodySize}`}
+                            style={{ color: "var(--accent)" }}
+                          >
+                            Read the source
+                            <ExternalLink size={15} />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              These summaries are written by AI from current research and news, and may contain mistakes. Use
+              the source link to check the original, and always talk with your doctor or nurse about your own
+              health.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- stigma ---------------- */}
+        {view === "home" && tab === "stigma" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              {STIGMA_CONTENT.title}
+            </p>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={stigmaLevel === key}
+                  onClick={() => setStigmaLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: stigmaLevel === key ? "var(--accent)" : "transparent", color: stigmaLevel === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {STIGMA_CONTENT[stigmaLevel].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+              <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                Sources
+              </div>
+              <ul className="space-y-1">
+                {STIGMA_CONTENT.sources.map((s, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm inline-flex items-center gap-1"
+                      style={{ color: "var(--accent)" }}
+                    >
+                      {s.label}
+                      <ExternalLink size={12} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="text-sm mt-6" style={{ color: "var(--ink-soft)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- article ---------------- */}
+        {view === "article" && activeArticle && (
+          <div>
+            <div className="text-sm font-semibold mb-2" style={{ color: "var(--highlight)" }}>
+              {activeArticle.category} · {activeArticle.readTime}
+            </div>
+            <h1 className={`${titleSize} mb-4 leading-tight`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+              {activeArticle.title}
+            </h1>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={level === key}
+                  onClick={() => setLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: level === key ? "var(--accent)" : "transparent", color: level === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {activeArticle[level].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            {activeArticle.sources && activeArticle.sources.length > 0 && (
+              <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+                <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                  Sources
+                </div>
+                <ul className="space-y-1">
+                  {activeArticle.sources.map((s, idx) => (
+                    <li key={idx}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm inline-flex items-center gap-1"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {s.label}
+                        <ExternalLink size={12} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <p className="text-sm mt-6 pt-6" style={{ color: "var(--ink-soft)", borderTop: activeArticle.sources ? "none" : "1px solid var(--line)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<CovidHonestApp />);
+
+</script>
+<script>
+  var sourceCode = document.getElementById("app-source").textContent;
+  var compiled = Babel.transform(sourceCode, {
+    presets: [["react", { runtime: "classic" }]]
+  }).code;
+  var scriptEl = document.createElement("script");
+  scriptEl.text = compiled;
+  document.body.appendChild(scriptEl);
+</script>
+</body>
+</html>
