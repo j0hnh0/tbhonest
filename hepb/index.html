@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hep B Honest</title>
+<meta name="description" content="Clear, simple, sourced answers about hepatitis B." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  html, body, #root { height: 100%; }
+  body { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-source">
+const { useState, useEffect, useMemo, useRef } = React;
+
+function Icon({ children, size = 24, style, className }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+      {children}
+    </svg>
+  );
+}
+function ChevronLeft(props) { return <Icon {...props}><polyline points="15 18 9 12 15 6" /></Icon>; }
+function ChevronDown(props) { return <Icon {...props}><polyline points="6 9 12 15 18 9" /></Icon>; }
+function Search(props) { return <Icon {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></Icon>; }
+function Volume2(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></Icon>; }
+function VolumeX(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></Icon>; }
+function Type(props) { return <Icon {...props}><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></Icon>; }
+function X(props) { return <Icon {...props}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>; }
+function ExternalLink(props) { return <Icon {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></Icon>; }
+
+/* ====================================================================
+   HEP B HONEST
+   Built from the "Honest" template (see TB Honest) — same structure,
+   fonts, and interaction patterns, new content and color scheme.
+   English only for now; multi-language support can be layered in later
+   following the same pattern TB Honest used (see its ARTICLE_TRANSLATIONS).
+   ==================================================================== */
+
+/* ---------------------------------- content: library articles ---------------------------------- */
+
+const ARTICLES = [
+  {
+    id: "what-is-hepb",
+    category: "Basics",
+    title: "What Is Hepatitis B?",
+    summary: "The basics of Hepatitis B, in plain words.",
+    readTime: "2 min",
+    simple: [
+      "Hepatitis B is a liver infection caused by the Hepatitis B virus, or [[HBV||Short for 'Hepatitis B virus,' the virus that causes Hepatitis B.]]. It's one of the most common serious liver infections in the world.",
+      "The infection can be short-term (called [[acute||A short-term infection. Most healthy adults with acute Hepatitis B recover fully within weeks to months.]]) or long-term (called [[chronic||A long-term infection lasting 6 months or more. It's usually not 'cured' but can be managed.]]). Most adults who get infected clear the virus on their own within a few months. But infection in infancy or early childhood much more often becomes chronic.",
+      "Hepatitis B affects the liver, the organ that filters your blood and helps your body process nutrients and remove waste. Long-term, unmanaged infection can lead to serious liver damage over many years, but Hepatitis B is very preventable with a vaccine and manageable with modern medicine.",
+    ],
+    detailed: [
+      "Hepatitis B is a liver infection caused by the Hepatitis B virus, or [[HBV||Short for 'Hepatitis B virus,' the virus that causes Hepatitis B.]], which specifically targets liver cells. The World Health Organization estimated around 254 million people were living with chronic Hepatitis B in 2022, making it one of the most common serious viral infections worldwide.",
+      "Infection can be [[acute||A short-term infection. Most healthy adults with acute Hepatitis B recover fully within weeks to months.]] (lasting weeks to a few months) or [[chronic||A long-term infection lasting 6 months or more. It's usually not 'cured' but can be managed.]] (lasting six months or longer). The outcome depends heavily on age at infection: more than 90% of healthy adults who are infected clear the virus on their own and recover fully, while the opposite is true for infants and young children, where infection much more often becomes lifelong.",
+      "Left unmanaged over years to decades, chronic Hepatitis B can lead to serious complications, including cirrhosis (scarring of the liver) and liver cancer. However, Hepatitis B is highly preventable through vaccination, and chronic infection can be effectively monitored and managed with modern antiviral medicines, covered later in this library.",
+    ],
+    sources: [
+      { label: "World Health Organization — Hepatitis B Fact Sheet", url: "https://www.who.int/news-room/fact-sheets/detail/hepatitis-b" },
+    ],
+  },
+  {
+    id: "acute-vs-chronic",
+    category: "Basics",
+    title: "Acute vs. Chronic Hepatitis B",
+    summary: "Two very different paths after infection, and why the difference matters.",
+    readTime: "3 min",
+    simple: [
+      "When someone is infected with Hepatitis B, there are two possible paths: acute infection (short-term) or chronic infection (long-term).",
+      "Acute Hepatitis B usually clears up within a few weeks to six months, often without needing antiviral medicine. Most healthy adults who get infected fall into this category and recover with lasting immunity afterward.",
+      "Chronic Hepatitis B means the virus stays in the body for more than six months. This happens in a small share of infected adults (around 5 to 10%), but much more often in babies and young children who are infected. Chronic Hepatitis B can usually be managed for life with monitoring and, when needed, medicine, but it typically isn't 'cured' the way a short-term infection resolves.",
+      "Doctors tell the difference using a blood test panel, since acute and chronic Hepatitis B can look identical day to day.",
+    ],
+    detailed: [
+      "Hepatitis B infection follows one of two courses. [[Acute||A short-term infection. Most healthy adults with acute Hepatitis B recover fully within weeks to months.]] Hepatitis B is a new infection, sometimes with symptoms like fatigue or jaundice, that most healthy adults clear on their own within weeks to six months. There's no evidence antiviral medicine helps with acute infection specifically, so it isn't used.",
+      "[[Chronic||A long-term infection lasting 6 months or more. It's usually not 'cured' but can be managed.]] Hepatitis B is defined medically as the persistence of a specific viral marker ([[HBsAg||Hepatitis B surface antigen. A protein on the virus that shows up on a blood test when someone currently has Hepatitis B.]]) for six months or longer. Around 5 to 10% of infected adults progress to chronic infection, but the risk is dramatically higher, over 90%, for infants infected around birth, and still substantial for infection in early childhood. This is a major reason infant vaccination and screening pregnant people for Hepatitis B are public health priorities.",
+      "Chronic Hepatitis B isn't typically curable with current medicine, but it's very manageable: many people live full lives with periodic monitoring, and some qualify for antiviral treatment that suppresses the virus and protects the liver long-term. Left completely untreated, an estimated 25% of infected children and 15% of infected adults eventually die prematurely from liver cancer or cirrhosis, which is exactly why ongoing monitoring matters even when someone feels fine.",
+      "Because acute and chronic Hepatitis B can look and feel identical from day to day, distinguishing between them requires a blood test panel, not just symptoms, which is covered in the Getting Tested article.",
+    ],
+    sources: [
+      { label: "World Health Organization — Hepatitis B Fact Sheet", url: "https://www.who.int/news-room/fact-sheets/detail/hepatitis-b" },
+      { label: "American Family Physician — Hepatitis B: Screening, Prevention, Diagnosis, and Treatment", url: "https://aafp.org/afp/2019/0301/p314.html" },
+    ],
+  },
+  {
+    id: "how-hepb-spreads",
+    category: "Basics",
+    title: "How Hepatitis B Spreads",
+    summary: "Blood and certain body fluids — not casual, everyday contact.",
+    readTime: "3 min",
+    simple: [
+      "Hepatitis B spreads through contact with infected blood and certain other body fluids, like semen and vaginal fluid. It does not spread through casual, everyday contact.",
+      "Common ways it spreads include: from a parent to a baby during birth, sharing needles or syringes, unprotected sex with an infected partner, and less commonly, sharing personal items that could carry tiny amounts of blood, like razors or toothbrushes.",
+      "Hepatitis B does NOT spread through hugging, shaking hands, coughing, sneezing, sharing food or drinks, or breastfeeding once a baby has received the recommended vaccine doses.",
+      "Worldwide, transmission from parent to child during birth is actually the most common way Hepatitis B spreads, which is why testing pregnant people and vaccinating newborns within 24 hours of birth are such important public health priorities.",
+    ],
+    detailed: [
+      "Hepatitis B virus spreads through contact with infected blood and certain body fluids, including semen and vaginal secretions. It is not spread through casual, everyday contact like sharing food, hugging, or coughing.",
+      "The most common transmission routes vary by setting. Globally, transmission from parent to child around the time of birth is the leading route, particularly in regions with high rates of chronic infection, which is why universal screening of pregnant people and timely newborn vaccination are core public health strategies. In the United States and other lower-prevalence countries, transmission more often occurs through unprotected sex with an infected partner or sharing needles or other equipment for injection drug use.",
+      "The virus can also spread through sharing personal items that might carry trace amounts of blood, such as razors, nail clippers, or toothbrushes, and through unsterilized medical, dental, or tattoo and piercing equipment, more of a concern in settings with inconsistent infection-control practices.",
+      "Hepatitis B is not spread through breastfeeding once an infant has received the recommended vaccine doses, nor through sharing utensils, kissing on the cheek, sneezing, coughing, or casual household contact. This distinction matters enormously for reducing stigma, since much of the fear and social distancing directed at people with Hepatitis B is based on overestimating how easily it spreads.",
+    ],
+    sources: [
+      { label: "World Health Organization — Hepatitis B Fact Sheet", url: "https://www.who.int/news-room/fact-sheets/detail/hepatitis-b" },
+    ],
+  },
+  {
+    id: "symptoms",
+    category: "Symptoms",
+    title: "Signs and Symptoms",
+    summary: "Why Hepatitis B is often called a \u2018silent\u2019 infection.",
+    readTime: "2 min",
+    simple: [
+      "Many people with Hepatitis B, especially children and many adults with chronic infection, have no symptoms at all. That's part of why testing matters even if you feel completely fine.",
+      "When symptoms of acute Hepatitis B do appear, they can include fatigue, poor appetite, nausea, stomach pain, dark urine, joint pain, and jaundice (yellowing of the skin or eyes).",
+      "Symptoms usually show up 1 to 4 months after exposure, if they show up at all. Chronic Hepatitis B often causes no noticeable symptoms for years or even decades, even while the virus can still be affecting the liver.",
+      "Because symptoms are so unreliable, especially for chronic infection, a blood test is the only way to know for sure whether someone has Hepatitis B.",
+    ],
+    detailed: [
+      "A large share of people with Hepatitis B, including most infected infants and young children and many adults with chronic infection, experience no symptoms at all. The absence of symptoms says nothing about whether someone is infected or how the virus may be affecting their liver.",
+      "When [[acute||A short-term infection. Most healthy adults with acute Hepatitis B recover fully within weeks to months.]] Hepatitis B does cause symptoms, they typically appear 1 to 4 months after exposure and can include fatigue, loss of appetite, nausea and vomiting, abdominal pain, dark urine, joint pain, and jaundice, a yellowing of the skin and eyes caused by liver dysfunction. These symptoms usually resolve as the acute infection clears.",
+      "[[Chronic||A long-term infection lasting 6 months or more. It's usually not 'cured' but can be managed.]] Hepatitis B is frequently described as a 'silent' disease, since it can cause no symptoms for years or decades even while gradually affecting the liver. Symptoms, when they eventually appear, often signal more advanced liver disease rather than the infection itself.",
+      "Because symptoms are unreliable in both directions, many infected people never get them, and the symptoms that do appear overlap with many other illnesses, a blood test remains the only reliable way to diagnose Hepatitis B. This is why screening recommendations exist for pregnant people and others at higher risk, rather than relying on symptoms to prompt testing.",
+    ],
+    sources: [
+      { label: "World Health Organization — Hepatitis B Fact Sheet", url: "https://www.who.int/news-room/fact-sheets/detail/hepatitis-b" },
+      { label: "American Family Physician — Hepatitis B: Screening, Prevention, Diagnosis, and Treatment", url: "https://aafp.org/afp/2019/0301/p314.html" },
+    ],
+  },
+  {
+    id: "testing",
+    category: "Testing",
+    title: "Getting Tested for Hepatitis B",
+    summary: "The three-part blood panel, and what each result means.",
+    readTime: "4 min",
+    simple: [
+      "Hepatitis B testing typically uses three blood tests together, sometimes called a \u2018triple panel\u2019: [[HBsAg||Hepatitis B surface antigen. A protein on the virus that shows up on a blood test when someone currently has Hepatitis B.]], [[anti-HBs||Hepatitis B surface antibody. A positive result usually means you're protected from Hepatitis B, either from past infection or vaccination.]], and [[anti-HBc||Hepatitis B core antibody. A positive result means you've been infected with Hepatitis B at some point in your life.]]. Each one tells your provider something different.",
+      "HBsAg (surface antigen): a positive result means you currently have Hepatitis B, either acute or chronic.",
+      "Anti-HBs (surface antibody): a positive result generally means you're protected from Hepatitis B, either because you recovered from a past infection or because you were vaccinated.",
+      "Anti-HBc (core antibody): a positive result means you've been infected with Hepatitis B at some point in your life. This one doesn't appear after vaccination, only after an actual infection.",
+      "Doctors look at all three results together to figure out your exact status: currently infected, recovered and immune, vaccinated and immune, or never exposed. If you're not sure what your results mean, ask your provider to walk through each of the three numbers with you.",
+    ],
+    detailed: [
+      "Standard Hepatitis B testing for adults uses a three-part blood panel: [[HBsAg||Hepatitis B surface antigen. A protein on the virus that shows up on a blood test when someone currently has Hepatitis B.]], [[anti-HBs||Hepatitis B surface antibody. A positive result usually means you're protected from Hepatitis B, either from past infection or vaccination.]], and total [[anti-HBc||Hepatitis B core antibody. A positive result means you've been infected with Hepatitis B at some point in your life.]]. Interpreting the combination of all three, not any single result alone, is what tells your provider your actual Hepatitis B status.",
+      "HBsAg is a protein on the virus's surface; its presence indicates a current infection, either acute or chronic (chronic is defined as HBsAg persisting for 6 months or more). Anti-HBs generally indicates immunity, either from a resolved past infection or from vaccination. Total anti-HBc develops during any Hepatitis B infection, but never from vaccination alone, and typically persists for life, making it useful for identifying any past exposure to the virus, even a resolved one.",
+      "Common result patterns include: all three negative (never exposed, susceptible to infection); HBsAg negative with anti-HBc and anti-HBs both positive (immune due to a past, resolved natural infection); HBsAg and anti-HBc negative with anti-HBs positive (immune due to vaccination); and HBsAg positive with anti-HBc positive (currently infected, acute or chronic depending on additional testing and duration).",
+      "If initial testing indicates active infection, additional tests may follow, including Hepatitis B e-antigen (which helps assess how infectious someone currently is), Hepatitis B viral DNA (which measures how much virus is in the blood and helps monitor treatment), and liver function tests that check enzymes like ALT and AST for signs of liver damage.",
+      "In the United States, all pregnant people are recommended to be screened for HBsAg during every pregnancy, regardless of vaccination history, since detecting maternal infection allows providers to give a newborn the vaccine and Hepatitis B immune globulin within 24 hours of birth, dramatically reducing the chance of transmission at birth.",
+    ],
+    sources: [
+      { label: "CDC — Interpretation of Hepatitis B Serologic Test Results", url: "https://www.cdc.gov/hepatitis/HBV/PDFs/SerologicChartv8.pdf" },
+      { label: "American Family Physician — Hepatitis B: Screening, Prevention, Diagnosis, and Treatment", url: "https://aafp.org/afp/2019/0301/p314.html" },
+    ],
+  },
+  {
+    id: "vaccine",
+    category: "Vaccines",
+    title: "The Hepatitis B Vaccine",
+    summary: "One of the most effective vaccines that exists.",
+    readTime: "3 min",
+    simple: [
+      "The Hepatitis B vaccine is one of the most effective vaccines that exists, providing 98 to 100% protection when the full series is completed.",
+      "In the U.S., the vaccine is given routinely to infants: the first dose within 24 hours of birth, then more doses at 1 to 2 months and 6 to 18 months.",
+      "Adults who weren't vaccinated as children can still get vaccinated at any age, using a 2 or 3 dose series over a few months. This is especially recommended for healthcare workers, people with diabetes, people with chronic liver disease, people with multiple sexual partners, people who inject drugs, and travelers to places where Hepatitis B is common.",
+      "If a pregnant person tests positive for Hepatitis B, their newborn should get both the vaccine and an extra dose of protective antibodies (called Hepatitis B immune globulin) within 24 hours of birth. This combination is highly effective at preventing the baby from becoming infected.",
+      "The vaccine has been used safely since the early 1980s and cannot cause a Hepatitis B infection, since it doesn't contain the live virus.",
+    ],
+    detailed: [
+      "The Hepatitis B vaccine is considered one of medicine's most effective vaccines, with the World Health Organization estimating 98 to 100% effectiveness after a completed series. It has been in safe use since the early 1980s and uses a recombinant protein rather than a live virus, meaning it cannot cause a Hepatitis B infection.",
+      "In the United States, the routine childhood schedule calls for the first dose within 24 hours of birth, a deliberately early timing, since infants face by far the highest risk of infection becoming chronic if exposed, a second dose at 1 to 2 months, and a third dose between 6 and 18 months.",
+      "Adults who weren't vaccinated in childhood can complete a catch-up series at any age. Standard adult schedules include a 3-dose series at 0, 1, and 6 months, or a newer 2-dose vaccine given one month apart. Vaccination is recommended for all adults who want protection, and specifically prioritized for healthcare workers, people with diabetes, people with chronic liver disease, people with HIV, people with multiple sexual partners or a sexually transmitted infection, people who inject drugs, household or sexual contacts of someone with Hepatitis B, and travelers to countries where Hepatitis B is common.",
+      "For infants born to a parent who tests positive for Hepatitis B, same-day protection matters: the baby should receive both the vaccine and Hepatitis B immune globulin, a dose of ready-made antibodies, within 24 hours of birth. This combination is highly effective at preventing the newborn from becoming chronically infected, even though the parent is actively infected.",
+      "People at ongoing higher risk, such as healthcare workers, may be offered a blood test 1 to 2 months after completing the vaccine series to confirm an adequate antibody response, though this confirmatory testing isn't necessary for most people getting vaccinated.",
+    ],
+    sources: [
+      { label: "World Health Organization — Hepatitis B Fact Sheet", url: "https://www.who.int/news-room/fact-sheets/detail/hepatitis-b" },
+      { label: "American Family Physician — Hepatitis B: Screening, Prevention, Diagnosis, and Treatment", url: "https://aafp.org/afp/2019/0301/p314.html" },
+    ],
+  },
+  {
+    id: "treatment",
+    category: "Treatment",
+    title: "Treatment and Monitoring for Chronic Hepatitis B",
+    summary: "Not usually a cure, but very manageable for life.",
+    readTime: "4 min",
+    simple: [
+      "Acute Hepatitis B usually doesn't need antiviral medicine. Most healthy adults recover on their own within weeks to months, with rest and supportive care.",
+      "Chronic Hepatitis B is different: it's not usually cured, but it can be effectively managed for life. Not everyone with chronic Hepatitis B needs medicine right away; some people are monitored regularly instead, since the virus can stay quiet for long stretches.",
+      "When treatment is needed, the most common medicines are daily antiviral pills like [[tenofovir||A daily antiviral pill used to treat chronic Hepatitis B. It suppresses the virus but usually doesn't cure the infection.]] or [[entecavir||A daily antiviral pill used to treat chronic Hepatitis B. It suppresses the virus but usually doesn't cure the infection.]]. These don't eliminate the virus completely, but they suppress it to very low levels, protecting the liver from long-term damage.",
+      "Regular monitoring, blood tests every few months to a year checking liver enzymes and viral levels, is a normal part of living with chronic Hepatitis B, whether or not you're currently on medicine.",
+      "The goal of treatment isn't necessarily a 'cure' in the traditional sense, but preventing the serious complications, like cirrhosis and liver cancer, that untreated chronic Hepatitis B can cause over many years.",
+    ],
+    detailed: [
+      "Acute Hepatitis B is not treated with antivirals; there's no evidence they help, and most healthy adults recover fully within weeks to six months with supportive care (rest, hydration, avoiding alcohol and other liver-taxing substances) while their own immune system clears the virus.",
+      "Chronic Hepatitis B management is more nuanced. Not every person with chronic infection needs immediate treatment: many are monitored periodically instead, since the virus can remain in an inactive phase for years. Deciding when to start treatment depends on factors like viral DNA levels, liver enzyme levels, and evidence of liver damage, which is why this decision is made together with a liver specialist or experienced provider.",
+      "When treatment is indicated, first-line options include oral antiviral pills, most commonly [[tenofovir||A daily antiviral pill used to treat chronic Hepatitis B. It suppresses the virus but usually doesn't cure the infection.]] disoproxil, tenofovir alafenamide, or [[entecavir||A daily antiviral pill used to treat chronic Hepatitis B. It suppresses the virus but usually doesn't cure the infection.]], all taken once daily, generally well tolerated, and effective at suppressing the virus with a low risk of resistance developing. A different option, pegylated interferon, is given by injection over a defined course of about 48 weeks rather than indefinitely, though it carries more side effects and is used less often as a first choice today.",
+      "These medicines suppress viral replication dramatically, often to undetectable levels, meaningfully reducing the risk of cirrhosis and liver cancer over time. However, they typically don't achieve a full 'functional cure' (loss of the surface antigen with sustained viral suppression), so most people who start antiviral treatment continue it long-term, often indefinitely, rather than for a fixed short course.",
+      "Regular monitoring, typically blood tests checking liver enzymes, viral DNA levels, and periodic liver cancer screening in higher-risk patients, remains essential throughout life, whether or not someone is currently taking antiviral medicine. Left completely unmonitored and untreated over decades, chronic Hepatitis B contributes to premature death from liver cancer or cirrhosis in a meaningful share of cases, which is exactly why ongoing care, not just a one-time diagnosis, matters.",
+    ],
+    sources: [
+      { label: "American Family Physician — Hepatitis B: Screening, Prevention, Diagnosis, and Treatment", url: "https://aafp.org/afp/2019/0301/p314.html" },
+      { label: "Cochrane — Entecavir for Children and Adults with Chronic Hepatitis B", url: "https://doi.org/10.1002/14651858.cd015536" },
+    ],
+  },
+  {
+    id: "myths",
+    category: "Myths",
+    title: "Common Myths About Hepatitis B",
+    summary: "Separating what's true from what people often assume.",
+    readTime: "3 min",
+    simple: [
+      "Myth: Hepatitis B always causes obvious symptoms. Fact: many people, especially children and people with chronic infection, have no symptoms for years. Testing, not how you feel, is the only reliable way to know your status.",
+      "Myth: you can catch Hepatitis B from casual contact, like sharing food, hugging, or sitting near someone. Fact: Hepatitis B spreads through blood and certain body fluids, not casual contact.",
+      "Myth: Hepatitis B is a disease of poor hygiene or personal choices. Fact: Hepatitis B can affect anyone. Globally, most infections happen at birth, from parent to child, which has nothing to do with anyone's choices or cleanliness.",
+      "Myth: a Hepatitis B diagnosis means your liver is already failing. Fact: many people with Hepatitis B, especially when monitored and managed, live long, full lives without ever developing serious liver disease.",
+      "Myth: Hepatitis B can't be prevented. Fact: the Hepatitis B vaccine is 98 to 100% effective and has safely protected people for over 40 years.",
+    ],
+    detailed: [
+      "Myth: Hepatitis B always causes obvious symptoms. Fact: Hepatitis B is frequently described as a 'silent' infection. Many infected infants, children, and adults with chronic infection experience no symptoms for years or decades, even while the virus may be affecting the liver. Testing remains the only reliable way to know one's status.",
+      "Myth: Hepatitis B spreads through casual, everyday contact like sharing food, hugging, coughing, or sitting near someone. Fact: the virus spreads through contact with infected blood and certain body fluids, not through the air or casual touch. Research specifically examining Hepatitis B-related discrimination has found that fear of infection, more than lack of factual knowledge, is often what drives exclusion and stigma, even though the actual transmission risk from everyday contact is essentially zero.",
+      "Myth: Hepatitis B reflects poor hygiene or personal choices. Fact: Hepatitis B can affect anyone, and globally, the single most common route of transmission is from parent to child around the time of birth, entirely unrelated to any choice either person made. This myth has fueled significant real-world discrimination, including employment and school exclusion in several countries.",
+      "Myth: a Hepatitis B diagnosis means serious liver damage is inevitable. Fact: with appropriate monitoring, and treatment when indicated, many people with chronic Hepatitis B live full lives without ever developing cirrhosis or liver cancer. Outcomes depend heavily on ongoing care, not on the diagnosis itself.",
+      "Myth: Hepatitis B can't be prevented. Fact: the Hepatitis B vaccine is one of the most effective vaccines available, offering 98 to 100% protection, and has been safely used worldwide since the early 1980s.",
+    ],
+    sources: [
+      { label: "World Health Organization — Hepatitis B Fact Sheet", url: "https://www.who.int/news-room/fact-sheets/detail/hepatitis-b" },
+      { label: "PMC — Fear-Driven Discrimination Toward Hepatitis B Carriers in Rural China", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4962711" },
+    ],
+  },
+];
+
+const CATEGORIES = ["All", "Basics", "Symptoms", "Testing", "Vaccines", "Treatment", "Myths"];
+
+/* ---------------------------------- content: stigma ---------------------------------- */
+
+const STIGMA_CONTENT = {
+  title: "Hepatitis B Stigma, Explained",
+  simple: [
+    "In some countries, a Hepatitis B diagnosis has led to job loss, school exclusion, and even the end of relationships — not because of how sick someone is, but because of fear and misunderstanding about how the virus spreads.",
+    "China has the most documented history of this: with an estimated 90 to 120 million Hepatitis B carriers, discrimination in jobs and schools became so widespread that the government passed laws in 2007 and 2010 explicitly banning it. Despite the ban, surveys have found the large majority of companies still test job applicants for Hepatitis B, and many still reject people who test positive.",
+    "Research into why this happens found something important: it's driven mainly by fear of catching the virus, not just by not knowing the facts. Interestingly, the same research found that people who had been vaccinated against Hepatitis B showed less discriminatory attitudes — feeling protected themselves seemed to reduce the fear driving the stigma.",
+    "The tragedy is that this fear is based on a myth. Hepatitis B does not spread through the kind of everyday contact people are afraid of: sharing a classroom, working alongside someone, shaking hands, or eating together. It spreads through blood and certain body fluids, not casual contact.",
+    "This isn't only a China-specific story. Hepatitis B stigma has been documented in many countries, often layered with unfair assumptions about how someone got infected, even though most infections worldwide happen at birth, from parent to child, something no one chooses.",
+    "The fix mirrors what works for every stigmatized illness: accurate information. When people understand Hepatitis B doesn't spread through daily contact, that it's manageable, and that having it says nothing about a person's character, fear goes down, and so does discrimination.",
+  ],
+  detailed: [
+    "In several countries, a Hepatitis B diagnosis has carried consequences far beyond the infection itself, including job loss, school exclusion, and social rejection, driven by fear and misunderstanding rather than by how the virus actually spreads.",
+    "China offers the most extensively documented case. With historical estimates of 90 to 120 million Hepatitis B carriers, discrimination in employment and education became widespread enough that the Chinese government passed the Employment Promotion Law in 2007 and issued explicit rules in 2010 banning Hepatitis B testing as a condition of hiring or school admission. Despite these laws, surveys of multinational companies operating in China have found the large majority still require Hepatitis B testing for job applicants, and roughly half report rejecting HBsAg-positive candidates outright, years after the practice was formally banned.",
+    "The human cost of this has been severe. Documented cases include a college student who died by suicide in 2015 after her university forced her into 34 days of isolation upon discovering her Hepatitis B status, and a 61-year-old woman rejected by multiple nursing homes in 2018 because of her infection. A national survey of rural migrant workers in China similarly found Hepatitis B-related discrimination remains common in everyday social and workplace settings, well beyond formal hiring decisions.",
+    "Research specifically investigating the roots of this discrimination found something worth highlighting: fear of contracting Hepatitis B, more than a simple lack of factual knowledge, was the predominant driver of discriminatory attitudes. The same study found that people who had received the Hepatitis B vaccine themselves showed measurably less discriminatory attitudes toward carriers, suggesting that feeling personally protected reduces the fear that fuels [[stigma||Negative attitudes, shame, or social rejection directed at someone because of a health condition or other trait.]], a finding with real implications for how stigma-reduction efforts might be designed.",
+    "This fear is disproportionate to the actual risk. Hepatitis B does not spread through the everyday contact that discrimination is typically based on: sharing a classroom or workplace, shaking hands, eating together, or ordinary social contact. It spreads specifically through blood and certain body fluids, not casual proximity.",
+    "Hepatitis B stigma is not unique to any one country; it has been documented across many regions, frequently compounded by unfair assumptions linking a diagnosis to personal behavior, even though the leading global route of transmission is from parent to child at birth, a circumstance entirely outside anyone's control.",
+    "The research on what reduces Hepatitis B stigma points to the same conclusion found across other stigmatized illnesses: accurate education about transmission and treatability measurably reduces discriminatory attitudes. This is the same premise this app is built on: replacing fear of the unknown with clear, accurate understanding.",
+  ],
+  sources: [
+    { label: "PMC — Fear-Driven Discrimination Toward Hepatitis B Carriers in Rural China", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4962711" },
+    { label: "PMC — Discrimination Behavior of Rural Migrant Workers Toward HBV Carriers", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4963075" },
+    { label: "The World of Chinese — Treating Stigma", url: "https://theworldofchinese.com/2020/08/treating-stigma" },
+    { label: "Radio Free Asia — Virus Bars Chinese From Jobs", url: "https://www.rfa.org/english/news/china/hepatitis-09302010150154.html" },
+  ],
+};
+
+/* ---------------------------------- glossary rendering ---------------------------------- */
+
+/* ---------------------------------- new research (static — refresh periodically) ---------------------------------- */
+// See TB Honest's equivalent section for the refresh workflow: periodically ask
+// Claude to search for new Hepatitis B research/news and update this array in the
+// same shape, then update RESEARCH_LAST_UPDATED and redeploy.
+
+const RESEARCH_LAST_UPDATED = "September 2026";
+
+const RESEARCH_ITEMS = [
+  {
+    id: "gsk-functional-cure-drug",
+    headline: "Experimental drug helps some patients reach a \u2018functional cure\u2019",
+    source: "Associated Press / New England Journal of Medicine",
+    sourceUrl: "https://english.ahram.org.eg/News/569820.aspx",
+    datePublished: "May 2026",
+    tag: "Treatment news",
+    whyItMatters: "Researchers describe this as reaching a level of cure that hasn't been possible before \u2014 a meaningful shift from lifelong daily pills.",
+    summary: [
+      "Researchers reported that an experimental Hepatitis B drug allowed some patients to stop treatment entirely without signs of the virus rebounding, a result they're calling a [[functional cure||A treatment result where the virus is suppressed to very low levels and stays that way even after stopping medicine, without necessarily eliminating every trace of the virus from the body.]]. This is a distinct goal from total elimination of the virus, but a major step beyond today's need for lifelong daily antiviral pills.",
+      "In two international studies funded by GSK, about 1 in 5 patients who received the drug saw their virus drop to levels low enough that their own immune system could keep it in check without ongoing medicine. The results were presented at a scientific meeting in Barcelona and published in the New England Journal of Medicine.",
+      "This is still early-stage research, not a treatment available to patients yet, and it worked for a minority of participants, not everyone. But researchers described it as the first treatment to reach this level of cure for Hepatitis B, a disease that still causes an estimated 1.1 million deaths worldwide each year.",
+    ],
+  },
+  {
+    id: "elebsiran-combo-trial",
+    headline: "New combination therapy shows promise toward a Hepatitis B cure",
+    source: "Nature Medicine / Medical Data Analytics Centre (Hong Kong)",
+    sourceUrl: "https://mdac.cuhk.edu.hk/news_and_events/mdac-led-study-on-new-combination-therapy-for-chronic-hepatitis-b-published-in-nature-medicine/",
+    datePublished: "November 2025",
+    tag: "New study",
+    whyItMatters: "Combining therapies that work in different ways is one of the leading strategies researchers are testing to get beyond what today's daily pills can achieve.",
+    summary: [
+      "A phase 2 clinical trial tested combining a newer type of drug called an [[siRNA||Short for 'small interfering RNA,' a type of drug that works by blocking a virus from producing certain proteins, rather than directly killing the virus.]], which blocks the virus from producing proteins it needs, with an existing medicine called pegylated interferon.",
+      "Current standard antiviral pills are very good at suppressing Hepatitis B, but they rarely fully clear a key viral marker called HBsAg, which is why most people need to stay on treatment indefinitely. This trial specifically tested whether the combination could do better than either drug alone at reducing HBsAg.",
+      "The study, led by researchers in Hong Kong, was published in the journal Nature Medicine in November 2025. Like other Hepatitis B cure research right now, this is a step along the way, not a treatment ready for general use, but it reflects a broader shift in research toward combination approaches rather than a single new drug alone.",
+    ],
+  },
+  {
+    id: "global-elimination-progress-2025",
+    headline: "Global progress report: some countries are on track to eliminate Hepatitis B",
+    source: "The Lancet Gastroenterology & Hepatology / Coalition for Global Hepatitis Elimination",
+    sourceUrl: "https://www.eatg.org/hiv-news/new-global-reports-assess-progress-toward-hepatitis-b-and-c-elimination/",
+    datePublished: "2025",
+    tag: "Global report",
+    whyItMatters: "This shows which parts of the global fight against Hepatitis B are working, and which parts \u2014 testing and treatment access \u2014 still lag far behind.",
+    summary: [
+      "A 2025 report assessing 33 countries and territories found real progress on preventing new Hepatitis B infections: three-fourths of the places studied have already hit a key World Health Organization target of keeping Hepatitis B rates below 0.5% in children under five, largely thanks to newborn vaccination programs.",
+      "The bigger gap is in finding and treating people who already have Hepatitis B. Only 7 of the profiled countries or territories have reached the goal of diagnosing 60% of people living with Hepatitis B, and none had yet reached the goal of getting 50% of diagnosed people into treatment.",
+      "The report's authors framed this as encouraging but incomplete progress: prevention efforts are working well in many places, but expanding testing and treatment access, especially in lower-income countries and the African region specifically, remains the major unfinished piece of the global plan to eliminate Hepatitis B by 2030.",
+    ],
+  },
+  {
+    id: "who-2024-Hepatitis-report",
+    headline: "WHO: Hepatitis now kills as many people each year as TB",
+    source: "World Health Organization",
+    sourceUrl: "https://natap.org/2024/HBV/041524_02.htm",
+    datePublished: "April 2024",
+    tag: "Global report",
+    whyItMatters: "This puts Hepatitis B's global scale in perspective, and highlights that testing and treatment, not just prevention, need more attention.",
+    summary: [
+      "The World Health Organization's 2024 Global Hepatitis Report found that viral Hepatitis now causes about 1.3 million deaths a year worldwide, roughly 3,500 deaths a day, putting it on par with tuberculosis as one of the leading infectious causes of death globally. Hepatitis B accounts for the large majority of those deaths, around 83%.",
+      "The report pointed to a specific gap: even though testing and treatment tools have improved and gotten cheaper, the share of people actually getting tested and treated has stalled in recent years rather than continuing to improve.",
+      "WHO's assessment was cautiously optimistic: reaching the global goal of eliminating Hepatitis as a public health threat by 2030 is still considered achievable, but only if testing and treatment access improves quickly, alongside the vaccination progress already underway.",
+    ],
+  },
+];
+
+function GlossaryWord({ term, definition, sizeClass }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        className={`font-semibold underline decoration-2 underline-offset-4 ${sizeClass}`}
+        style={{ color: "var(--accent)", textDecorationStyle: "dotted", textDecorationColor: "var(--highlight)" }}
+        aria-expanded={open}
+      >
+        {term}
+      </button>
+      {open && (
+        <span
+          className={`block mt-2 mb-1 pl-3 border-l-2 ${sizeClass}`}
+          style={{ borderColor: "var(--highlight)", color: "var(--ink-soft)" }}
+        >
+          {definition}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function renderRichText(text, sizeClass) {
+  const regex = /\[\[(.+?)\|\|(.+?)\]\]/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>);
+    }
+    parts.push(<GlossaryWord key={key++} term={match[1]} definition={match[2]} sizeClass={sizeClass} />);
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(<span key={key++}>{text.slice(lastIndex)}</span>);
+  }
+  return parts;
+}
+
+/* ---------------------------------- fonts ---------------------------------- */
+
+function useFonts() {
+  useEffect(() => {
+    const id = "hepb-honest-fonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+    document.head.appendChild(link);
+  }, []);
+}
+
+const BODY_FONT_STACK = "'Atkinson Hyperlegible', sans-serif";
+const HEADLINE_FONT_STACK = "'Fraunces', serif";
+
+/* ---------------------------------- app ---------------------------------- */
+
+const BODY_SIZES = ["text-base", "text-lg", "text-xl"];
+const TITLE_SIZES = ["text-2xl", "text-3xl", "text-4xl"];
+const LIST_TITLE_SIZES = ["text-lg", "text-xl", "text-2xl"];
+const INTRO_SIZES = ["text-xl", "text-2xl", "text-3xl"];
+
+function HepBHonestApp() {
+  useFonts();
+
+  const [tab, setTab] = useState("library"); // 'library' | 'stigma'
+  const [view, setView] = useState("home"); // 'home' | 'article'
+  const [activeId, setActiveId] = useState(null);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [level, setLevel] = useState("simple");
+  const [sizeStep, setSizeStep] = useState(1);
+  const [speaking, setSpeaking] = useState(false);
+  const [stigmaLevel, setStigmaLevel] = useState("simple");
+  const [expandedResearchId, setExpandedResearchId] = useState(null);
+
+  const bodySize = BODY_SIZES[sizeStep];
+  const titleSize = TITLE_SIZES[sizeStep];
+  const listTitleSize = LIST_TITLE_SIZES[sizeStep];
+  const introSize = INTRO_SIZES[sizeStep];
+
+  const activeArticle = useMemo(() => ARTICLES.find((a) => a.id === activeId) || null, [activeId]);
+
+  function unwrapGlossary(text) {
+    return text.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1 $2");
+  }
+
+  function searchableText(article) {
+    const parts = [
+      article.title,
+      article.summary,
+      ...(article.simple || []),
+      ...(article.detailed || []),
+      ...(article.sources || []).map((s) => s.label),
+    ].filter(Boolean);
+    return unwrapGlossary(parts.join(" \n ")).toLowerCase();
+  }
+
+  function matchSnippet(article, q) {
+    if (!q) return null;
+    const alreadyVisible = article.title.toLowerCase().includes(q) || article.summary.toLowerCase().includes(q);
+    if (alreadyVisible) return null;
+    const body = unwrapGlossary([...(article.simple || []), ...(article.detailed || [])].join(" \n "));
+    const idx = body.toLowerCase().indexOf(q);
+    if (idx === -1) return null;
+    const start = Math.max(0, idx - 40);
+    const end = Math.min(body.length, idx + q.length + 60);
+    return (start > 0 ? "…" : "") + body.slice(start, end).trim() + (end < body.length ? "…" : "");
+  }
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ARTICLES.filter((a) => {
+      const matchesCategory = category === "All" || a.category === category;
+      const matchesQuery = !q || searchableText(a).includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  }, [query, category]);
+
+  function openArticle(id) {
+    stopSpeaking();
+    setActiveId(id);
+    setLevel("simple");
+    setView("article");
+  }
+
+  function goHome() {
+    stopSpeaking();
+    setView("home");
+    setActiveId(null);
+  }
+
+  function stopSpeaking() {
+    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+    setSpeaking(false);
+  }
+
+  function toggleSpeak() {
+    if (!activeArticle) return;
+    if (speaking) {
+      stopSpeaking();
+      return;
+    }
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const plain = (activeArticle[level] || []).map((p) => p.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1")).join(" ");
+    const text = `${activeArticle.title}. ${plain}`;
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.rate = 0.95;
+    utter.onend = () => setSpeaking(false);
+    utter.onerror = () => setSpeaking(false);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+    setSpeaking(true);
+  }
+
+  useEffect(() => stopSpeaking, []);
+
+  return (
+    <div
+      style={{
+        "--bg": "#FBF3EC",
+        "--bg-alt": "#F1E4D8",
+        "--ink": "#2B1F1A",
+        "--ink-soft": "#6B5A4E",
+        "--accent": "#B5541E",
+        "--accent-soft": "#F3DCC8",
+        "--highlight": "#3D4F66",
+        "--line": "#E2D2C2",
+        backgroundColor: "var(--bg)",
+        color: "var(--ink)",
+        fontFamily: BODY_FONT_STACK,
+        minHeight: "100%",
+      }}
+      className="w-full"
+    >
+      <div className="max-w-2xl mx-auto px-5 pb-16">
+        {/* top bar */}
+        <div className="sticky top-0 z-10 flex items-center justify-between py-4" style={{ backgroundColor: "var(--bg)" }}>
+          {view === "article" ? (
+            <button onClick={goHome} className="flex items-center gap-1 font-semibold" style={{ color: "var(--accent)" }}>
+              <ChevronLeft size={20} />
+              <span>Back</span>
+            </button>
+          ) : (
+            <span className="font-semibold" style={{ fontFamily: HEADLINE_FONT_STACK, fontSize: "1.3rem", fontWeight: 600 }}>
+              Hep B Honest
+            </span>
+          )}
+
+          <div className="flex items-center gap-2">
+            {view === "article" && (
+              <button
+                onClick={toggleSpeak}
+                aria-pressed={speaking}
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold border"
+                style={{
+                  borderColor: speaking ? "var(--accent)" : "var(--line)",
+                  color: speaking ? "white" : "var(--ink)",
+                  backgroundColor: speaking ? "var(--accent)" : "transparent",
+                }}
+              >
+                {speaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                {speaking ? "Stop" : "Listen"}
+              </button>
+            )}
+            <button
+              onClick={() => setSizeStep((s) => (s + 1) % 3)}
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold border"
+              style={{ borderColor: "var(--line)" }}
+              aria-label="Change text size"
+              title="Change text size"
+            >
+              <Type size={16} />
+              {["S", "M", "L"][sizeStep]}
+            </button>
+          </div>
+        </div>
+
+        {/* mission hero */}
+        {view === "home" && (
+          <div className="mb-8 pb-8" style={{ borderBottom: "1px solid var(--line)" }}>
+            <h1 className={titleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600, lineHeight: 1.15 }}>
+              Understanding Hepatitis B shouldn't require a medical degree.
+            </h1>
+            <p className={`${bodySize} mt-3`} style={{ color: "var(--ink-soft)", maxWidth: "42rem" }}>
+              Hep B Honest turns real, sourced research on Hepatitis B into plain language you can actually use —
+              so you can understand your test results, your treatment, and the facts that cut through stigma,
+              without the guesswork.
+            </p>
+          </div>
+        )}
+
+        {/* top-level tabs */}
+        {view === "home" && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {[
+              ["research", "New Research"],
+              ["library", "Library"],
+              ["stigma", "Stigma"],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`rounded-full px-4 py-1.5 font-semibold border ${bodySize}`}
+                style={{
+                  borderColor: tab === key ? "var(--highlight)" : "var(--line)",
+                  backgroundColor: tab === key ? "var(--accent-soft)" : "transparent",
+                  color: tab === key ? "var(--ink)" : "var(--ink-soft)",
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ---------------- library / home ---------------- */}
+        {view === "home" && tab === "library" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Browse articles on transmission, testing, vaccination, and treatment — written in plain language
+              and backed by real sources.
+            </p>
+
+            <div className="flex items-center gap-2 rounded-full px-4 py-2.5 mb-4" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <Search size={18} style={{ color: "var(--ink-soft)" }} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search topics, like 'vaccine' or 'testing'"
+                className={`bg-transparent outline-none w-full ${bodySize}`}
+                style={{ color: "var(--ink)" }}
+              />
+              {query && (
+                <button onClick={() => setQuery("")} aria-label="Clear search">
+                  <X size={16} style={{ color: "var(--ink-soft)" }} />
+                </button>
+              )}
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 mb-6" style={{ scrollbarWidth: "none" }}>
+              {CATEGORIES.map((c) => {
+                const activeCat = c === category;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategory(c)}
+                    className={`shrink-0 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                    style={{
+                      borderColor: activeCat ? "var(--highlight)" : "var(--line)",
+                      backgroundColor: activeCat ? "var(--accent-soft)" : "transparent",
+                      color: activeCat ? "var(--ink)" : "var(--ink-soft)",
+                    }}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+            </div>
+
+            {filtered.length === 0 ? (
+              <p className={`${bodySize} py-8`} style={{ color: "var(--ink-soft)" }}>
+                No articles match your search. Try a different word or category.
+              </p>
+            ) : (
+              <div>
+                {filtered.map((a, i) => {
+                  const snippet = matchSnippet(a, query.trim().toLowerCase());
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => openArticle(a.id)}
+                      className="w-full text-left py-5"
+                      style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}
+                    >
+                      <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                        {a.title}
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {a.summary}
+                      </div>
+                      {snippet && (
+                        <div className="text-sm mt-1.5 italic" style={{ color: "var(--ink-soft)" }}>
+                          "{snippet}"
+                        </div>
+                      )}
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {a.category} · {a.readTime}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              This app explains general health information in plain language. It is not medical advice and
+              doesn't replace a visit with your doctor or nurse.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- new research ---------------- */}
+        {view === "home" && tab === "research" && (
+          <>
+            <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Real Hepatitis B research, explained simply.
+            </p>
+            <p className={`${bodySize} mb-1`} style={{ color: "var(--ink-soft)" }}>
+              We periodically review current studies, guidelines, and health news about Hepatitis B, then
+              rewrite what we find in plain language. Every item links back to its real source.
+            </p>
+            <p className="text-sm mb-6" style={{ color: "var(--ink-soft)" }}>
+              Last updated: {RESEARCH_LAST_UPDATED}
+            </p>
+
+            <div>
+              {RESEARCH_ITEMS.map((r, i) => {
+                const expanded = expandedResearchId === r.id;
+                return (
+                  <div key={r.id || i} style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setExpandedResearchId(expanded ? null : r.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setExpandedResearchId(expanded ? null : r.id);
+                        }
+                      }}
+                      aria-expanded={expanded}
+                      className="w-full text-left py-5 cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                          {r.headline}
+                        </div>
+                        <ChevronDown
+                          size={20}
+                          style={{ color: "var(--ink-soft)", transform: expanded ? "rotate(180deg)" : "none", flexShrink: 0, marginTop: 4 }}
+                        />
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {renderRichText(r.whyItMatters || "", bodySize)}
+                      </div>
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {r.tag ? `${r.tag} · ` : ""}
+                        {r.source}
+                        {r.datePublished ? ` · ${r.datePublished}` : ""}
+                      </div>
+                    </div>
+
+                    {expanded && (
+                      <div className="pb-5">
+                        <div className={`${bodySize} space-y-3`} style={{ lineHeight: 1.7 }}>
+                          {(r.summary || []).map((p, idx) => (
+                            <p key={idx}>{renderRichText(p, bodySize)}</p>
+                          ))}
+                        </div>
+                        {r.sourceUrl && (
+                          <a
+                            href={r.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1.5 mt-3 font-semibold ${bodySize}`}
+                            style={{ color: "var(--accent)" }}
+                          >
+                            Read the source
+                            <ExternalLink size={15} />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              These summaries are written by AI from current research and news, and may contain mistakes. Use
+              the source link to check the original, and always talk with your doctor or nurse about your own
+              health.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- stigma ---------------- */}
+        {view === "home" && tab === "stigma" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              {STIGMA_CONTENT.title}
+            </p>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={stigmaLevel === key}
+                  onClick={() => setStigmaLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: stigmaLevel === key ? "var(--accent)" : "transparent", color: stigmaLevel === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {STIGMA_CONTENT[stigmaLevel].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+              <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                Sources
+              </div>
+              <ul className="space-y-1">
+                {STIGMA_CONTENT.sources.map((s, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm inline-flex items-center gap-1"
+                      style={{ color: "var(--accent)" }}
+                    >
+                      {s.label}
+                      <ExternalLink size={12} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="text-sm mt-6" style={{ color: "var(--ink-soft)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- article ---------------- */}
+        {view === "article" && activeArticle && (
+          <div>
+            <div className="text-sm font-semibold mb-2" style={{ color: "var(--highlight)" }}>
+              {activeArticle.category} · {activeArticle.readTime}
+            </div>
+            <h1 className={`${titleSize} mb-4 leading-tight`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+              {activeArticle.title}
+            </h1>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={level === key}
+                  onClick={() => setLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: level === key ? "var(--accent)" : "transparent", color: level === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {activeArticle[level].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            {activeArticle.sources && activeArticle.sources.length > 0 && (
+              <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+                <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                  Sources
+                </div>
+                <ul className="space-y-1">
+                  {activeArticle.sources.map((s, idx) => (
+                    <li key={idx}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm inline-flex items-center gap-1"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {s.label}
+                        <ExternalLink size={12} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <p className="text-sm mt-6 pt-6" style={{ color: "var(--ink-soft)", borderTop: activeArticle.sources ? "none" : "1px solid var(--line)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<HepBHonestApp />);
+
+</script>
+<script>
+  var sourceCode = document.getElementById("app-source").textContent;
+  var compiled = Babel.transform(sourceCode, {
+    presets: [["react", { runtime: "classic" }]]
+  }).code;
+  var scriptEl = document.createElement("script");
+  scriptEl.text = compiled;
+  document.body.appendChild(scriptEl);
+</script>
+</body>
+</html>
