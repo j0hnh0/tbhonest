@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Obesity Honest</title>
+<meta name="description" content="Clear, simple, sourced answers about obesity." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  html, body, #root { height: 100%; }
+  body { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-source">
+const { useState, useEffect, useMemo, useRef } = React;
+
+function Icon({ children, size = 24, style, className }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+      {children}
+    </svg>
+  );
+}
+function ChevronLeft(props) { return <Icon {...props}><polyline points="15 18 9 12 15 6" /></Icon>; }
+function Search(props) { return <Icon {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></Icon>; }
+function Volume2(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></Icon>; }
+function VolumeX(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></Icon>; }
+function Type(props) { return <Icon {...props}><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></Icon>; }
+function X(props) { return <Icon {...props}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>; }
+function ExternalLink(props) { return <Icon {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></Icon>; }
+
+/* ====================================================================
+   OBESITY HONEST
+   Built from the "Honest" template (see TB / Hep B / COVID Honest) —
+   same structure, fonts, and interaction patterns, new content and
+   color scheme. English only for now.
+
+   NOTE: the "New Research" tab is intentionally left as a placeholder
+   in this build to conserve usage. To add it later, copy the New
+   Research section from covid-honest.jsx or hepb-honest.jsx and
+   populate a RESEARCH_ITEMS array in this file's shape.
+   ==================================================================== */
+
+/* ---------------------------------- content: library articles ---------------------------------- */
+
+const ARTICLES = [
+  {
+    id: "what-is-obesity",
+    category: "Basics",
+    title: "What Is Obesity?",
+    summary: "A chronic medical condition, not a personal failing.",
+    readTime: "3 min",
+    simple: [
+      "Obesity is a chronic (long-term) medical condition involving having an amount of body fat that increases the risk of certain health problems. In December 2025, the World Health Organization issued its first-ever comprehensive guideline formally treating obesity as a chronic, relapsing disease, similar to how conditions like high blood pressure or diabetes are treated, rather than as a personal failing.",
+      "Obesity is usually estimated using [[BMI||Body Mass Index. A number calculated from height and weight, often used as a rough screening tool, though it doesn't directly measure body fat or health.]] (body mass index), a simple calculation from height and weight. BMI is a useful screening tool for looking at large groups of people, but it has real limits for judging any one individual's health, since it doesn't directly measure body fat, muscle, or where fat is distributed in the body.",
+      "Obesity affects more than 1 billion people worldwide. It's linked to increased risk of conditions like type 2 diabetes, heart disease, and certain cancers, but having obesity doesn't guarantee someone will develop these conditions, and not having obesity doesn't guarantee someone won't.",
+    ],
+    detailed: [
+      "Obesity is a chronic, relapsing medical condition involving excess body fat that increases the risk of a range of health problems. On December 1, 2025, the World Health Organization released its first comprehensive clinical guideline formally addressing obesity as a chronic disease requiring long-term, structured medical care, a significant shift away from treating it as a short-term issue solvable through willpower alone.",
+      "[[BMI||Body Mass Index. A number calculated from height and weight, often used as a rough screening tool, though it doesn't directly measure body fat or health.]] (body mass index), calculated from height and weight, remains the most widely used screening tool for obesity at a population level, generally defined as a BMI of 30 or higher. However, BMI has well-documented limitations for evaluating any individual: it doesn't distinguish between fat and muscle mass, doesn't account for where fat is distributed in the body (which matters for health risk), and its standard categories were developed primarily using data from white populations, limiting their accuracy across different body types and ethnicities.",
+      "Global obesity rates have risen sharply in recent decades. Current estimates suggest obesity affects more than 1 billion people worldwide, and in the U.S., roughly 42% of adults meet the BMI threshold for obesity. Obesity is statistically associated with increased risk of conditions including type 2 diabetes, cardiovascular disease, certain cancers, and sleep apnea, though individual risk varies considerably and is not determined by weight alone.",
+      "The reclassification of obesity as a chronic disease by major medical bodies, including WHO and the World Medical Association in 2025, is intended in part to reduce stigma by reframing it as a condition requiring ongoing medical management, similar to hypertension or diabetes, rather than as a matter of personal responsibility or willpower.",
+    ],
+    sources: [
+      { label: "WHO — First Guideline on GLP-1 Therapies for Obesity", url: "https://health.medicaldialogues.in/health/who-issues-first-global-guideline-for-glp-1-drugs-to-treat-obesity-in-adults-159885" },
+    ],
+  },
+  {
+    id: "causes",
+    category: "Causes",
+    title: "What Causes Obesity?",
+    summary: "A complex mix of genetics, biology, and environment — not simply willpower.",
+    readTime: "3 min",
+    simple: [
+      "Obesity is caused by a complex mix of factors, not simply 'eating too much' or 'not exercising enough.' Genetics, hormones, medications, sleep, stress, environment, and access to healthy food and safe places to be active all play a role.",
+      "Genetics significantly influences body weight and how a person's body responds to food and stores fat; researchers have identified many genes linked to obesity risk. Someone can do everything 'right' and still have a body that's biologically inclined toward higher weight.",
+      "Certain medical conditions (like an underactive thyroid or polycystic ovary syndrome) and medications (including some antidepressants, steroids, and diabetes medications) can also contribute to weight gain, independent of diet or exercise habits.",
+      "Environment matters too: access to affordable healthy food, safe places to exercise, work schedules, and neighborhood design all shape people's ability to maintain a given weight, which is part of why obesity rates vary so much by income and geography.",
+    ],
+    detailed: [
+      "Obesity results from a complex interaction of genetic, biological, behavioral, environmental, and socioeconomic factors, not simply from an imbalance of 'calories in versus calories out' driven purely by individual choice, though energy balance is part of the underlying biology.",
+      "Genetic factors play a substantial role in determining body weight and how efficiently a person's body regulates appetite, metabolism, and fat storage. Twin and family studies estimate that genetics account for a significant portion of the variation in body weight between individuals, and researchers have identified dozens of genes associated with obesity risk, including genes affecting hunger signaling and energy expenditure.",
+      "Certain medical conditions, including an underactive thyroid, Cushing's syndrome, and polycystic ovary syndrome (PCOS), can contribute to weight gain. A range of commonly prescribed medications, including some antidepressants, antipsychotics, corticosteroids, and certain diabetes and blood pressure medications, are also associated with weight gain as a side effect, independent of a person's diet or activity level.",
+      "Environmental and socioeconomic factors substantially shape obesity risk at a population level: access to affordable nutritious food, safe and accessible spaces for physical activity, work schedules and job-related physical demands, sleep quality and duration, chronic stress, and neighborhood design all influence body weight, which helps explain why obesity prevalence varies significantly by income level and geography, independent of individual behavior.",
+      "This multifactorial understanding is central to why major medical organizations now describe obesity as a disease rather than a behavioral failing: the biological and environmental drivers of obesity are substantially outside any individual's direct control, even though behavior does play a meaningful role alongside these other factors.",
+    ],
+    sources: [
+      { label: "WHO — First Guideline on GLP-1 Therapies for Obesity", url: "https://health.medicaldialogues.in/health/who-issues-first-global-guideline-for-glp-1-drugs-to-treat-obesity-in-adults-159885" },
+    ],
+  },
+  {
+    id: "diagnosis",
+    category: "Diagnosis",
+    title: "How Obesity Is Diagnosed",
+    summary: "BMI is a starting point, not the full picture.",
+    readTime: "3 min",
+    simple: [
+      "Obesity is most commonly screened for using BMI (body mass index), a simple calculation from height and weight. A BMI of 30 or higher is generally classified as obesity, though this cutoff is a population-level guideline, not a precise individual diagnosis.",
+      "Because BMI doesn't measure body fat directly, doctors increasingly look at other measures too, like waist circumference (which relates to a type of fat linked to higher health risk) and, when needed, more detailed body composition testing.",
+      "BMI categories were developed mostly using data from white populations and don't always translate accurately across different ethnicities and body types, which is a real limitation researchers and clinicians are actively working to address.",
+      "A BMI number alone doesn't tell the full story of anyone's health. Two people with the same BMI can have very different body compositions, fitness levels, and health risks.",
+    ],
+    detailed: [
+      "Obesity is most commonly screened for using [[BMI||Body Mass Index. A number calculated from height and weight, often used as a rough screening tool, though it doesn't directly measure body fat or health.]], calculated as weight in kilograms divided by height in meters squared. Standard adult categories define a BMI of 30 or higher as obesity (with further subcategories for higher BMI ranges), 25 to 29.9 as overweight, and 18.5 to 24.9 as a 'normal' range, though these thresholds are population-level statistical categories rather than individualized diagnostic criteria.",
+      "BMI has well-recognized limitations: it cannot distinguish between fat mass and muscle mass (meaning very muscular individuals can be misclassified), doesn't indicate where fat is distributed in the body (abdominal or visceral fat carries higher metabolic risk than fat distributed elsewhere), and its standard cutoffs were derived largely from studies of white populations, which has been shown to reduce their accuracy for people of Asian, Black, and other backgrounds, some of whom face elevated health risks at lower BMI thresholds than the standard cutoffs suggest.",
+      "Because of these limitations, clinical guidance increasingly recommends supplementing BMI with additional measures, including waist circumference (a proxy for visceral fat), waist-to-hip ratio, and in some cases more detailed body composition assessment (such as DEXA scans or bioelectrical impedance), particularly when BMI alone doesn't clearly indicate someone's metabolic health status.",
+      "Ultimately, a BMI number is a screening tool, not a complete health assessment. Two individuals with identical BMI can have substantially different body composition, cardiovascular fitness, metabolic health markers, and disease risk, which is why thoughtful clinical evaluation looks well beyond a single number.",
+    ],
+    sources: [
+      { label: "WHO — First Guideline on GLP-1 Therapies for Obesity", url: "https://health.medicaldialogues.in/health/who-issues-first-global-guideline-for-glp-1-drugs-to-treat-obesity-in-adults-159885" },
+    ],
+  },
+  {
+    id: "health-risks",
+    category: "Basics",
+    title: "Health Risks Linked to Obesity",
+    summary: "Increased risks, not guarantees — and not the whole health picture.",
+    readTime: "2 min",
+    simple: [
+      "Obesity is statistically linked to a higher risk of several health conditions, including type 2 diabetes, heart disease, stroke, certain cancers, sleep apnea, and joint problems.",
+      "These are increased risks, not guarantees. Many people with obesity never develop these conditions, and people at a 'normal' BMI can still develop them. Overall health depends on many factors beyond weight alone, including fitness, diet quality, genetics, and access to healthcare.",
+      "Judging someone's health purely by their weight, rather than looking at their actual health markers and habits, isn't well supported by the medical evidence, and can itself cause harm, including delaying care due to fear of judgment.",
+      "If you're concerned about weight-related health risks, the most useful step is talking with a healthcare provider about your individual risk factors and appropriate screening, not assuming a number on a scale tells the whole story.",
+    ],
+    detailed: [
+      "Population-level research links obesity with increased statistical risk of numerous health conditions, including type 2 diabetes, cardiovascular disease, stroke, certain cancers (including breast, colorectal, and endometrial cancer), obstructive sleep apnea, osteoarthritis, and non-alcoholic fatty liver disease, among others.",
+      "It's important to understand these as population-level statistical associations, not individual guarantees. Substantial research has documented cases of 'metabolically healthy obesity,' where individuals with obesity show none of the typical metabolic risk markers, alongside the inverse: individuals at 'normal' BMI who nonetheless carry significant cardiometabolic risk. Weight alone is an incomplete predictor of any individual's health status.",
+      "A body of research, sometimes referred to as the 'obesity paradox' literature, has also found that in some conditions, particularly certain cardiovascular and chronic illness contexts, individuals with somewhat higher BMI have shown better outcomes than expected, complicating simple narratives that equate higher weight uniformly with worse health across every context.",
+      "Clinically, this means individualized assessment, looking at blood pressure, blood sugar, cholesterol, fitness level, and other direct health markers, provides a more accurate picture of someone's health than BMI or weight alone. Treating weight as a stand-in for health status without this fuller picture is not well supported by the evidence, and can contribute to the kind of weight-based assumptions that drive healthcare-related weight stigma, covered in more detail on this app's Stigma page.",
+    ],
+    sources: [
+      { label: "The Lancet eClinicalMedicine — Pervasiveness, Impact and Implications of Weight Stigma", url: "https://www.thelancet.com/journals/eclinm/article/PIIS2589-5370(22)00138-9/fulltext" },
+    ],
+  },
+  {
+    id: "lifestyle",
+    category: "Treatment",
+    title: "Lifestyle Approaches to Obesity Care",
+    summary: "A real foundation — but often not enough on its own, and that's biology, not failure.",
+    readTime: "3 min",
+    simple: [
+      "Nutrition changes, physical activity, and behavioral support are usually part of obesity care, whether or not medication or surgery is also involved.",
+      "Sustainable changes tend to work better long-term than extreme, restrictive approaches. Even modest, consistent changes can meaningfully improve health markers, regardless of how much weight is lost.",
+      "Behavioral counseling, sometimes with a psychologist or specialized program, can help address patterns around eating, stress, sleep, and activity that are hard to change alone.",
+      "It's worth knowing that lifestyle changes alone often aren't enough to produce large or lasting weight loss for many people with obesity, not due to lack of effort, but because of powerful biological factors (like hormones that drive hunger and defend body weight) working against sustained weight loss. This is a big part of why medication and other medical treatments now exist and are recommended for many people.",
+    ],
+    detailed: [
+      "Nutritional counseling, structured physical activity, and behavioral therapy form a foundational component of obesity care, whether used alone or alongside medication or surgical treatment. Current clinical guidance generally emphasizes sustainable, individualized changes over restrictive or extreme approaches, since these tend to produce better long-term adherence and outcomes.",
+      "Behavioral interventions, sometimes delivered by psychologists or through structured multi-component programs, address eating patterns, stress management, sleep, and physical activity habits, recognizing that these behaviors are influenced by psychological and environmental factors that are often difficult to change through willpower alone.",
+      "A critical, evidence-based point often missing from public discussion: for many people with obesity, lifestyle changes alone typically produce modest weight loss (often in the range of 5 to 10% of body weight) that is difficult to sustain long-term, not due to insufficient effort, but because of biological mechanisms, including compensatory changes in hunger hormones like ghrelin and leptin, that work to defend a body's prior weight after weight loss.",
+      "This biological reality is a central reason current clinical guidelines, including the World Health Organization's 2025 guidance, recommend considering medication or other medical treatments alongside lifestyle changes for many people with obesity, rather than treating lifestyle modification as something that should work in isolation for everyone.",
+    ],
+    sources: [
+      { label: "WHO — First Guideline on GLP-1 Therapies for Obesity", url: "https://health.medicaldialogues.in/health/who-issues-first-global-guideline-for-glp-1-drugs-to-treat-obesity-in-adults-159885" },
+    ],
+  },
+  {
+    id: "medications",
+    category: "Treatment",
+    title: "Medications for Obesity",
+    summary: "GLP-1 medicines, and the WHO's landmark 2025 guideline.",
+    readTime: "4 min",
+    simple: [
+      "In December 2025, the World Health Organization issued its first-ever guideline recommending GLP-1 medicines (like semaglutide and tirzepatide) for long-term obesity treatment in adults, marking a major shift in how obesity is medically managed.",
+      "These medicines were originally developed for type 2 diabetes. They work by mimicking a natural gut hormone that reduces appetite, increases feelings of fullness, and slows digestion, which helps people eat less without constant hunger.",
+      "Beyond weight loss, GLP-1 medicines have also been shown to lower the risk of heart disease and certain other complications in people with obesity.",
+      "These are prescription medicines meant to be used long-term, alongside nutrition and activity support, not short-term fixes. The WHO's recommendation is 'conditional,' meaning there's still limited long-term safety data, and the medicines should only be used under medical supervision, not obtained or used without a prescription.",
+    ],
+    detailed: [
+      "On December 1, 2025, the World Health Organization released its first comprehensive guideline recommending [[GLP-1||Short for 'glucagon-like peptide-1,' a natural gut hormone. GLP-1 medicines mimic this hormone to reduce appetite and help with weight management.]] receptor agonist medicines, including semaglutide, liraglutide, and tirzepatide, for long-term obesity treatment in adults, a significant step formalizing pharmaceutical treatment as part of standard obesity care rather than a last resort or lifestyle-adjacent option.",
+      "GLP-1 receptor agonists were originally developed to treat type 2 diabetes. They work by mimicking GLP-1, a hormone naturally released by the gut after eating, which reduces appetite, promotes satiety (feeling full), and slows gastric emptying. Clinical trials, including the STEP and SURMOUNT trial programs, have demonstrated substantial average weight loss with these medications, generally exceeding what lifestyle intervention alone typically achieves.",
+      "Beyond weight loss itself, research has found GLP-1 medications reduce the risk of cardiovascular events, kidney complications, and other metabolic complications in people with obesity, which contributed to WHO's decision to recommend them as part of a broader chronic disease management approach rather than purely for weight reduction.",
+      "WHO explicitly labeled its recommendation 'conditional,' reflecting still-limited long-term safety data, cost considerations, and variable health system readiness to support these medications globally. The guidance also explicitly warns against unregulated or unsupervised use, emphasizing that these are prescription medications requiring medical monitoring, intended to be combined with behavioral counseling, nutrition support, and physical activity guidance as part of comprehensive, ongoing care, not used as a standalone or short-term intervention.",
+      "Common side effects include gastrointestinal symptoms like nausea, and cost and insurance coverage remain significant access barriers in many places; these are important practical considerations to discuss with a prescribing provider alongside the medication's benefits.",
+    ],
+    sources: [
+      { label: "WHO — First Guideline on GLP-1 Therapies for Obesity", url: "https://health.medicaldialogues.in/health/who-issues-first-global-guideline-for-glp-1-drugs-to-treat-obesity-in-adults-159885" },
+      { label: "Pharmaceuticals (PMC) — Semaglutide as a GLP-1 Agonist: A Breakthrough in Obesity Treatment", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11944337" },
+    ],
+  },
+  {
+    id: "surgery",
+    category: "Treatment",
+    title: "Surgery for Obesity",
+    summary: "Bariatric surgery: what it is, and when it's considered.",
+    readTime: "3 min",
+    simple: [
+      "Bariatric (weight-loss) surgery is a medical option for some people with obesity, typically considered when other approaches haven't achieved needed health improvements, or for people with a higher BMI or serious weight-related health conditions.",
+      "Common procedures include gastric bypass and sleeve gastrectomy, which change the size of the stomach and, in some cases, how food moves through the digestive system.",
+      "Bariatric surgery can lead to significant, often more durable weight loss than non-surgical approaches for many patients, along with improvement or remission of conditions like type 2 diabetes in many cases.",
+      "Like any surgery, it carries risks and requires lifelong follow-up, including changes to eating habits and nutritional supplementation. It's a significant medical decision made together with a specialized care team, not a quick fix.",
+    ],
+    detailed: [
+      "Bariatric surgery encompasses several surgical procedures used to treat obesity, typically considered for adults with a BMI of 40 or higher, or a BMI of 35 or higher with significant obesity-related health conditions, particularly when other treatment approaches haven't achieved adequate results.",
+      "The most common current procedures are sleeve gastrectomy (removing a portion of the stomach to create a smaller, sleeve-shaped stomach) and Roux-en-Y gastric bypass (creating a small stomach pouch connected directly to the small intestine, bypassing part of the digestive tract). Both work through a combination of reduced stomach capacity and hormonal changes that affect hunger and metabolism.",
+      "Clinical evidence shows bariatric surgery typically produces greater and more durable long-term weight loss compared to non-surgical approaches for eligible patients, along with substantial rates of improvement or remission of type 2 diabetes, high blood pressure, and sleep apnea in many patients.",
+      "Bariatric surgery carries surgical risks like any major procedure, and requires lifelong follow-up care, including nutritional monitoring and supplementation (since the procedures can affect nutrient absorption), along with sustained behavioral and dietary changes. It represents a significant, carefully considered medical decision made in partnership with a multidisciplinary care team, rather than a standalone quick solution.",
+    ],
+    sources: [
+      { label: "WHO — First Guideline on GLP-1 Therapies for Obesity", url: "https://health.medicaldialogues.in/health/who-issues-first-global-guideline-for-glp-1-drugs-to-treat-obesity-in-adults-159885" },
+    ],
+  },
+  {
+    id: "myths",
+    category: "Myths",
+    title: "Common Myths About Obesity",
+    summary: "Separating what's true from what people often assume.",
+    readTime: "3 min",
+    simple: [
+      "Myth: obesity is simply caused by eating too much and exercising too little. Fact: genetics, hormones, medications, environment, and socioeconomic factors all play major roles that are often outside someone's direct control.",
+      "Myth: people with obesity just need more willpower. Fact: research shows willpower isn't the deciding factor; powerful biological mechanisms actively work against sustained weight loss for many people, which is part of why medication and other medical treatments exist.",
+      "Myth: BMI is an accurate measure of an individual's health. Fact: BMI is a rough population-level screening tool that doesn't measure body fat directly and has known accuracy limitations across different body types and ethnicities.",
+      "Myth: doctors judging or lecturing patients about their weight motivates healthier behavior. Fact: research consistently finds the opposite: weight stigma, including from healthcare providers, is linked to avoiding medical care, and to behaviors that worsen health rather than improve it.",
+      "Myth: weight-loss medications like GLP-1s are a shortcut or 'cheating.' Fact: leading health organizations, including the WHO, now recognize these as legitimate, evidence-based medical treatments for a chronic disease, not shortcuts.",
+    ],
+    detailed: [
+      "Myth: obesity results simply from eating too much and exercising too little. Fact: genetics, hormones, certain medical conditions and medications, sleep, stress, and socioeconomic and environmental factors (like food access and neighborhood safety) all substantially influence body weight, often independent of individual behavior.",
+      "Myth: people with obesity simply need more willpower or self-control. Fact: research on weight regulation biology shows that after weight loss, hormonal changes actively work to restore prior weight, a mechanism unrelated to willpower. This biological reality is a key reason major medical guidelines, including WHO's, now recommend medication as part of standard care for many patients rather than treating diet and exercise alone as sufficient.",
+      "Myth: BMI accurately reflects an individual's health status. Fact: BMI cannot distinguish fat from muscle mass, doesn't indicate fat distribution (which affects health risk), and its standard categories were developed primarily from data on white populations, limiting accuracy across different ethnicities and body types.",
+      "Myth: judgment or lecturing from healthcare providers about weight motivates patients to make healthier changes. Fact: multiple studies have found the opposite: experiencing weight stigma, including from doctors, is associated with patients delaying or avoiding medical care altogether, and is linked to increased stress-related eating and reduced physical activity, worsening rather than improving health outcomes.",
+      "Myth: GLP-1 medications and other obesity treatments are a 'shortcut' or moral failing compared to lifestyle change. Fact: major medical bodies including the World Health Organization and World Medical Association now formally classify obesity as a chronic disease and recognize evidence-based medical treatment, including medication and surgery when appropriate, as legitimate components of standard care, not shortcuts.",
+    ],
+    sources: [
+      { label: "WHO — First Guideline on GLP-1 Therapies for Obesity", url: "https://health.medicaldialogues.in/health/who-issues-first-global-guideline-for-glp-1-drugs-to-treat-obesity-in-adults-159885" },
+      { label: "WebMD — Weight Bias and Medical Gaslighting", url: "https://www.webmd.com/obesity/patient-voices/weight-bias-medical-gaslighting" },
+    ],
+  },
+];
+
+const CATEGORIES = ["All", "Basics", "Causes", "Diagnosis", "Treatment", "Myths"];
+
+/* ---------------------------------- content: stigma ---------------------------------- */
+
+const STIGMA_CONTENT = {
+  title: "Weight Stigma, Explained",
+  simple: [
+    "Weight stigma, negative attitudes and unfair treatment directed at people because of their body size, is one of the most common and least challenged forms of bias in daily life, including inside doctors' offices.",
+    "Research has found weight discrimination increased by 66% over one decade in the U.S., and is now about as common as racial discrimination. It shows up in job hiring, education, healthcare, and even relationships with friends and family.",
+    "Doctors' offices are a major source of this bias. Studies have found most women with obesity report experiencing weight-based judgment from doctors specifically, and up to 4 in 10 adults with obesity report weight discrimination somewhere in their lives.",
+    "This isn't a minor inconvenience: people who experience weight stigma in healthcare settings are more likely to delay or avoid going to the doctor altogether, out of fear of being judged, which can mean health problems go unnoticed or untreated longer.",
+    "There's also strong evidence that shaming or lecturing people about their weight backfires: it doesn't motivate healthier behavior, and is instead linked to more stress-related eating and less physical activity, working against the very outcome it's supposedly meant to encourage.",
+    "The fix, as with every stigmatized health condition, is accurate understanding: recognizing obesity as a complex medical condition shaped by biology and environment, not a personal or moral failing, and treating people accordingly.",
+  ],
+  detailed: [
+    "Weight stigma, negative attitudes, stereotypes, and discriminatory treatment directed at people based on body size, is one of the most pervasive and least socially challenged forms of bias, present across employment, education, healthcare, media, interpersonal relationships, and public discourse.",
+    "Research led by Dr. Rebecca Puhl and colleagues at the Rudd Center for Food Policy and Obesity found that weight discrimination in the United States increased by 66% over a decade, reaching a prevalence comparable to that of racial discrimination, a striking benchmark given how much more socially unacceptable racial discrimination is generally treated as being.",
+    "Healthcare settings are a particularly well-documented source of weight [[bias||Negative attitudes, shame, or social rejection directed at someone because of a health condition or other trait.]]. Research has found that 69% of women with obesity report experiencing weight bias from doctors specifically, one of the most commonly cited sources of weight-related mistreatment in their lives. Weight bias has been documented among physicians, nurses, medical students, dietitians, psychologists, and even specialists who treat obesity, often manifesting as assumptions that patients are noncompliant, lazy, or lack motivation, stereotypes not supported by the biological and environmental evidence about obesity's causes.",
+    "The consequences extend beyond hurt feelings. Multiple studies have documented that people who experience weight stigma in healthcare settings are more likely to delay or avoid seeking medical care altogether, sometimes described by patients as [[medical gaslighting||Having real health concerns dismissed or blamed on weight without proper evaluation.]], having legitimate health concerns dismissed or attributed to weight without adequate evaluation. This avoidance can mean serious health conditions go undetected or untreated longer than they otherwise would.",
+    "Perhaps counterintuitively to how weight stigma is often justified (as a motivating force for behavior change), research consistently finds the opposite effect: experiencing weight stigma is associated with increased stress-related and emotional eating, avoidance of physical activity and exercise spaces, and worse mental health outcomes, including depression and lower self-esteem. In other words, stigma appears to reinforce the very patterns it's often assumed to discourage.",
+    "As with other stigmatized health conditions, the evidence points toward the same underlying fix: accurate public and clinical understanding of obesity as a complex, multifactorial chronic disease, shaped substantially by genetics, biology, and environment rather than individual moral failing, alongside person-first, non-judgmental communication in clinical settings. Multiple medical organizations now provide specific guidance on weight-related language intended to reduce stigma while still supporting open conversations about health.",
+  ],
+  sources: [
+    { label: "Bariatric Times — Five Minutes with Rebecca Puhl, PhD, on Weight Bias and Stigma", url: "https://bariatrictimes.com/five-minutes-with-rebecca-puhl-phd-taking-a-look-at-weight-bias-and-the-stigma-of-obesity/" },
+    { label: "WebMD — Weight Bias and Medical Gaslighting", url: "https://www.webmd.com/obesity/patient-voices/weight-bias-medical-gaslighting" },
+    { label: "The Lancet eClinicalMedicine — Pervasiveness, Impact and Implications of Weight Stigma", url: "https://www.thelancet.com/journals/eclinm/article/PIIS2589-5370(22)00138-9/fulltext" },
+    { label: "HealthManagement.org — Weight Bias: A Hidden Stigma (interview with Rebecca Puhl, PhD)", url: "https://healthmanagement.org/pdf/article/weight-bias-a-hidden-stigma" },
+  ],
+};
+
+/* ---------------------------------- glossary rendering ---------------------------------- */
+
+function GlossaryWord({ term, definition, sizeClass }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        className={`font-semibold underline decoration-2 underline-offset-4 ${sizeClass}`}
+        style={{ color: "var(--accent)", textDecorationStyle: "dotted", textDecorationColor: "var(--highlight)" }}
+        aria-expanded={open}
+      >
+        {term}
+      </button>
+      {open && (
+        <span
+          className={`block mt-2 mb-1 pl-3 border-l-2 ${sizeClass}`}
+          style={{ borderColor: "var(--highlight)", color: "var(--ink-soft)" }}
+        >
+          {definition}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function renderRichText(text, sizeClass) {
+  const regex = /\[\[(.+?)\|\|(.+?)\]\]/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>);
+    }
+    parts.push(<GlossaryWord key={key++} term={match[1]} definition={match[2]} sizeClass={sizeClass} />);
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(<span key={key++}>{text.slice(lastIndex)}</span>);
+  }
+  return parts;
+}
+
+/* ---------------------------------- fonts ---------------------------------- */
+
+function useFonts() {
+  useEffect(() => {
+    const id = "obesity-honest-fonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+    document.head.appendChild(link);
+  }, []);
+}
+
+const BODY_FONT_STACK = "'Atkinson Hyperlegible', sans-serif";
+const HEADLINE_FONT_STACK = "'Fraunces', serif";
+
+/* ---------------------------------- app ---------------------------------- */
+
+const BODY_SIZES = ["text-base", "text-lg", "text-xl"];
+const TITLE_SIZES = ["text-2xl", "text-3xl", "text-4xl"];
+const LIST_TITLE_SIZES = ["text-lg", "text-xl", "text-2xl"];
+const INTRO_SIZES = ["text-xl", "text-2xl", "text-3xl"];
+
+function ObesityHonestApp() {
+  useFonts();
+
+  const [tab, setTab] = useState("library"); // 'library' | 'research' | 'stigma'
+  const [view, setView] = useState("home"); // 'home' | 'article'
+  const [activeId, setActiveId] = useState(null);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [level, setLevel] = useState("simple");
+  const [sizeStep, setSizeStep] = useState(1);
+  const [speaking, setSpeaking] = useState(false);
+  const [stigmaLevel, setStigmaLevel] = useState("simple");
+
+  const bodySize = BODY_SIZES[sizeStep];
+  const titleSize = TITLE_SIZES[sizeStep];
+  const listTitleSize = LIST_TITLE_SIZES[sizeStep];
+  const introSize = INTRO_SIZES[sizeStep];
+
+  const activeArticle = useMemo(() => ARTICLES.find((a) => a.id === activeId) || null, [activeId]);
+
+  function unwrapGlossary(text) {
+    return text.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1 $2");
+  }
+
+  function searchableText(article) {
+    const parts = [
+      article.title,
+      article.summary,
+      ...(article.simple || []),
+      ...(article.detailed || []),
+      ...(article.sources || []).map((s) => s.label),
+    ].filter(Boolean);
+    return unwrapGlossary(parts.join(" \n ")).toLowerCase();
+  }
+
+  function matchSnippet(article, q) {
+    if (!q) return null;
+    const alreadyVisible = article.title.toLowerCase().includes(q) || article.summary.toLowerCase().includes(q);
+    if (alreadyVisible) return null;
+    const body = unwrapGlossary([...(article.simple || []), ...(article.detailed || [])].join(" \n "));
+    const idx = body.toLowerCase().indexOf(q);
+    if (idx === -1) return null;
+    const start = Math.max(0, idx - 40);
+    const end = Math.min(body.length, idx + q.length + 60);
+    return (start > 0 ? "…" : "") + body.slice(start, end).trim() + (end < body.length ? "…" : "");
+  }
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ARTICLES.filter((a) => {
+      const matchesCategory = category === "All" || a.category === category;
+      const matchesQuery = !q || searchableText(a).includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  }, [query, category]);
+
+  function openArticle(id) {
+    stopSpeaking();
+    setActiveId(id);
+    setLevel("simple");
+    setView("article");
+  }
+
+  function goHome() {
+    stopSpeaking();
+    setView("home");
+    setActiveId(null);
+  }
+
+  function stopSpeaking() {
+    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+    setSpeaking(false);
+  }
+
+  function toggleSpeak() {
+    if (!activeArticle) return;
+    if (speaking) {
+      stopSpeaking();
+      return;
+    }
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const plain = (activeArticle[level] || []).map((p) => p.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1")).join(" ");
+    const text = `${activeArticle.title}. ${plain}`;
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.rate = 0.95;
+    utter.onend = () => setSpeaking(false);
+    utter.onerror = () => setSpeaking(false);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+    setSpeaking(true);
+  }
+
+  useEffect(() => stopSpeaking, []);
+
+  return (
+    <div
+      style={{
+        "--bg": "#F4F3EC",
+        "--bg-alt": "#E8E4D6",
+        "--ink": "#29332B",
+        "--ink-soft": "#647062",
+        "--accent": "#4C7A5E",
+        "--accent-soft": "#DCE8DD",
+        "--highlight": "#C1633D",
+        "--line": "#DED8C8",
+        backgroundColor: "var(--bg)",
+        color: "var(--ink)",
+        fontFamily: BODY_FONT_STACK,
+        minHeight: "100%",
+      }}
+      className="w-full"
+    >
+      <div className="max-w-2xl mx-auto px-5 pb-16">
+        {/* top bar */}
+        <div className="sticky top-0 z-10 flex items-center justify-between py-4" style={{ backgroundColor: "var(--bg)" }}>
+          {view === "article" ? (
+            <button onClick={goHome} className="flex items-center gap-1 font-semibold" style={{ color: "var(--accent)" }}>
+              <ChevronLeft size={20} />
+              <span>Back</span>
+            </button>
+          ) : (
+            <span className="font-semibold" style={{ fontFamily: HEADLINE_FONT_STACK, fontSize: "1.3rem", fontWeight: 600 }}>
+              Obesity Honest
+            </span>
+          )}
+
+          <div className="flex items-center gap-2">
+            {view === "article" && (
+              <button
+                onClick={toggleSpeak}
+                aria-pressed={speaking}
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold border"
+                style={{
+                  borderColor: speaking ? "var(--accent)" : "var(--line)",
+                  color: speaking ? "white" : "var(--ink)",
+                  backgroundColor: speaking ? "var(--accent)" : "transparent",
+                }}
+              >
+                {speaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                {speaking ? "Stop" : "Listen"}
+              </button>
+            )}
+            <button
+              onClick={() => setSizeStep((s) => (s + 1) % 3)}
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold border"
+              style={{ borderColor: "var(--line)" }}
+              aria-label="Change text size"
+              title="Change text size"
+            >
+              <Type size={16} />
+              {["S", "M", "L"][sizeStep]}
+            </button>
+          </div>
+        </div>
+
+        {/* mission hero */}
+        {view === "home" && (
+          <div className="mb-8 pb-8" style={{ borderBottom: "1px solid var(--line)" }}>
+            <h1 className={titleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600, lineHeight: 1.15 }}>
+              Understanding obesity shouldn't require a medical degree.
+            </h1>
+            <p className={`${bodySize} mt-3`} style={{ color: "var(--ink-soft)", maxWidth: "42rem" }}>
+              Obesity Honest turns real, sourced research into plain language you can actually use — including
+              the facts that cut through stigma, and why obesity is now recognized as a chronic disease, not a
+              personal failing.
+            </p>
+          </div>
+        )}
+
+        {/* top-level tabs */}
+        {view === "home" && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {[
+              ["research", "New Research"],
+              ["library", "Library"],
+              ["stigma", "Stigma"],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`rounded-full px-4 py-1.5 font-semibold border ${bodySize}`}
+                style={{
+                  borderColor: tab === key ? "var(--highlight)" : "var(--line)",
+                  backgroundColor: tab === key ? "var(--accent-soft)" : "transparent",
+                  color: tab === key ? "var(--ink)" : "var(--ink-soft)",
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ---------------- library / home ---------------- */}
+        {view === "home" && tab === "library" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Browse articles on causes, diagnosis, and treatment — written in plain language and backed by
+              real sources.
+            </p>
+
+            <div className="flex items-center gap-2 rounded-full px-4 py-2.5 mb-4" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <Search size={18} style={{ color: "var(--ink-soft)" }} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search topics, like 'GLP-1' or 'BMI'"
+                className={`bg-transparent outline-none w-full ${bodySize}`}
+                style={{ color: "var(--ink)" }}
+              />
+              {query && (
+                <button onClick={() => setQuery("")} aria-label="Clear search">
+                  <X size={16} style={{ color: "var(--ink-soft)" }} />
+                </button>
+              )}
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 mb-6" style={{ scrollbarWidth: "none" }}>
+              {CATEGORIES.map((c) => {
+                const activeCat = c === category;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategory(c)}
+                    className={`shrink-0 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                    style={{
+                      borderColor: activeCat ? "var(--highlight)" : "var(--line)",
+                      backgroundColor: activeCat ? "var(--accent-soft)" : "transparent",
+                      color: activeCat ? "var(--ink)" : "var(--ink-soft)",
+                    }}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+            </div>
+
+            {filtered.length === 0 ? (
+              <p className={`${bodySize} py-8`} style={{ color: "var(--ink-soft)" }}>
+                No articles match your search. Try a different word or category.
+              </p>
+            ) : (
+              <div>
+                {filtered.map((a, i) => {
+                  const snippet = matchSnippet(a, query.trim().toLowerCase());
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => openArticle(a.id)}
+                      className="w-full text-left py-5"
+                      style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}
+                    >
+                      <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                        {a.title}
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {a.summary}
+                      </div>
+                      {snippet && (
+                        <div className="text-sm mt-1.5 italic" style={{ color: "var(--ink-soft)" }}>
+                          "{snippet}"
+                        </div>
+                      )}
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {a.category} · {a.readTime}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              This app explains general health information in plain language. It is not medical advice and
+              doesn't replace a visit with your doctor or nurse.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- new research (placeholder) ---------------- */}
+        {view === "home" && tab === "research" && (
+          <>
+            <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Real obesity research, explained simply.
+            </p>
+            <p className={`${bodySize} mb-8`} style={{ color: "var(--ink-soft)" }}>
+              This section isn't built yet.
+            </p>
+            <div className="rounded-xl py-10 text-center" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <div className={`${listTitleSize} font-semibold`} style={{ fontFamily: HEADLINE_FONT_STACK }}>
+                Under construction
+              </div>
+              <p className={`${bodySize} mt-2`} style={{ color: "var(--ink-soft)" }}>
+                Check the Library and Stigma tabs in the meantime.
+              </p>
+            </div>
+          </>
+        )}
+
+        {/* ---------------- stigma ---------------- */}
+        {view === "home" && tab === "stigma" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              {STIGMA_CONTENT.title}
+            </p>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={stigmaLevel === key}
+                  onClick={() => setStigmaLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: stigmaLevel === key ? "var(--accent)" : "transparent", color: stigmaLevel === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {STIGMA_CONTENT[stigmaLevel].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+              <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                Sources
+              </div>
+              <ul className="space-y-1">
+                {STIGMA_CONTENT.sources.map((s, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm inline-flex items-center gap-1"
+                      style={{ color: "var(--accent)" }}
+                    >
+                      {s.label}
+                      <ExternalLink size={12} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="text-sm mt-6" style={{ color: "var(--ink-soft)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- article ---------------- */}
+        {view === "article" && activeArticle && (
+          <div>
+            <div className="text-sm font-semibold mb-2" style={{ color: "var(--highlight)" }}>
+              {activeArticle.category} · {activeArticle.readTime}
+            </div>
+            <h1 className={`${titleSize} mb-4 leading-tight`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+              {activeArticle.title}
+            </h1>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={level === key}
+                  onClick={() => setLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: level === key ? "var(--accent)" : "transparent", color: level === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {activeArticle[level].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            {activeArticle.sources && activeArticle.sources.length > 0 && (
+              <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+                <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                  Sources
+                </div>
+                <ul className="space-y-1">
+                  {activeArticle.sources.map((s, idx) => (
+                    <li key={idx}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm inline-flex items-center gap-1"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {s.label}
+                        <ExternalLink size={12} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <p className="text-sm mt-6 pt-6" style={{ color: "var(--ink-soft)", borderTop: activeArticle.sources ? "none" : "1px solid var(--line)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<ObesityHonestApp />);
+
+</script>
+<script>
+  var sourceCode = document.getElementById("app-source").textContent;
+  var compiled = Babel.transform(sourceCode, {
+    presets: [["react", { runtime: "classic" }]]
+  }).code;
+  var scriptEl = document.createElement("script");
+  scriptEl.text = compiled;
+  document.body.appendChild(scriptEl);
+</script>
+</body>
+</html>
