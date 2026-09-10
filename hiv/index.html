@@ -29,6 +29,7 @@ function Icon({ children, size = 24, style, className }) {
   );
 }
 function ChevronLeft(props) { return <Icon {...props}><polyline points="15 18 9 12 15 6" /></Icon>; }
+function ChevronDown(props) { return <Icon {...props}><polyline points="6 9 12 15 18 9" /></Icon>; }
 function Search(props) { return <Icon {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></Icon>; }
 function Volume2(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></Icon>; }
 function VolumeX(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></Icon>; }
@@ -262,7 +263,61 @@ const STIGMA_CONTENT = {
   ],
 };
 
-/* ---------------------------------- glossary rendering ---------------------------------- */
+/* ---------------------------------- new research (static — refresh periodically) ---------------------------------- */
+
+const RESEARCH_LAST_UPDATED = "September 2026";
+
+const RESEARCH_ITEMS = [
+  {
+    id: "antibody-functional-cure-trials",
+    headline: "Engineered antibody infusions keep some patients off daily HIV medicine",
+    source: "Ars Technica, reporting on the FRESH and RIO trials",
+    sourceUrl: "https://tagteam.harvard.edu/hub_feeds/1804/feed_items/17050971/content",
+    datePublished: "November 2025",
+    tag: "New study",
+    whyItMatters: "This points toward a future where some people with HIV might not need to take daily medicine for the rest of their lives.",
+    summary: [
+      "In 2025, researchers reported results from two separate clinical trials, called FRESH (based in South Africa) and RIO (based in the UK and Denmark), testing whether infusions of engineered antibodies could let people with HIV stay healthy without daily antiretroviral pills.",
+      "In the FRESH trial, 4 of 20 participants maintained an undetectable HIV level for a median of about 1.5 years after stopping daily treatment. In the RIO trial, 6 of 34 participants maintained control of the virus for at least two years without daily medicine.",
+      "This isn't a cure available to patients yet, and it didn't work for everyone in either trial, but researchers describe it as an encouraging sign that a [[functional cure||Long-term control of a virus without needing ongoing daily medicine, even though the virus isn't fully eliminated from the body.]] (long-term control without daily treatment) may eventually be achievable for at least some people with HIV.",
+    ],
+  },
+  {
+    id: "unaids-2025-funding-report",
+    headline: "UNAIDS: global HIV response \u2018in shock\u2019 from funding cuts",
+    source: "UNAIDS, reported via BioWorld",
+    sourceUrl: "https://www.bioworld.com/articles/keyword/17764-hiv?page=3",
+    datePublished: "December 2025",
+    tag: "Global report",
+    whyItMatters: "Funding directly affects how many people can access HIV testing, prevention, and treatment worldwide, so cuts can undo years of progress.",
+    summary: [
+      "Ahead of World AIDS Day 2025, UNAIDS (the Joint United Nations Programme on HIV/AIDS) released a report describing 2025 as one of the most difficult years for the global HIV response since effective treatment became available, largely due to sharp funding reductions from the U.S. and other wealthy nations.",
+      "The report described the global HIV funding and support system as being 'in shock,' warning that reduced funding threatens progress on testing, prevention programs like PrEP, and treatment access, especially in lower-income countries that have relied heavily on international support.",
+      "Despite the funding concerns, the report noted that scientific progress on HIV, including new prevention tools and cure research, has continued, creating a gap between what's scientifically possible and what's actually reaching people, largely due to resources rather than a lack of medical progress.",
+    ],
+  },
+  {
+    id: "hiv-remission-stem-cell-cases",
+    headline: "More people in HIV remission after stem cell transplants, researchers report",
+    source: "amfAR — AIDS 2026 Conference Highlights",
+    sourceUrl: "https://www.amfar.org/news/scientific-highlights-from-aids-2026/",
+    datePublished: "2026",
+    tag: "New study",
+    whyItMatters: "Each new case teaches researchers more about what it might take to help the immune system control HIV without medication, even though this specific procedure isn't a realistic option for most people with HIV.",
+    summary: [
+      "At the 2026 International AIDS Conference, researchers presented updates on a small but growing group of people who have reached HIV remission after receiving stem cell transplants originally performed to treat life-threatening cancers, using donor cells with a rare genetic mutation that resists HIV.",
+      "New cases discussed included a patient in Essen, Germany, notable for also having hepatitis B, and a patient in Kansas City who, at 21, is the youngest person to potentially achieve remission this way.",
+      "Researchers were clear that stem cell transplantation is a high-risk procedure only appropriate for people who need it to treat cancer, not a realistic HIV treatment option for most people. However, each case adds clues about how the immune system might eventually be guided to control HIV without ongoing medication.",
+    ],
+  },
+];
+
+const SIBLING_SITES = [
+  { label: "TB Honest", path: "/", color: "#2B6E68" },
+  { label: "COVID Honest", path: "/covid/", color: "#6B3FA0" },
+  { label: "Hep B Honest", path: "/hepb/", color: "#B5541E" },
+  { label: "Obesity Honest", path: "/obesity/", color: "#4C7A5E" },
+];
 
 function GlossaryWord({ term, definition, sizeClass }) {
   const [open, setOpen] = useState(false);
@@ -347,6 +402,7 @@ function HivHonestApp() {
   const [sizeStep, setSizeStep] = useState(1);
   const [speaking, setSpeaking] = useState(false);
   const [stigmaLevel, setStigmaLevel] = useState("simple");
+  const [expandedResearchId, setExpandedResearchId] = useState(null);
 
   const bodySize = BODY_SIZES[sizeStep];
   const titleSize = TITLE_SIZES[sizeStep];
@@ -500,6 +556,23 @@ function HivHonestApp() {
               HIV Honest turns real, sourced research into plain language you can actually use — including the
               science of U=U, and the facts that cut through decades of stigma.
             </p>
+
+            <div className="text-sm font-semibold mt-6 mb-3" style={{ color: "var(--ink-soft)" }}>
+              More from the Honest series
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {SIBLING_SITES.map((site) => (
+                <a
+                  key={site.path}
+                  href={site.path}
+                  className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                  style={{ borderColor: "var(--line)", color: "var(--ink)" }}
+                >
+                  <span style={{ width: 8, height: 8, borderRadius: 9999, backgroundColor: site.color, display: "inline-block", flexShrink: 0 }} />
+                  {site.label}
+                </a>
+              ))}
+            </div>
           </div>
         )}
 
@@ -613,23 +686,88 @@ function HivHonestApp() {
           </>
         )}
 
-        {/* ---------------- new research (placeholder) ---------------- */}
+        {/* ---------------- new research ---------------- */}
         {view === "home" && tab === "research" && (
           <>
             <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
               Real HIV research, explained simply.
             </p>
-            <p className={`${bodySize} mb-8`} style={{ color: "var(--ink-soft)" }}>
-              This section isn't built yet.
+            <p className={`${bodySize} mb-1`} style={{ color: "var(--ink-soft)" }}>
+              We periodically review current studies, guidelines, and health news about HIV, then rewrite what
+              we find in plain language. Every item links back to its real source.
             </p>
-            <div className="rounded-xl py-10 text-center" style={{ backgroundColor: "var(--bg-alt)" }}>
-              <div className={`${listTitleSize} font-semibold`} style={{ fontFamily: HEADLINE_FONT_STACK }}>
-                Under construction
-              </div>
-              <p className={`${bodySize} mt-2`} style={{ color: "var(--ink-soft)" }}>
-                Check the Library and Stigma tabs in the meantime.
-              </p>
+            <p className="text-sm mb-6" style={{ color: "var(--ink-soft)" }}>
+              Last updated: {RESEARCH_LAST_UPDATED}
+            </p>
+
+            <div>
+              {RESEARCH_ITEMS.map((r, i) => {
+                const expanded = expandedResearchId === r.id;
+                return (
+                  <div key={r.id || i} style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setExpandedResearchId(expanded ? null : r.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setExpandedResearchId(expanded ? null : r.id);
+                        }
+                      }}
+                      aria-expanded={expanded}
+                      className="w-full text-left py-5 cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                          {r.headline}
+                        </div>
+                        <ChevronDown
+                          size={20}
+                          style={{ color: "var(--ink-soft)", transform: expanded ? "rotate(180deg)" : "none", flexShrink: 0, marginTop: 4 }}
+                        />
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {renderRichText(r.whyItMatters || "", bodySize)}
+                      </div>
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {r.tag ? `${r.tag} · ` : ""}
+                        {r.source}
+                        {r.datePublished ? ` · ${r.datePublished}` : ""}
+                      </div>
+                    </div>
+
+                    {expanded && (
+                      <div className="pb-5">
+                        <div className={`${bodySize} space-y-3`} style={{ lineHeight: 1.7 }}>
+                          {(r.summary || []).map((p, idx) => (
+                            <p key={idx}>{renderRichText(p, bodySize)}</p>
+                          ))}
+                        </div>
+                        {r.sourceUrl && (
+                          <a
+                            href={r.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1.5 mt-3 font-semibold ${bodySize}`}
+                            style={{ color: "var(--accent)" }}
+                          >
+                            Read the source
+                            <ExternalLink size={15} />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              These summaries are written by AI from current research and news, and may contain mistakes. Use
+              the source link to check the original, and always talk with your doctor or nurse about your own
+              health.
+            </p>
           </>
         )}
 
