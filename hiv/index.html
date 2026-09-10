@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HIV Honest</title>
+<meta name="description" content="Clear, simple, sourced answers about HIV." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  html, body, #root { height: 100%; }
+  body { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-source">
+const { useState, useEffect, useMemo, useRef } = React;
+
+function Icon({ children, size = 24, style, className }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+      {children}
+    </svg>
+  );
+}
+function ChevronLeft(props) { return <Icon {...props}><polyline points="15 18 9 12 15 6" /></Icon>; }
+function Search(props) { return <Icon {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></Icon>; }
+function Volume2(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></Icon>; }
+function VolumeX(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></Icon>; }
+function Type(props) { return <Icon {...props}><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></Icon>; }
+function X(props) { return <Icon {...props}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>; }
+function ExternalLink(props) { return <Icon {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></Icon>; }
+
+/* ====================================================================
+   HIV HONEST
+   Built from the "Honest" template (see TB / Hep B / COVID / Obesity
+   Honest) — same structure, fonts, and interaction patterns, new
+   content and color scheme. English only for now.
+
+   NOTE: the "New Research" tab is intentionally left as a placeholder
+   in this build to conserve usage. To add it later, copy the New
+   Research section from covid-honest.jsx or hepb-honest.jsx and
+   populate a RESEARCH_ITEMS array in this file's shape.
+   ==================================================================== */
+
+/* ---------------------------------- content: library articles ---------------------------------- */
+
+const ARTICLES = [
+  {
+    id: "what-is-hiv",
+    category: "Basics",
+    title: "What Is HIV?",
+    summary: "HIV and AIDS aren't the same thing — and treatment has changed everything.",
+    readTime: "3 min",
+    simple: [
+      "HIV (human immunodeficiency virus) is a virus that attacks the immune system, specifically cells called CD4 cells (a type of white blood cell) that help the body fight infections.",
+      "HIV and AIDS are not the same thing. HIV is the virus; AIDS (acquired immunodeficiency syndrome) is the most advanced stage of HIV infection, which happens only if HIV isn't treated and the immune system becomes severely damaged. With today's treatment, most people with HIV never progress to AIDS.",
+      "There's currently no cure for HIV, but modern treatment (called antiretroviral therapy, or ART) allows people with HIV to live long, healthy lives, and prevents the virus from being transmitted to others when taken consistently.",
+      "An estimated 1.2 million people in the U.S. are living with HIV, and around 1 in 7 don't know they have it, which is part of why testing matters even without symptoms.",
+    ],
+    detailed: [
+      "HIV (human immunodeficiency virus) attacks and gradually depletes CD4 T-cells, a type of white blood cell central to immune function, progressively weakening the body's ability to fight infections and certain cancers if left untreated.",
+      "HIV and AIDS ([[AIDS||Acquired immunodeficiency syndrome. The most advanced stage of HIV infection, occurring only when HIV is left untreated and severely damages the immune system.]]) are distinct: HIV is the virus itself, while AIDS refers to the most advanced stage of HIV infection, diagnosed when CD4 counts fall below a defined threshold or certain opportunistic infections occur, indicating severe immune damage. With consistent modern antiretroviral therapy (ART), the large majority of people living with HIV in the U.S. and other countries with good treatment access never progress to AIDS.",
+      "There is currently no cure for HIV, but ART, typically one to a few pills taken daily, suppresses the virus to very low or undetectable levels in the blood, allowing people with HIV to live long, healthy lives with a near-normal life expectancy when treatment is started and maintained consistently.",
+      "The CDC estimates approximately 1.2 million people in the United States are living with HIV, with roughly 1 in 7 unaware of their status. Global estimates from UNAIDS put the number of people living with HIV worldwide at around 39 million, with continued gaps in diagnosis and treatment access, particularly in certain regions and among certain populations.",
+    ],
+    sources: [
+      { label: "NIAID — HIV Treatment as Prevention", url: "https://www.niaid.nih.gov/diseases-conditions/treatment-prevention" },
+    ],
+  },
+  {
+    id: "how-hiv-spreads",
+    category: "Transmission",
+    title: "How HIV Spreads",
+    summary: "Specific body fluids only — not casual, everyday contact.",
+    readTime: "3 min",
+    simple: [
+      "HIV spreads through specific body fluids: blood, semen, vaginal and rectal fluids, and breast milk. It does not spread through casual contact like hugging, sharing food, or using the same toilet.",
+      "The most common ways HIV spreads today are through condomless sex with someone who has HIV and an unsuppressed viral load, and sharing needles or syringes for injection drug use.",
+      "HIV can also be passed from a parent to a child during pregnancy, birth, or breastfeeding, though modern treatment during pregnancy can reduce this risk to less than 1%.",
+      "People living with HIV who take treatment consistently and maintain an undetectable viral load cannot sexually transmit HIV to others, a scientifically proven concept called U=U (Undetectable = Untransmittable), covered in its own article in this library.",
+    ],
+    detailed: [
+      "HIV is transmitted through specific body fluids: blood, semen, pre-seminal fluid, vaginal fluid, rectal fluid, and breast milk. It is not transmitted through saliva, sweat, tears, casual contact, sharing food or drinks, or insect bites.",
+      "The most common transmission routes today include condomless anal or vaginal sex with a partner who has HIV and a detectable viral load, and sharing needles, syringes, or other injection drug equipment. Receptive anal sex without a condom carries the highest per-act risk of sexual transmission.",
+      "Perinatal (mother-to-child) transmission can occur during pregnancy, delivery, or breastfeeding, but with appropriate antiretroviral treatment during pregnancy and delivery, and appropriate infant care, this risk can be reduced to less than 1%, a major public health success story in HIV prevention.",
+      "A cornerstone finding in modern HIV science, established through large clinical trials including HPTN 052 and subsequent studies (PARTNER, PARTNER2, Opposites Attract), is that people living with HIV who take antiretroviral therapy consistently and achieve a durably undetectable viral load have effectively zero risk of sexually transmitting HIV to partners, a concept known as [[U=U||Undetectable = Untransmittable. A scientifically proven concept: people with HIV who maintain an undetectable viral load through treatment cannot sexually transmit HIV.]], covered in more detail in its own article in this library.",
+    ],
+    sources: [
+      { label: "Johns Hopkins HIV Guide — Pre-exposure Prophylaxis", url: "https://www.hopkinsguides.com/hopkins/view/Johns_Hopkins_HIV_Guide/545233/0/Pre_exposure_Prophylaxis" },
+    ],
+  },
+  {
+    id: "symptoms",
+    category: "Basics",
+    title: "Signs and Symptoms",
+    summary: "Often silent for years — which is exactly why testing matters.",
+    readTime: "2 min",
+    simple: [
+      "Many people with HIV have no symptoms at all for years, especially in the earlier stages, which is a major reason routine testing matters, not just testing based on symptoms.",
+      "Some people experience flu-like symptoms 2 to 4 weeks after infection (called acute HIV infection), including fever, sore throat, rash, fatigue, and swollen lymph nodes. These symptoms often go away on their own and can easily be mistaken for a common cold or flu.",
+      "Without treatment, HIV can gradually weaken the immune system over years, eventually leading to more serious infections and illnesses as it progresses toward AIDS. With treatment, this progression can be prevented entirely.",
+      "Because early symptoms are so easy to miss or misattribute, testing (not waiting for symptoms) is the only reliable way to know your HIV status.",
+    ],
+    detailed: [
+      "Many people with HIV are asymptomatic for years, particularly during the clinical latency stage that follows initial infection, which is a key reason routine, symptom-independent testing is a core public health recommendation rather than relying on symptom-triggered testing alone.",
+      "Roughly two-thirds of people experience an [[acute HIV infection||The first few weeks after HIV infection, when some people experience flu-like symptoms as the body's immune system reacts to the new infection.]] syndrome 2 to 4 weeks after exposure, involving fever, sore throat, rash, fatigue, muscle aches, and swollen lymph nodes, symptoms that closely resemble a common viral illness and often resolve on their own within one to two weeks, frequently without the person suspecting HIV.",
+      "Without treatment, HIV progressively depletes CD4 cells over a period that varies by individual, typically years, eventually leading to symptomatic HIV disease and, if still untreated, AIDS, marked by opportunistic infections and certain cancers that a healthy immune system would normally control. With consistent antiretroviral treatment started at any stage, this progression can be halted, and often substantially reversed in terms of immune recovery.",
+      "Because early and even intermediate-stage HIV infection frequently causes no distinctive symptoms, testing remains the only reliable method for diagnosis; the CDC recommends HIV testing at least once for all adults and adolescents as a routine part of healthcare, with more frequent testing recommended for people at higher ongoing risk.",
+    ],
+    sources: [
+      { label: "NIAID — HIV Treatment as Prevention", url: "https://www.niaid.nih.gov/diseases-conditions/treatment-prevention" },
+    ],
+  },
+  {
+    id: "testing",
+    category: "Testing",
+    title: "Getting Tested for HIV",
+    summary: "Several test types, and how soon each one can detect infection.",
+    readTime: "3 min",
+    simple: [
+      "There are several types of HIV tests: rapid antibody tests (results in 20 to 30 minutes), antibody/antigen combination tests (can detect infection sooner, often used in labs), and nucleic acid tests (NAT, which look for the virus itself and can detect infection earliest, but cost more and are used more selectively).",
+      "Most tests need some time after exposure to accurately detect HIV, called the 'window period,' typically ranging from about 10 days to 3 months depending on the test type. If you test very soon after a possible exposure, a follow-up test later is often recommended.",
+      "HIV self-tests, using a finger-prick blood sample or oral fluid, are available over the counter and let you test privately at home, with results in about 20 minutes.",
+      "The CDC recommends that everyone between ages 13 and 64 get tested for HIV at least once as a routine part of healthcare, with more frequent testing (like once a year) recommended for people at higher risk.",
+    ],
+    detailed: [
+      "Several types of HIV tests are in use, differing in what they detect and how soon after exposure they become accurate. Rapid antibody tests, using blood or oral fluid, provide results in 20 to 30 minutes and detect antibodies the body produces in response to HIV. Antigen/antibody combination tests, commonly used in labs, can detect infection slightly earlier by also checking for a viral protein (p24 antigen). Nucleic acid tests (NAT) detect the virus's genetic material directly and can identify infection earliest after exposure, though they are more expensive and typically reserved for higher-risk exposures or when early detection is a priority.",
+      "Each test type has a [[window period||The time between HIV exposure and when a test can reliably detect the infection. This varies by test type.]], the time after exposure before it can reliably detect infection: roughly 18 to 45 days for antigen/antibody lab tests, up to 90 days for some antibody-only tests, and as short as 10 to 33 days for NAT testing. Testing too soon after a specific exposure can produce a false negative, so follow-up testing is often recommended if an early test is negative but exposure risk was significant.",
+      "HIV self-tests, available over the counter without a prescription, use either a finger-prick blood sample or an oral fluid swab and provide results within about 20 minutes, offering a private, at-home testing option. Positive self-test results should always be confirmed with follow-up laboratory testing.",
+      "The CDC recommends HIV testing at least once for everyone aged 13 to 64 as a routine part of healthcare, regardless of perceived risk, with annual or more frequent testing recommended for people with ongoing risk factors, such as multiple sexual partners, injection drug use, or a partner with HIV. Testing is available at doctor's offices, health departments, community clinics, and via at-home tests, often at low or no cost through public health programs.",
+    ],
+    sources: [
+      { label: "NIAID — HIV Treatment as Prevention", url: "https://www.niaid.nih.gov/diseases-conditions/treatment-prevention" },
+    ],
+  },
+  {
+    id: "prep-pep",
+    category: "Prevention",
+    title: "PrEP and PEP: Preventing HIV",
+    summary: "Medicine that prevents HIV before or shortly after a possible exposure.",
+    readTime: "4 min",
+    simple: [
+      "PrEP (pre-exposure prophylaxis) is medicine that HIV-negative people can take to prevent getting HIV before a potential exposure. When taken as prescribed, it's highly effective, reducing the risk of getting HIV from sex by about 99%.",
+      "PrEP comes in a few forms: a daily pill, or long-acting injections given every 2 months or, with a newer option approved in 2025, just twice a year.",
+      "PEP (post-exposure prophylaxis) is emergency medicine taken after a possible HIV exposure (like unprotected sex or a needle-stick injury) to try to prevent infection. It must be started within 72 hours of exposure, the sooner the better, and taken daily for 28 days.",
+      "Both PrEP and PEP require a prescription and some medical monitoring, but they're an important, effective part of HIV prevention alongside condoms, testing, and treatment as prevention (U=U).",
+    ],
+    detailed: [
+      "[[PrEP||Pre-exposure prophylaxis. Medicine taken by HIV-negative people before a potential exposure to prevent getting HIV.]] (pre-exposure prophylaxis) refers to antiretroviral medication taken by HIV-negative individuals to reduce the risk of acquiring HIV. When taken as prescribed, PrEP reduces the risk of getting HIV from sex by about 99%, and from injection drug use by at least 74%, according to CDC data from clinical trials.",
+      "PrEP is available in three current forms: daily oral pills (tenofovir/emtricitabine combinations, brand names including Truvada and Descovy), a long-acting injectable given every two months (cabotegravir, brand name Apretude), and, following FDA approval in 2025, a twice-yearly long-acting injectable (lenacapavir, brand name Yeztugo), which represented a significant advance in reducing the adherence burden associated with daily pill-taking.",
+      "[[PEP||Post-exposure prophylaxis. Emergency medicine taken after a possible HIV exposure to try to prevent infection.]] (post-exposure prophylaxis) is emergency antiretroviral medication taken after a potential HIV exposure, such as condomless sex, a needle-stick injury, or sexual assault, to try to prevent infection from taking hold. PEP must be started within 72 hours of exposure to be effective, with effectiveness declining the longer treatment is delayed, and involves a 28-day course of antiretroviral medication.",
+      "Both PrEP and PEP require a prescription, and PrEP use involves periodic follow-up, generally every three months, including HIV testing, kidney function monitoring, and screening for other sexually transmitted infections. These medications are an important complement to, not a replacement for, other prevention strategies including condom use, regular testing, and treatment as prevention (U=U) for partners living with HIV.",
+    ],
+    sources: [
+      { label: "Johns Hopkins HIV Guide — Pre-exposure Prophylaxis", url: "https://www.hopkinsguides.com/hopkins/view/Johns_Hopkins_HIV_Guide/545233/0/Pre_exposure_Prophylaxis" },
+    ],
+  },
+  {
+    id: "u-equals-u",
+    category: "Treatment",
+    title: "U=U: Undetectable = Untransmittable",
+    summary: "Proven science that's also one of the most powerful tools against HIV stigma.",
+    readTime: "4 min",
+    simple: [
+      "U=U stands for 'Undetectable = Untransmittable.' It means that a person living with HIV who takes treatment consistently and maintains an undetectable viral load cannot sexually transmit HIV to their partners. This is not a theory; it's been proven through large scientific studies tracking thousands of couples.",
+      "'Undetectable' means the amount of HIV in the blood is so low that standard lab tests can't measure it, generally below 200 copies per milliliter. This doesn't mean the virus is gone or that someone is cured, but it does mean the virus is fully controlled by treatment.",
+      "Large clinical studies, including one that followed over 1,600 couples for years where one partner had HIV and the other didn't, found zero HIV transmissions when the partner with HIV maintained an undetectable viral load.",
+      "U=U is considered one of the most important tools for reducing HIV stigma, since it directly counters the fear that anyone living with HIV is a transmission risk, when in fact, effective treatment eliminates that risk entirely for sexual transmission.",
+    ],
+    detailed: [
+      "U=U (Undetectable = Untransmittable) refers to the scientific consensus that a person living with HIV who takes antiretroviral therapy consistently and maintains a durably undetectable viral load (generally under 200 copies of virus per milliliter of blood, measured every 4 to 6 months) has effectively zero risk of sexually transmitting HIV to a partner.",
+      "This conclusion rests on multiple large clinical studies. The NIAID-supported HPTN 052 trial followed more than 1,600 serodifferent couples (one partner with HIV, one without) over roughly a decade, finding that consistent viral suppression essentially eliminated sexual transmission; the transmission events that did occur happened only when the partner with HIV was not durably suppressed. Subsequent studies, including PARTNER, PARTNER2, and Opposites Attract, which together tracked thousands of additional couples (including gay male couples) having condomless sex, recorded zero linked HIV transmissions when the HIV-positive partner maintained an undetectable viral load.",
+      "It's worth being precise about what U=U covers: it applies specifically to sexual transmission. It does not apply to transmission through shared injection drug equipment, and while treatment during pregnancy dramatically reduces mother-to-child transmission risk, U=U as a concept is specifically validated for sexual transmission. Condoms remain useful for preventing other sexually transmitted infections and pregnancy, even when a partner is undetectable.",
+      "Beyond its prevention value, U=U has become a central tool in HIV stigma reduction efforts globally, since it directly counters one of the most persistent and damaging misconceptions about HIV: that anyone living with the virus poses an ongoing transmission risk. Public health campaigns built around U=U aim to replace that fear with the scientifically established reality that effective treatment eliminates sexual transmission risk entirely, which advocates argue is essential both for reducing stigma and for encouraging people to test and start treatment without fear of being seen as perpetually 'dangerous.'",
+    ],
+    sources: [
+      { label: "NIAID — HIV Treatment as Prevention", url: "https://www.niaid.nih.gov/diseases-conditions/treatment-prevention" },
+      { label: "Government of Canada — U=U Fact Sheet for Health Professionals", url: "https://www.canada.ca/en/public-health/services/publications/diseases-conditions/preventing-hiv-transmission-undetectable-equals-untransmittable-health-professionals-fact-sheet.html" },
+    ],
+  },
+  {
+    id: "treatment",
+    category: "Treatment",
+    title: "Treatment for HIV",
+    summary: "Daily therapy that suppresses the virus and protects long-term health.",
+    readTime: "3 min",
+    simple: [
+      "HIV is treated with antiretroviral therapy (ART): a combination of medicines, often now just one pill a day, that stops the virus from multiplying in the body.",
+      "ART doesn't cure HIV, but it suppresses the virus to undetectable levels, protects the immune system, and allows people with HIV to live long, healthy lives, similar in length to people without HIV, when started early and taken consistently.",
+      "Modern HIV medicine has come a long way: many people now take a single combination pill once daily, and long-acting injectable treatment (given every 1 or 2 months instead of daily pills) is also available for some people.",
+      "Current guidelines recommend starting treatment as soon as possible after diagnosis, regardless of how healthy someone feels, since earlier treatment leads to better long-term health and prevents transmission to others sooner.",
+    ],
+    detailed: [
+      "HIV is treated with antiretroviral therapy (ART), a combination of medications from different drug classes that work together to block the virus at different stages of its replication cycle, preventing it from multiplying and allowing the immune system to recover and stay strong.",
+      "Modern ART regimens have become substantially simpler than in earlier decades: many people now take a single tablet combining multiple drugs once daily. Long-acting injectable options (such as cabotegravir/rilpivirine, given monthly or every two months) are also available for eligible patients who prefer not to take daily pills.",
+      "ART does not eliminate HIV from the body entirely, since the virus can persist in a latent form in certain cells, but it suppresses active viral replication to undetectable levels in the blood, which halts disease progression, allows meaningful immune system recovery, and, when consistently maintained, prevents sexual transmission to partners (U=U).",
+      "Current clinical guidelines recommend starting ART as soon as possible after an HIV diagnosis, regardless of CD4 count or symptom status, a strategy known as 'treat all,' based on strong evidence that earlier treatment initiation improves long-term health outcomes and reduces the period of potential infectiousness. With consistent treatment, people living with HIV who start treatment promptly can expect a life expectancy approaching that of the general population.",
+    ],
+    sources: [
+      { label: "NIAID — HIV Treatment as Prevention", url: "https://www.niaid.nih.gov/diseases-conditions/treatment-prevention" },
+    ],
+  },
+  {
+    id: "myths",
+    category: "Myths",
+    title: "Common Myths About HIV",
+    summary: "Separating what's true from what people often assume.",
+    readTime: "3 min",
+    simple: [
+      "Myth: HIV and AIDS are the same thing. Fact: HIV is the virus; AIDS is the most advanced stage of untreated HIV infection. With treatment, most people with HIV never develop AIDS.",
+      "Myth: HIV can spread through casual contact, like hugging, sharing utensils, or using the same toilet. Fact: HIV only spreads through specific body fluids (blood, semen, vaginal/rectal fluids, breast milk), not through casual everyday contact.",
+      "Myth: people with HIV who are on treatment can still easily spread the virus. Fact: someone with HIV who maintains an undetectable viral load through consistent treatment cannot sexually transmit HIV to partners, a scientifically proven concept called U=U.",
+      "Myth: an HIV diagnosis means a dramatically shortened life. Fact: with modern treatment started promptly, people living with HIV can expect a life expectancy close to that of people without HIV.",
+      "Myth: only certain groups of people need to worry about HIV. Fact: HIV can affect anyone regardless of sexual orientation, gender, race, or age; routine testing is recommended for all adults, not just people perceived to be at higher risk.",
+    ],
+    detailed: [
+      "Myth: HIV and AIDS are interchangeable terms. Fact: HIV is the virus that causes infection; AIDS is a specific, advanced clinical stage that occurs only when HIV progresses untreated to severely damage the immune system. With modern antiretroviral treatment started at any point, the large majority of people living with HIV never progress to AIDS.",
+      "Myth: HIV spreads through casual, everyday contact such as hugging, sharing utensils or drinks, or using shared bathroom facilities. Fact: HIV transmission requires contact with specific body fluids, blood, semen, vaginal or rectal fluid, or breast milk, entering the bloodstream through mucous membranes, broken skin, or direct injection; it does not survive well outside the body and is not transmitted through saliva, sweat, tears, or casual contact.",
+      "Myth: people living with HIV who are on treatment remain a significant transmission risk. Fact: consistent antiretroviral treatment that achieves and maintains an undetectable viral load eliminates the risk of sexual HIV transmission, a finding established through multiple large clinical studies and now known as U=U (Undetectable = Untransmittable), detailed further in this library.",
+      "Myth: an HIV diagnosis dramatically shortens life expectancy. Fact: with antiretroviral treatment started promptly and taken consistently, people living with HIV can expect a life expectancy approaching that of the general population, a dramatic shift from the outlook in the earlier decades of the epidemic before effective treatment existed.",
+      "Myth: HIV risk is limited to specific identity groups. Fact: HIV can be transmitted to and from anyone through specific behaviors and exposures, regardless of sexual orientation, gender identity, race, or age. Framing HIV risk around group identity rather than actual exposure routes has historically fueled stigma and discrimination without improving public health outcomes, which is why the CDC recommends routine testing for all adults rather than testing based on assumptions about who is 'at risk.'",
+    ],
+    sources: [
+      { label: "NIAID — HIV Treatment as Prevention", url: "https://www.niaid.nih.gov/diseases-conditions/treatment-prevention" },
+    ],
+  },
+];
+
+const CATEGORIES = ["All", "Basics", "Transmission", "Testing", "Prevention", "Treatment", "Myths"];
+
+/* ---------------------------------- content: stigma ---------------------------------- */
+
+const STIGMA_CONTENT = {
+  title: "HIV Stigma, Explained",
+  simple: [
+    "HIV stigma is one of the most extensively studied forms of health-related stigma, and research consistently shows it's still one of the biggest barriers to testing, treatment, and living well with HIV, even decades into the epidemic and despite major medical advances.",
+    "A global survey across four countries found 88% of people believe negative attitudes toward people with HIV persist, even though HIV can now be effectively managed with treatment. Nearly 7 in 10 people in one survey said telling someone they have HIV feels risky.",
+    "This fear has real consequences: across 19 countries studied, 1 in 5 people living with HIV avoided going to a clinic or hospital because they feared stigma, and 1 in 4 reported actually experiencing discrimination in a healthcare setting.",
+    "A large analysis of surveys across 38 African countries found that people who experienced or anticipated HIV stigma were meaningfully less likely to be on treatment and less likely to have an undetectable viral load, directly connecting stigma to worse health outcomes, not just hurt feelings.",
+    "Much of this stigma is rooted in outdated fear: believing HIV is far easier to catch than it is, or that anyone living with HIV is a constant transmission risk, even though effective treatment (U=U) eliminates that risk entirely.",
+    "As with every stigmatized health condition covered on this app, the evidence-backed fix is the same: accurate information about how HIV actually spreads and how effectively it's treated today, paired with treating people living with HIV with the same respect as anyone managing any other chronic health condition.",
+  ],
+  detailed: [
+    "HIV-related stigma is among the most extensively studied forms of health stigma, and despite more than four decades of medical progress, including treatment that fully prevents sexual transmission, research consistently finds it remains a leading barrier to testing, treatment engagement, and quality of life for people living with HIV.",
+    "A Harris poll surveying over 5,000 adults across Australia, Portugal, the UK, and the US found that 88% believe negative perceptions toward people living with HIV persist even though the infection can now be effectively managed with antiretroviral therapy. A separate Australian report found nearly a third of HIV-positive respondents would rather avoid making new friends than disclose their status, and 69% believed disclosing an HIV diagnosis to someone was risky.",
+    "The consequences of this fear are well documented at a population level. A 2017 UNAIDS analysis found that across 19 countries with available data, 1 in 5 people living with HIV avoided going to a clinic or hospital due to fear of [[stigma||Negative attitudes, shame, or social rejection directed at someone because of a health condition or other trait.]] or discrimination, and 1 in 4 reported having actually experienced discrimination within a healthcare setting. In the United States specifically, research has found that nearly 8 in 10 adults with HIV in care report experiencing internalized HIV-related stigma, meaning they've absorbed some of the negative attitudes directed at people with the virus.",
+    "A large pooled analysis of 124 population-based surveys across 38 countries in Africa (the region with the highest global HIV burden) found that people living with HIV who anticipated or experienced HIV-related stigma were measurably less likely to be receiving antiretroviral treatment and less likely to have an undetectable, virally suppressed status, effects that grew stronger after adjusting for other factors. This directly links stigma not just to psychological harm, but to worse clinical outcomes across the entire HIV care continuum: testing, treatment initiation, and viral suppression.",
+    "Much of this persistent stigma traces back to outdated or incorrect beliefs about how easily HIV spreads, and to the lingering perception that anyone living with HIV poses an ongoing transmission risk, a belief directly contradicted by the [[U=U||Undetectable = Untransmittable. A scientifically proven concept: people with HIV who maintain an undetectable viral load through treatment cannot sexually transmit HIV.]] evidence covered elsewhere in this library: people on effective treatment with an undetectable viral load cannot sexually transmit HIV.",
+    "Consistent with the evidence base for reducing stigma around other health conditions, HIV-specific research and public health campaigns point toward the same underlying solution: widespread, accurate public understanding of how HIV actually spreads and how effectively it's managed today, paired with reframing HIV as a manageable chronic condition rather than an ongoing threat or moral judgment. Programs that have implemented integrated, stigma-reducing care models have shown measurable improvements: one clinic in Namibia, for example, saw a 20% reduction in deaths among people with HIV following such a shift.",
+  ],
+  sources: [
+    { label: "The Star Observer — Stigma the Top Issue Affecting HIV-Positive People", url: "https://www.starobserver.com.au/?p=161654" },
+    { label: "EATG — HIV Stigma Persists Globally, According to Harris Poll", url: "https://www.eatg.org/?p=5629" },
+    { label: "The Compass for SBC — Stigma Reduction for HIV (UNAIDS)", url: "https://thecompassforsbc.org/trending-topics/stigma-reduction-hiv" },
+    { label: "HAL Open Archive — The Impact of HIV Stigma on Testing, Treatment, and Viral Suppression in Africa", url: "https://integ04-cnspfv.archimed.fr/doc/OAI_1/oai-HAL-hal-05051039v1" },
+  ],
+};
+
+/* ---------------------------------- glossary rendering ---------------------------------- */
+
+function GlossaryWord({ term, definition, sizeClass }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        className={`font-semibold underline decoration-2 underline-offset-4 ${sizeClass}`}
+        style={{ color: "var(--accent)", textDecorationStyle: "dotted", textDecorationColor: "var(--highlight)" }}
+        aria-expanded={open}
+      >
+        {term}
+      </button>
+      {open && (
+        <span
+          className={`block mt-2 mb-1 pl-3 border-l-2 ${sizeClass}`}
+          style={{ borderColor: "var(--highlight)", color: "var(--ink-soft)" }}
+        >
+          {definition}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function renderRichText(text, sizeClass) {
+  const regex = /\[\[(.+?)\|\|(.+?)\]\]/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>);
+    }
+    parts.push(<GlossaryWord key={key++} term={match[1]} definition={match[2]} sizeClass={sizeClass} />);
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(<span key={key++}>{text.slice(lastIndex)}</span>);
+  }
+  return parts;
+}
+
+/* ---------------------------------- fonts ---------------------------------- */
+
+function useFonts() {
+  useEffect(() => {
+    const id = "hiv-honest-fonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+    document.head.appendChild(link);
+  }, []);
+}
+
+const BODY_FONT_STACK = "'Atkinson Hyperlegible', sans-serif";
+const HEADLINE_FONT_STACK = "'Fraunces', serif";
+
+/* ---------------------------------- app ---------------------------------- */
+
+const BODY_SIZES = ["text-base", "text-lg", "text-xl"];
+const TITLE_SIZES = ["text-2xl", "text-3xl", "text-4xl"];
+const LIST_TITLE_SIZES = ["text-lg", "text-xl", "text-2xl"];
+const INTRO_SIZES = ["text-xl", "text-2xl", "text-3xl"];
+
+function HivHonestApp() {
+  useFonts();
+
+  const [tab, setTab] = useState("library"); // 'library' | 'research' | 'stigma'
+  const [view, setView] = useState("home"); // 'home' | 'article'
+  const [activeId, setActiveId] = useState(null);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [level, setLevel] = useState("simple");
+  const [sizeStep, setSizeStep] = useState(1);
+  const [speaking, setSpeaking] = useState(false);
+  const [stigmaLevel, setStigmaLevel] = useState("simple");
+
+  const bodySize = BODY_SIZES[sizeStep];
+  const titleSize = TITLE_SIZES[sizeStep];
+  const listTitleSize = LIST_TITLE_SIZES[sizeStep];
+  const introSize = INTRO_SIZES[sizeStep];
+
+  const activeArticle = useMemo(() => ARTICLES.find((a) => a.id === activeId) || null, [activeId]);
+
+  function unwrapGlossary(text) {
+    return text.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1 $2");
+  }
+
+  function searchableText(article) {
+    const parts = [
+      article.title,
+      article.summary,
+      ...(article.simple || []),
+      ...(article.detailed || []),
+      ...(article.sources || []).map((s) => s.label),
+    ].filter(Boolean);
+    return unwrapGlossary(parts.join(" \n ")).toLowerCase();
+  }
+
+  function matchSnippet(article, q) {
+    if (!q) return null;
+    const alreadyVisible = article.title.toLowerCase().includes(q) || article.summary.toLowerCase().includes(q);
+    if (alreadyVisible) return null;
+    const body = unwrapGlossary([...(article.simple || []), ...(article.detailed || [])].join(" \n "));
+    const idx = body.toLowerCase().indexOf(q);
+    if (idx === -1) return null;
+    const start = Math.max(0, idx - 40);
+    const end = Math.min(body.length, idx + q.length + 60);
+    return (start > 0 ? "…" : "") + body.slice(start, end).trim() + (end < body.length ? "…" : "");
+  }
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ARTICLES.filter((a) => {
+      const matchesCategory = category === "All" || a.category === category;
+      const matchesQuery = !q || searchableText(a).includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  }, [query, category]);
+
+  function openArticle(id) {
+    stopSpeaking();
+    setActiveId(id);
+    setLevel("simple");
+    setView("article");
+  }
+
+  function goHome() {
+    stopSpeaking();
+    setView("home");
+    setActiveId(null);
+  }
+
+  function stopSpeaking() {
+    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+    setSpeaking(false);
+  }
+
+  function toggleSpeak() {
+    if (!activeArticle) return;
+    if (speaking) {
+      stopSpeaking();
+      return;
+    }
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const plain = (activeArticle[level] || []).map((p) => p.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1")).join(" ");
+    const text = `${activeArticle.title}. ${plain}`;
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.rate = 0.95;
+    utter.onend = () => setSpeaking(false);
+    utter.onerror = () => setSpeaking(false);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+    setSpeaking(true);
+  }
+
+  useEffect(() => stopSpeaking, []);
+
+  return (
+    <div
+      style={{
+        "--bg": "#FBF0EF",
+        "--bg-alt": "#F0DEDC",
+        "--ink": "#34211F",
+        "--ink-soft": "#7A5C59",
+        "--accent": "#A13D4C",
+        "--accent-soft": "#F3D9DC",
+        "--highlight": "#2F5C66",
+        "--line": "#E8D4D1",
+        backgroundColor: "var(--bg)",
+        color: "var(--ink)",
+        fontFamily: BODY_FONT_STACK,
+        minHeight: "100%",
+      }}
+      className="w-full"
+    >
+      <div className="max-w-2xl mx-auto px-5 pb-16">
+        {/* top bar */}
+        <div className="sticky top-0 z-10 flex items-center justify-between py-4" style={{ backgroundColor: "var(--bg)" }}>
+          {view === "article" ? (
+            <button onClick={goHome} className="flex items-center gap-1 font-semibold" style={{ color: "var(--accent)" }}>
+              <ChevronLeft size={20} />
+              <span>Back</span>
+            </button>
+          ) : (
+            <span className="font-semibold" style={{ fontFamily: HEADLINE_FONT_STACK, fontSize: "1.3rem", fontWeight: 600 }}>
+              HIV Honest
+            </span>
+          )}
+
+          <div className="flex items-center gap-2">
+            {view === "article" && (
+              <button
+                onClick={toggleSpeak}
+                aria-pressed={speaking}
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold border"
+                style={{
+                  borderColor: speaking ? "var(--accent)" : "var(--line)",
+                  color: speaking ? "white" : "var(--ink)",
+                  backgroundColor: speaking ? "var(--accent)" : "transparent",
+                }}
+              >
+                {speaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                {speaking ? "Stop" : "Listen"}
+              </button>
+            )}
+            <button
+              onClick={() => setSizeStep((s) => (s + 1) % 3)}
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold border"
+              style={{ borderColor: "var(--line)" }}
+              aria-label="Change text size"
+              title="Change text size"
+            >
+              <Type size={16} />
+              {["S", "M", "L"][sizeStep]}
+            </button>
+          </div>
+        </div>
+
+        {/* mission hero */}
+        {view === "home" && (
+          <div className="mb-8 pb-8" style={{ borderBottom: "1px solid var(--line)" }}>
+            <h1 className={titleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600, lineHeight: 1.15 }}>
+              Understanding HIV shouldn't require a medical degree.
+            </h1>
+            <p className={`${bodySize} mt-3`} style={{ color: "var(--ink-soft)", maxWidth: "42rem" }}>
+              HIV Honest turns real, sourced research into plain language you can actually use — including the
+              science of U=U, and the facts that cut through decades of stigma.
+            </p>
+          </div>
+        )}
+
+        {/* top-level tabs */}
+        {view === "home" && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {[
+              ["research", "New Research"],
+              ["library", "Library"],
+              ["stigma", "Stigma"],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`rounded-full px-4 py-1.5 font-semibold border ${bodySize}`}
+                style={{
+                  borderColor: tab === key ? "var(--highlight)" : "var(--line)",
+                  backgroundColor: tab === key ? "var(--accent-soft)" : "transparent",
+                  color: tab === key ? "var(--ink)" : "var(--ink-soft)",
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ---------------- library / home ---------------- */}
+        {view === "home" && tab === "library" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Browse articles on transmission, testing, prevention, and treatment — written in plain language
+              and backed by real sources.
+            </p>
+
+            <div className="flex items-center gap-2 rounded-full px-4 py-2.5 mb-4" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <Search size={18} style={{ color: "var(--ink-soft)" }} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search topics, like 'PrEP' or 'U=U'"
+                className={`bg-transparent outline-none w-full ${bodySize}`}
+                style={{ color: "var(--ink)" }}
+              />
+              {query && (
+                <button onClick={() => setQuery("")} aria-label="Clear search">
+                  <X size={16} style={{ color: "var(--ink-soft)" }} />
+                </button>
+              )}
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 mb-6" style={{ scrollbarWidth: "none" }}>
+              {CATEGORIES.map((c) => {
+                const activeCat = c === category;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategory(c)}
+                    className={`shrink-0 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                    style={{
+                      borderColor: activeCat ? "var(--highlight)" : "var(--line)",
+                      backgroundColor: activeCat ? "var(--accent-soft)" : "transparent",
+                      color: activeCat ? "var(--ink)" : "var(--ink-soft)",
+                    }}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+            </div>
+
+            {filtered.length === 0 ? (
+              <p className={`${bodySize} py-8`} style={{ color: "var(--ink-soft)" }}>
+                No articles match your search. Try a different word or category.
+              </p>
+            ) : (
+              <div>
+                {filtered.map((a, i) => {
+                  const snippet = matchSnippet(a, query.trim().toLowerCase());
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => openArticle(a.id)}
+                      className="w-full text-left py-5"
+                      style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}
+                    >
+                      <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                        {a.title}
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {a.summary}
+                      </div>
+                      {snippet && (
+                        <div className="text-sm mt-1.5 italic" style={{ color: "var(--ink-soft)" }}>
+                          "{snippet}"
+                        </div>
+                      )}
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {a.category} · {a.readTime}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              This app explains general health information in plain language. It is not medical advice and
+              doesn't replace a visit with your doctor or nurse.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- new research (placeholder) ---------------- */}
+        {view === "home" && tab === "research" && (
+          <>
+            <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Real HIV research, explained simply.
+            </p>
+            <p className={`${bodySize} mb-8`} style={{ color: "var(--ink-soft)" }}>
+              This section isn't built yet.
+            </p>
+            <div className="rounded-xl py-10 text-center" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <div className={`${listTitleSize} font-semibold`} style={{ fontFamily: HEADLINE_FONT_STACK }}>
+                Under construction
+              </div>
+              <p className={`${bodySize} mt-2`} style={{ color: "var(--ink-soft)" }}>
+                Check the Library and Stigma tabs in the meantime.
+              </p>
+            </div>
+          </>
+        )}
+
+        {/* ---------------- stigma ---------------- */}
+        {view === "home" && tab === "stigma" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              {STIGMA_CONTENT.title}
+            </p>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={stigmaLevel === key}
+                  onClick={() => setStigmaLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: stigmaLevel === key ? "var(--accent)" : "transparent", color: stigmaLevel === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {STIGMA_CONTENT[stigmaLevel].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+              <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                Sources
+              </div>
+              <ul className="space-y-1">
+                {STIGMA_CONTENT.sources.map((s, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm inline-flex items-center gap-1"
+                      style={{ color: "var(--accent)" }}
+                    >
+                      {s.label}
+                      <ExternalLink size={12} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="text-sm mt-6" style={{ color: "var(--ink-soft)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- article ---------------- */}
+        {view === "article" && activeArticle && (
+          <div>
+            <div className="text-sm font-semibold mb-2" style={{ color: "var(--highlight)" }}>
+              {activeArticle.category} · {activeArticle.readTime}
+            </div>
+            <h1 className={`${titleSize} mb-4 leading-tight`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+              {activeArticle.title}
+            </h1>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={level === key}
+                  onClick={() => setLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: level === key ? "var(--accent)" : "transparent", color: level === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {activeArticle[level].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            {activeArticle.sources && activeArticle.sources.length > 0 && (
+              <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+                <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                  Sources
+                </div>
+                <ul className="space-y-1">
+                  {activeArticle.sources.map((s, idx) => (
+                    <li key={idx}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm inline-flex items-center gap-1"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {s.label}
+                        <ExternalLink size={12} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <p className="text-sm mt-6 pt-6" style={{ color: "var(--ink-soft)", borderTop: activeArticle.sources ? "none" : "1px solid var(--line)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<HivHonestApp />);
+
+</script>
+<script>
+  var sourceCode = document.getElementById("app-source").textContent;
+  var compiled = Babel.transform(sourceCode, {
+    presets: [["react", { runtime: "classic" }]]
+  }).code;
+  var scriptEl = document.createElement("script");
+  scriptEl.text = compiled;
+  document.body.appendChild(scriptEl);
+</script>
+</body>
+</html>
