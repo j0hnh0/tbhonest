@@ -29,6 +29,7 @@ function Icon({ children, size = 24, style, className }) {
   );
 }
 function ChevronLeft(props) { return <Icon {...props}><polyline points="15 18 9 12 15 6" /></Icon>; }
+function ChevronDown(props) { return <Icon {...props}><polyline points="6 9 12 15 18 9" /></Icon>; }
 function Search(props) { return <Icon {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></Icon>; }
 function Volume2(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></Icon>; }
 function VolumeX(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></Icon>; }
@@ -264,7 +265,61 @@ const STIGMA_CONTENT = {
   ],
 };
 
-/* ---------------------------------- glossary rendering ---------------------------------- */
+/* ---------------------------------- new research (static — refresh periodically) ---------------------------------- */
+
+const RESEARCH_LAST_UPDATED = "September 2026";
+
+const RESEARCH_ITEMS = [
+  {
+    id: "orforglipron-fda-approval",
+    headline: "FDA approves the first weight-loss pill in the GLP-1 class",
+    source: "PBS NewsHour / Associated Press",
+    sourceUrl: "https://pbs.org/newshour/health/fda-grants-speedy-approval-to-eli-lillys-weight-loss-pill-for-obesity",
+    datePublished: "April 2026",
+    tag: "Treatment news",
+    whyItMatters: "A pill instead of an injection could make GLP-1 treatment more accessible and appealing to people who don't want, or can't easily manage, injections.",
+    summary: [
+      "On April 1, 2026, the FDA granted expedited approval to orforglipron, the first daily pill in the GLP-1 class approved specifically for obesity treatment. Until now, all GLP-1 medicines approved for weight loss in the U.S. required injections.",
+      "Orforglipron works the same way as injectable GLP-1 medicines like semaglutide and tirzepatide, mimicking a natural gut hormone that reduces appetite and helps people feel full sooner.",
+      "Because it's a small-molecule drug rather than a protein that needs to be injected, orforglipron may also be cheaper to manufacture, which researchers involved in its testing have suggested could make it more affordable and widely accessible than current injectable options, once available.",
+    ],
+  },
+  {
+    id: "orforglipron-phase3-trial",
+    headline: "Large trial: some patients lost 20% of body weight on new obesity pill",
+    source: "European Association for the Study of Diabetes / NEJM",
+    sourceUrl: "https://www.sciencedaily.com/releases/2025/09/250924012248.htm",
+    datePublished: "September 2025",
+    tag: "New study",
+    whyItMatters: "This is one of the largest studies yet of an oral (pill-based) GLP-1 medicine, showing it can produce weight loss in the same range as injectable options.",
+    summary: [
+      "A phase 3 trial of more than 3,100 adults with obesity (without diabetes) tested orforglipron, a once-daily pill version of a GLP-1 medicine, over 72 weeks. Results were presented at a major diabetes research conference and published in the New England Journal of Medicine.",
+      "Patients taking the highest dose lost an average of more than 10% of their starting body weight, and researchers reported that nearly 1 in 5 participants on the highest dose lost 20% or more of their body weight.",
+      "Side effects were reported as similar to those seen with injectable GLP-1 medicines, mainly gastrointestinal symptoms like nausea. Researchers noted the potential for a pill-based option to expand access for people who prefer not to use injections.",
+    ],
+  },
+  {
+    id: "glp1-muscle-loss-considerations",
+    headline: "What GLP-1 medicines can mean for muscle, not just fat",
+    source: "Clinical review",
+    sourceUrl: "https://www.doctronic.ai/blog/does-orforglipron-cause-muscle-loss/",
+    datePublished: "July 2026",
+    tag: "New study",
+    whyItMatters: "Losing weight quickly can mean losing muscle along with fat, so this is a practical consideration to raise with a provider when starting GLP-1 treatment.",
+    summary: [
+      "As GLP-1 medicines have become more widely used for weight loss, researchers and clinicians have paid closer attention to how much of the weight lost comes from fat versus muscle. A mid-2026 clinical review found that some muscle loss is a normal part of weight reduction on these medicines, similar to what's seen with other approaches to significant weight loss.",
+      "The review found that muscle loss tends to be proportional to how much weight is lost overall, rather than something unique to any one specific GLP-1 medicine, and that rapid weight loss carries a higher risk of muscle loss than more gradual weight loss.",
+      "Getting enough protein and doing resistance training (strength exercises) during treatment were identified as practical ways to help preserve muscle mass, and the review recommended regular monitoring so any concerning muscle loss can be caught and addressed early.",
+    ],
+  },
+];
+
+const SIBLING_SITES = [
+  { label: "TB Honest", path: "/", color: "#2B6E68" },
+  { label: "HIV Honest", path: "/hiv/", color: "#A13D4C" },
+  { label: "COVID Honest", path: "/covid/", color: "#6B3FA0" },
+  { label: "Hep B Honest", path: "/hepb/", color: "#B5541E" },
+];
 
 function GlossaryWord({ term, definition, sizeClass }) {
   const [open, setOpen] = useState(false);
@@ -349,6 +404,7 @@ function ObesityHonestApp() {
   const [sizeStep, setSizeStep] = useState(1);
   const [speaking, setSpeaking] = useState(false);
   const [stigmaLevel, setStigmaLevel] = useState("simple");
+  const [expandedResearchId, setExpandedResearchId] = useState(null);
 
   const bodySize = BODY_SIZES[sizeStep];
   const titleSize = TITLE_SIZES[sizeStep];
@@ -503,6 +559,23 @@ function ObesityHonestApp() {
               the facts that cut through stigma, and why obesity is now recognized as a chronic disease, not a
               personal failing.
             </p>
+
+            <div className="text-sm font-semibold mt-6 mb-3" style={{ color: "var(--ink-soft)" }}>
+              More from the Honest series
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {SIBLING_SITES.map((site) => (
+                <a
+                  key={site.path}
+                  href={site.path}
+                  className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                  style={{ borderColor: "var(--line)", color: "var(--ink)" }}
+                >
+                  <span style={{ width: 8, height: 8, borderRadius: 9999, backgroundColor: site.color, display: "inline-block", flexShrink: 0 }} />
+                  {site.label}
+                </a>
+              ))}
+            </div>
           </div>
         )}
 
@@ -616,23 +689,88 @@ function ObesityHonestApp() {
           </>
         )}
 
-        {/* ---------------- new research (placeholder) ---------------- */}
+        {/* ---------------- new research ---------------- */}
         {view === "home" && tab === "research" && (
           <>
             <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
               Real obesity research, explained simply.
             </p>
-            <p className={`${bodySize} mb-8`} style={{ color: "var(--ink-soft)" }}>
-              This section isn't built yet.
+            <p className={`${bodySize} mb-1`} style={{ color: "var(--ink-soft)" }}>
+              We periodically review current studies, guidelines, and health news about obesity, then rewrite
+              what we find in plain language. Every item links back to its real source.
             </p>
-            <div className="rounded-xl py-10 text-center" style={{ backgroundColor: "var(--bg-alt)" }}>
-              <div className={`${listTitleSize} font-semibold`} style={{ fontFamily: HEADLINE_FONT_STACK }}>
-                Under construction
-              </div>
-              <p className={`${bodySize} mt-2`} style={{ color: "var(--ink-soft)" }}>
-                Check the Library and Stigma tabs in the meantime.
-              </p>
+            <p className="text-sm mb-6" style={{ color: "var(--ink-soft)" }}>
+              Last updated: {RESEARCH_LAST_UPDATED}
+            </p>
+
+            <div>
+              {RESEARCH_ITEMS.map((r, i) => {
+                const expanded = expandedResearchId === r.id;
+                return (
+                  <div key={r.id || i} style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setExpandedResearchId(expanded ? null : r.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setExpandedResearchId(expanded ? null : r.id);
+                        }
+                      }}
+                      aria-expanded={expanded}
+                      className="w-full text-left py-5 cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                          {r.headline}
+                        </div>
+                        <ChevronDown
+                          size={20}
+                          style={{ color: "var(--ink-soft)", transform: expanded ? "rotate(180deg)" : "none", flexShrink: 0, marginTop: 4 }}
+                        />
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {renderRichText(r.whyItMatters || "", bodySize)}
+                      </div>
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {r.tag ? `${r.tag} · ` : ""}
+                        {r.source}
+                        {r.datePublished ? ` · ${r.datePublished}` : ""}
+                      </div>
+                    </div>
+
+                    {expanded && (
+                      <div className="pb-5">
+                        <div className={`${bodySize} space-y-3`} style={{ lineHeight: 1.7 }}>
+                          {(r.summary || []).map((p, idx) => (
+                            <p key={idx}>{renderRichText(p, bodySize)}</p>
+                          ))}
+                        </div>
+                        {r.sourceUrl && (
+                          <a
+                            href={r.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1.5 mt-3 font-semibold ${bodySize}`}
+                            style={{ color: "var(--accent)" }}
+                          >
+                            Read the source
+                            <ExternalLink size={15} />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              These summaries are written by AI from current research and news, and may contain mistakes. Use
+              the source link to check the original, and always talk with your doctor or nurse about your own
+              health.
+            </p>
           </>
         )}
 
