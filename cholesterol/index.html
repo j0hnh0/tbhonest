@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cholesterol Honest</title>
+<meta name="description" content="Clear, simple, sourced answers about high cholesterol." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  html, body, #root { height: 100%; }
+  body { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-source">
+const { useState, useEffect, useMemo, useRef } = React;
+
+function Icon({ children, size = 24, style, className }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+      {children}
+    </svg>
+  );
+}
+function ChevronLeft(props) { return <Icon {...props}><polyline points="15 18 9 12 15 6" /></Icon>; }
+function ChevronDown(props) { return <Icon {...props}><polyline points="6 9 12 15 18 9" /></Icon>; }
+function Search(props) { return <Icon {...props}><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></Icon>; }
+function Volume2(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" /></Icon>; }
+function VolumeX(props) { return <Icon {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></Icon>; }
+function Type(props) { return <Icon {...props}><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></Icon>; }
+function X(props) { return <Icon {...props}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>; }
+function ExternalLink(props) { return <Icon {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></Icon>; }
+function Globe(props) { return <Icon {...props}><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></Icon>; }
+
+/* ====================================================================
+   CHOLESTEROL HONEST
+   Built from the "Honest" template (see TB / Hep B / COVID / Obesity /
+   HIV Honest) — same structure, fonts, and interaction patterns, new
+   content and color scheme. English only for now.
+   ==================================================================== */
+
+/* ---------------------------------- content: library articles ---------------------------------- */
+
+const ARTICLES = [
+  {
+    id: "what-is-high-cholesterol",
+    category: "Basics",
+    title: "What Is High Cholesterol?",
+    summary: "LDL, HDL, and triglycerides — the basics, in plain words.",
+    readTime: "2 min",
+    simple: [
+      "Cholesterol is a waxy, fat-like substance your body needs to build cells and make hormones. Your body makes all the cholesterol it needs on its own; the rest comes from food.",
+      "High cholesterol usually means too much of a specific kind called [[LDL||Low-density lipoprotein, often called 'bad' cholesterol because high levels are linked to a higher risk of heart disease.]] (often called 'bad' cholesterol) circulating in your blood. Over time, too much LDL can build up in the walls of your arteries, narrowing them and raising your risk of heart attack and stroke.",
+      "Not all cholesterol is bad: [[HDL||High-density lipoprotein, often called 'good' cholesterol because it helps carry excess cholesterol away from your arteries and back to your liver.]] ('good' cholesterol) actually helps carry excess cholesterol out of your bloodstream. A third number, triglycerides, measures a different type of fat in your blood.",
+      "High cholesterol itself usually has no symptoms. Most people find out through a routine blood test, not because they feel unwell.",
+    ],
+    detailed: [
+      "Cholesterol is a waxy, lipid (fat-like) substance essential for building cell membranes, producing hormones, and making vitamin D. The liver produces all the cholesterol the body needs; dietary intake adds to this baseline supply.",
+      "Cholesterol travels through the bloodstream packaged with proteins in particles called lipoproteins. [[LDL||Low-density lipoprotein, often called 'bad' cholesterol because high levels are linked to a higher risk of heart disease.]] (low-density lipoprotein) carries cholesterol to tissues throughout the body; when LDL levels are chronically elevated, cholesterol can deposit in artery walls, contributing to a process called atherosclerosis (arterial plaque buildup) that narrows and stiffens arteries over years to decades.",
+      "[[HDL||High-density lipoprotein, often called 'good' cholesterol because it helps carry excess cholesterol away from your arteries and back to your liver.]] (high-density lipoprotein) performs largely the opposite function, transporting excess cholesterol from tissues and arteries back to the liver for processing and elimination, which is why higher HDL levels are generally considered protective. Triglycerides, a separate type of blood fat that stores unused calories for energy, are measured alongside LDL and HDL, and elevated levels are independently linked to cardiovascular risk, particularly when combined with high LDL or low HDL.",
+      "High cholesterol (hyperlipidemia or hypercholesterolemia) is typically asymptomatic; most people are diagnosed through routine blood testing rather than through any physical symptoms, which is central to why screening guidelines exist independent of how someone feels.",
+    ],
+    sources: [
+      { label: "UPMC — Does High Cholesterol Run in Families?", url: "https://share.upmc.com/2022/09/high-cholesterol/" },
+    ],
+  },
+  {
+    id: "causes",
+    category: "Causes",
+    title: "What Causes High Cholesterol?",
+    summary: "Diet and lifestyle matter — but genetics often matter just as much.",
+    readTime: "3 min",
+    simple: [
+      "High cholesterol usually comes from a mix of diet, lifestyle, and genetics, and for many people, genetics plays a much bigger role than most people assume.",
+      "Diets high in saturated and trans fats, being inactive, smoking, and carrying excess weight can all raise LDL cholesterol and lower HDL cholesterol.",
+      "Some people inherit a genetic condition called familial hypercholesterolemia (FH) that causes very high cholesterol from birth, regardless of diet or exercise habits. This affects roughly 1 in 250 to 1 in 500 people and is covered in its own article in this library.",
+      "Because both lifestyle and genetics matter, someone can have high cholesterol despite eating well and exercising regularly, and it's not accurate or fair to assume high cholesterol always reflects someone's habits.",
+    ],
+    detailed: [
+      "High cholesterol arises from a combination of dietary, lifestyle, and genetic factors, and the balance between these varies significantly from person to person.",
+      "Diets high in saturated fat and trans fat raise LDL cholesterol levels, while physical inactivity, smoking, and excess body weight, particularly abdominal fat, tend to raise LDL and triglycerides while lowering protective HDL. These modifiable factors are the primary target of lifestyle-based treatment approaches.",
+      "A meaningful share of high cholesterol cases have a strong genetic basis. [[Familial hypercholesterolemia||A genetic condition, present from birth, that causes very high LDL cholesterol regardless of diet or lifestyle. Covered in more detail in its own article.]] (FH), caused by mutations in genes including LDLR, APOB, and PCSK9 that impair the body's ability to clear LDL from the blood, affects an estimated 1 in 250 to 1 in 500 people and causes significantly elevated cholesterol from birth, independent of diet or exercise. Beyond FH specifically, cholesterol levels overall have a substantial heritable component even outside of this single-gene condition.",
+      "Because genetics can play as large or larger a role than lifestyle for many individuals, it's inaccurate and unfair to assume that a high cholesterol diagnosis reflects someone's personal habits. This misconception is explored further, along with its real consequences, on this app's Stigma page.",
+    ],
+    sources: [
+      { label: "UPMC — Does High Cholesterol Run in Families?", url: "https://share.upmc.com/2022/09/high-cholesterol/" },
+    ],
+  },
+  {
+    id: "familial-hypercholesterolemia",
+    category: "Causes",
+    title: "Familial Hypercholesterolemia: The Genetic Kind",
+    summary: "A common inherited condition that's massively underdiagnosed.",
+    readTime: "4 min",
+    simple: [
+      "Familial hypercholesterolemia (FH) is a genetic condition, present from birth, that causes very high LDL cholesterol because the body can't properly clear it from the blood. It affects an estimated 1 in 250 to 1 in 500 people.",
+      "FH is caused by mutations in specific genes (most often LDLR, sometimes APOB or PCSK9) that are passed down from a parent. If one parent has the mutation, each child has about a 50% chance of inheriting it.",
+      "Because FH causes high cholesterol from birth, it dramatically raises the risk of heart attacks at a young age, sometimes in someone's 30s or 40s, or even earlier, if untreated.",
+      "FH is significantly underdiagnosed: most people who have it don't know it, in part because high cholesterol in a young, otherwise healthy-looking person often isn't suspected to have a genetic cause. A strong family history of early heart attacks or very high cholesterol is a key clue that should prompt testing.",
+    ],
+    detailed: [
+      "Familial hypercholesterolemia (FH) is an inherited disorder, present from birth, caused by mutations in genes, most commonly LDLR, and less often APOB or PCSK9, that impair the body's ability to remove LDL cholesterol from the bloodstream. This results in significantly elevated LDL levels beginning in childhood, regardless of diet, exercise, or weight.",
+      "FH follows an autosomal dominant inheritance pattern: someone with one copy of a disease-causing gene variant from one parent (heterozygous FH) has roughly a 50% chance of passing it to each child. Heterozygous FH affects an estimated 1 in 250 to 1 in 500 people, making it one of the more common inherited conditions overall. The rare form, homozygous FH (inheriting the variant from both parents), causes even more extreme cholesterol elevations and much earlier, more severe disease.",
+      "Untreated, FH substantially raises the risk of premature coronary heart disease; historical data suggests at least a 50% cumulative risk of a coronary event by age 60 in men with untreated heterozygous FH, and roughly 30% in women, though modern statin treatment has meaningfully improved this outlook when FH is identified and treated early.",
+      "FH remains significantly underdiagnosed worldwide. Studies have found that only a small fraction of expected cases, in some analyses around a quarter, are identified in routine clinical practice, with underdiagnosis worst among children and young adults. A major contributing factor is that clinicians and patients alike often assume high cholesterol reflects diet or lifestyle, so it isn't investigated as a possible genetic condition in people who appear otherwise healthy, exercise regularly, or maintain a healthy weight. A strong personal or family history of very high cholesterol or early heart attacks (before age 55 in men, 65 in women) should prompt specific testing for FH, including cholesterol levels and, when appropriate, genetic testing.",
+    ],
+    sources: [
+      { label: "Cedars-Sinai — Familial Hypercholesterolemia", url: "https://www.cedars-sinai.org/health-library/diseases-and-conditions/f/familial-hypercholesterolemia.html" },
+      { label: "BMJ — Extent of Underdiagnosis of Familial Hypercholesterolaemia in Routine Practice", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC27432" },
+    ],
+  },
+  {
+    id: "testing",
+    category: "Testing",
+    title: "Getting Tested: The Lipid Panel",
+    summary: "A simple blood test, and what the numbers actually mean.",
+    readTime: "3 min",
+    simple: [
+      "Cholesterol is checked with a simple blood test called a lipid panel, which measures total cholesterol, LDL ('bad'), HDL ('good'), and triglycerides.",
+      "You usually don't need to fast beforehand for a routine cholesterol check; current guidelines say a non-fasting test is accurate enough for most people, though your doctor may ask you to fast in certain situations.",
+      "Cholesterol numbers are reported in mg/dL in the U.S. General guidelines consider LDL under 100 optimal, HDL above 60 protective, and triglycerides under 150 normal, though your personal targets depend on your overall heart disease risk, not just these numbers alone.",
+      "Routine cholesterol screening is generally recommended starting in young adulthood, with the exact frequency depending on your age, risk factors, and prior results. Ask your doctor when and how often you should be tested, especially if you have a family history of high cholesterol or early heart disease.",
+    ],
+    detailed: [
+      "Cholesterol is assessed through a blood test called a [[lipid panel||A blood test that measures total cholesterol, LDL, HDL, and triglycerides.]] (or lipid profile), which reports total cholesterol, LDL, HDL, and triglycerides. Some panels also calculate additional values like non-HDL cholesterol or an LDL/HDL ratio.",
+      "Historically, fasting for 9 to 12 hours was standard before a lipid panel, but current guidelines from multiple major cardiology and lipid organizations now consider non-fasting testing sufficiently accurate for most routine screening purposes, simplifying testing logistics for most patients. Fasting may still be recommended in specific circumstances, such as significantly elevated triglycerides on a prior non-fasting test.",
+      "General reference ranges (in mg/dL) used in the U.S. include: LDL under 100 as optimal (with lower targets for people at higher cardiovascular risk), HDL above 60 as protective (below 40 in men or 50 in women considered low), and triglycerides under 150 as normal. However, target levels are individualized based on a person's overall cardiovascular risk profile, including blood pressure, diabetes status, smoking history, family history, and calculated risk scores, not lipid numbers in isolation.",
+      "Guidelines increasingly recommend a one-time [[lipoprotein(a)||A genetically determined type of cholesterol particle. Unlike LDL, it isn't significantly affected by diet or lifestyle, and elevated levels raise cardiovascular risk independent of standard cholesterol numbers.]] (Lp(a)) test for all adults at some point, since Lp(a) is a largely genetically determined risk factor that standard lipid panels don't capture and that doesn't change meaningfully with diet or lifestyle. Routine screening for standard cholesterol is generally recommended starting in early adulthood, with frequency depending on age, risk factors, and prior results, so it's worth asking your provider about a personalized testing schedule.",
+    ],
+    sources: [
+      { label: "Pharmacy Times — Enlicitide and the New Wave of PCSK9 Inhibitors", url: "https://www.pharmacytimes.com/view/enlicitide-and-the-new-wave-of-pcsk9-inhibitors" },
+    ],
+  },
+  {
+    id: "lifestyle",
+    category: "Treatment",
+    title: "Lifestyle Approaches",
+    summary: "A real foundation for many people — but not the whole story for everyone.",
+    readTime: "3 min",
+    simple: [
+      "Diet and exercise changes are usually the first step recommended for improving cholesterol, and they genuinely help, especially for cholesterol driven mainly by lifestyle factors.",
+      "Helpful changes include reducing saturated and trans fats, eating more fiber (like oats, beans, and vegetables), getting regular physical activity, maintaining a healthy weight, and not smoking.",
+      "For people with a strong genetic component to their high cholesterol, like familial hypercholesterolemia, lifestyle changes alone usually aren't enough to reach a safe cholesterol level, and medication is typically needed too, not instead of lifestyle changes, but alongside them.",
+      "Lifestyle changes take time to show results, generally weeks to a few months, and work best as an ongoing habit rather than a short-term fix.",
+    ],
+    detailed: [
+      "Dietary and lifestyle modification is typically recommended as an initial or complementary approach to managing cholesterol, and has genuine, well-documented benefit, particularly for the lifestyle-driven component of someone's cholesterol levels.",
+      "Evidence-based dietary changes include reducing saturated fat (found in fatty meats, full-fat dairy, and many processed foods) and eliminating trans fat where possible, increasing soluble fiber intake (oats, legumes, fruits), incorporating more unsaturated fats (olive oil, nuts, fatty fish), and limiting refined carbohydrates and added sugars, which particularly affect triglyceride levels. Regular aerobic physical activity, weight management, and smoking cessation each independently improve the overall lipid profile.",
+      "For people whose elevated cholesterol has a substantial genetic component, such as familial hypercholesterolemia, lifestyle changes alone are typically insufficient to reach safe LDL targets, and medication is generally necessary in addition to, not instead of, lifestyle changes. This is an important distinction, since assuming lifestyle change alone should be sufficient can delay necessary medical treatment for people with a genetic predisposition.",
+      "Lifestyle interventions generally take several weeks to a few months to produce measurable changes in lipid levels, and sustained benefit depends on the changes being maintained long-term rather than treated as a short-term intervention.",
+    ],
+    sources: [
+      { label: "UPMC — Does High Cholesterol Run in Families?", url: "https://share.upmc.com/2022/09/high-cholesterol/" },
+    ],
+  },
+  {
+    id: "statins",
+    category: "Treatment",
+    title: "Statins and Other Medications",
+    summary: "The most studied cholesterol medicine in existence — and safer than commonly believed.",
+    readTime: "4 min",
+    simple: [
+      "Statins are the most commonly prescribed cholesterol medicine and remain the first choice for most people who need medication, because decades of research show they reliably lower LDL and reduce the risk of heart attack and stroke.",
+      "Statins work by blocking an enzyme the liver uses to make cholesterol, which lowers LDL and modestly raises HDL. Common examples include atorvastatin, rosuvastatin, and simvastatin.",
+      "Statins have a strong safety record: in large clinical trials, serious side effects clearly caused by the medicine are uncommon (under 2%), and most people who start a statin are able to keep taking it long-term.",
+      "Despite this safety record, roughly 1 in 4 patients decline a statin when their doctor recommends one, often influenced by widely circulated myths and negative stories about side effects. This mismatch between the evidence and public perception is covered further on this app's Stigma page.",
+    ],
+    detailed: [
+      "[[Statins||A common type of cholesterol medicine that blocks an enzyme the liver uses to make cholesterol, lowering LDL levels.]] remain the first-line medication for most people who need pharmacological cholesterol management, supported by an exceptionally large evidence base spanning decades of clinical trials involving hundreds of thousands of participants. They work by inhibiting HMG-CoA reductase, an enzyme the liver uses in cholesterol synthesis, which lowers LDL, modestly raises HDL, and reduces triglycerides. Common statins include atorvastatin, rosuvastatin, simvastatin, and pravastatin, which differ somewhat in potency and interactions but share the same core mechanism.",
+      "Statin clinical trial data consistently show a roughly 30% reduction in heart attack and stroke risk with treatment, and a well-documented safety profile: serious side effects definitively attributable to the medication occur in under 2% of patients in trial settings, and more than 80% of patients are able to continue statin therapy long-term without stopping due to side effects.",
+      "This trial-based safety record contrasts with real-world prescribing patterns: research has found that roughly 25% of patients decline a statin when a doctor recommends one, and muscle-related symptoms are commonly reported in practice at rates well above what clinical trials would predict. Researchers attribute much of this gap to the [[nocebo effect||When negative expectations about a medication cause someone to experience, or attribute unrelated symptoms to, side effects that wouldn't otherwise occur or be noticed.]], where widespread negative media coverage and anecdote-driven online content about statins lead patients to expect and subsequently report side effects at a higher rate than the medication itself is likely to cause.",
+      "For people who can't tolerate statins or don't reach their target LDL with statins alone, additional non-statin medications are available, including ezetimibe (which reduces cholesterol absorption in the gut) and newer options like PCSK9 inhibitors, covered in the next article in this library.",
+    ],
+    sources: [
+      { label: "Public Health Post — Statins and the Nocebo Effect", url: "https://publichealthpost.org/health-equity/statins-and-the-nocebo-effect/" },
+    ],
+  },
+  {
+    id: "newer-treatments",
+    category: "Treatment",
+    title: "Newer Cholesterol Treatments: PCSK9 Inhibitors and Beyond",
+    summary: "Powerful add-on options, now including pills instead of just injections.",
+    readTime: "4 min",
+    simple: [
+      "For people who need more cholesterol lowering than statins alone provide, or who can't tolerate statins, a newer class of medicine called PCSK9 inhibitors offers a powerful option, lowering LDL by an additional 50 to 65% on top of other treatment.",
+      "PCSK9 inhibitors were originally only available as injections given every 2 to 4 weeks, or in one option, just twice a year. In 2025 and 2026, oral (pill) versions of this drug class started becoming available, giving people a needle-free option.",
+      "There's also growing attention to a specific, largely genetic type of cholesterol called Lp(a) (lipoprotein(a)), which isn't well addressed by diet, exercise, or standard statins. New medicines specifically targeting Lp(a) are in development and starting to reach patients.",
+      "These newer medicines are generally used as add-on treatment for people who need extra LDL lowering, especially those with familial hypercholesterolemia or existing heart disease, not as a replacement for statins, diet, and exercise for most people.",
+    ],
+    detailed: [
+      "PCSK9 inhibitors are a class of medicine that blocks a protein (PCSK9) that normally degrades LDL receptors in the liver; blocking it allows the liver to clear more LDL from the blood, producing substantial additional LDL reduction, typically 50 to 65%, on top of statin therapy. The first PCSK9 inhibitors, evolocumab and alirocumab, are monoclonal antibodies given by injection every two to four weeks.",
+      "Inclisiran, a different type of PCSK9-targeting drug using [[siRNA||Short for 'small interfering RNA,' a type of drug that works by blocking the body from producing a specific protein.]] technology to reduce the liver's production of PCSK9 rather than blocking the protein directly, offers a notably convenient dosing schedule: after an initial dose and one follow-up, it's given just twice a year. Clinical trials have shown LDL reductions in the range of 40 to 50% with inclisiran.",
+      "In 2025 and 2026, oral PCSK9 inhibitors began reaching patients, including enlicitide, giving people who prefer not to use injections a pill-based option for this level of LDL lowering for the first time. Specialists note that statins remain the foundational, first-line treatment, with PCSK9 inhibitors serving as add-on therapy for people who don't reach their LDL targets on statins alone, or who can't tolerate statins.",
+      "A related, increasingly emphasized area is [[lipoprotein(a)||A genetically determined type of cholesterol particle. Unlike LDL, it isn't significantly affected by diet or lifestyle, and elevated levels raise cardiovascular risk independent of standard cholesterol numbers.]], or Lp(a), a cholesterol particle that's almost entirely genetically determined and isn't meaningfully lowered by diet, exercise, or standard statins. New medicines specifically targeting Lp(a) have shown reductions greater than 95% in early trials, though as of 2026, it isn't yet proven whether lowering Lp(a) this way actually reduces heart attacks, strokes, or cardiovascular death, since those longer-term outcome studies are still ongoing. Because of this gap between promising lab results and proven real-world benefit, current guidance focuses on identifying who has elevated Lp(a) through one-time screening, so that people are ready for targeted treatment as that longer-term evidence develops.",
+    ],
+    sources: [
+      { label: "Pharmacy Times — Enlicitide and the New Wave of PCSK9 Inhibitors", url: "https://www.pharmacytimes.com/view/enlicitide-and-the-new-wave-of-pcsk9-inhibitors" },
+      { label: "Pharmaceuticals (PMC) — Inclisiran, LDL Cholesterol and Lipoprotein(a)", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10143414/" },
+    ],
+  },
+  {
+    id: "myths",
+    category: "Myths",
+    title: "Common Myths About Cholesterol",
+    summary: "Separating what's true from what people often assume.",
+    readTime: "3 min",
+    simple: [
+      "Myth: high cholesterol always means you eat poorly or don't exercise. Fact: genetics play a major role for many people, including a specific inherited condition (familial hypercholesterolemia) that causes high cholesterol regardless of lifestyle.",
+      "Myth: you'll know if you have high cholesterol because you'll feel symptoms. Fact: high cholesterol typically causes no symptoms at all; a blood test is the only way to know.",
+      "Myth: statins are dangerous and cause serious side effects in most people. Fact: clinical trials show serious side effects clearly caused by statins are uncommon (under 2%), and the large majority of people tolerate them well long-term.",
+      "Myth: once your cholesterol improves, you can stop taking medication or making lifestyle changes. Fact: for most people, especially those with a genetic or ongoing risk factor, cholesterol management is a long-term, ongoing process, not a one-time fix.",
+      "Myth: all cholesterol is bad for you. Fact: HDL cholesterol actually helps protect against heart disease; the goal isn't eliminating cholesterol, it's having a healthy balance.",
+    ],
+    detailed: [
+      "Myth: high cholesterol always reflects poor diet or lack of exercise. Fact: genetics substantially influence cholesterol levels for many people, including familial hypercholesterolemia, a specific inherited condition affecting an estimated 1 in 250 to 1 in 500 people that causes high cholesterol from birth regardless of lifestyle. This misconception contributes to significant underdiagnosis, particularly in younger, otherwise healthy-appearing individuals.",
+      "Myth: symptoms will alert you to high cholesterol. Fact: hyperlipidemia is typically entirely asymptomatic; it's identified through blood testing, not through how someone feels, which is why routine screening guidelines exist independent of symptom status.",
+      "Myth: statins commonly cause serious, dangerous side effects. Fact: across decades of large clinical trials, serious side effects definitively attributable to statins occur in under 2% of patients, and more than 80% of trial participants remain able to continue the medication long-term. Real-world statin discontinuation rates are notably higher than trial data would predict, a gap researchers attribute significantly to the nocebo effect driven by widespread negative media coverage rather than to the medication's actual risk profile.",
+      "Myth: cholesterol management is a short-term fix. Fact: for most people, particularly those with an ongoing genetic or lifestyle-related risk factor, cholesterol management is a long-term, continuous process requiring ongoing monitoring and, often, sustained treatment, rather than a problem that's permanently solved once numbers improve.",
+      "Myth: all types of cholesterol harm your health. Fact: HDL cholesterol actively helps protect against cardiovascular disease by removing excess cholesterol from the bloodstream; the clinical goal is an overall healthy balance across LDL, HDL, and triglycerides, not the elimination of cholesterol altogether.",
+    ],
+    sources: [
+      { label: "Public Health Post — Statins and the Nocebo Effect", url: "https://publichealthpost.org/health-equity/statins-and-the-nocebo-effect/" },
+      { label: "Cedars-Sinai — Familial Hypercholesterolemia", url: "https://www.cedars-sinai.org/health-library/diseases-and-conditions/f/familial-hypercholesterolemia.html" },
+    ],
+  },
+];
+
+const CATEGORIES = ["All", "Basics", "Causes", "Testing", "Treatment", "Myths"];
+
+/* ---------------------------------- content: stigma ---------------------------------- */
+
+const STIGMA_CONTENT = {
+  title: "Cholesterol Blame and Misinformation, Explained",
+  simple: [
+    "High cholesterol carries a specific kind of stigma: the widespread assumption that it always reflects someone's diet or willpower, even though genetics play a major, often overlooked role.",
+    "This assumption has real costs. Familial hypercholesterolemia (FH), a genetic condition causing very high cholesterol from birth, affects an estimated 1 in 250 to 1 in 500 people, but most cases go undiagnosed, in part because doctors and patients alike don't suspect a genetic cause in people who look healthy, exercise regularly, or aren't overweight.",
+    "Underdiagnosis has serious consequences: without early treatment, FH substantially raises the risk of a heart attack by someone's 30s, 40s, or even younger. Studies have found that even among people who are diagnosed with FH, only about half are actually taking the cholesterol-lowering medicine they need.",
+    "A different kind of misinformation affects statins, one of the most well-studied and effective medicines in existence. Despite serious side effects being rare (under 2% in clinical trials), roughly 1 in 4 people decline a statin when their doctor recommends one, often influenced by exaggerated claims and negative stories circulating online and in the media.",
+    "Researchers call part of this the 'nocebo effect': when someone expects a medication to cause side effects, they're measurably more likely to experience, or blame unrelated symptoms on, that medication, even when it isn't actually the cause.",
+    "The fix mirrors what works for every health topic covered on this app: accurate, accessible information. Understanding that cholesterol has real genetic causes, and that statins are safer than commonly believed, helps people get diagnosed earlier and stay on treatments that meaningfully protect their health.",
+  ],
+  detailed: [
+    "High cholesterol is subject to a specific, pervasive form of misunderstanding: the assumption that elevated cholesterol always reflects diet, exercise habits, or willpower, a belief that overlooks the substantial genetic contribution to cholesterol levels for a meaningful share of the population.",
+    "This misconception has measurable diagnostic consequences. Familial hypercholesterolemia (FH), a genetic condition causing significantly elevated LDL cholesterol from birth, affects an estimated 1 in 250 to 1 in 500 people, yet remains one of the most underdiagnosed common genetic conditions. Research published in the BMJ found that only about a quarter of expected FH cases are identified through routine clinical practice, with underdiagnosis most severe among children and young adults. A central contributing factor is that clinicians and patients alike often don't suspect a genetic cause of high cholesterol in people who appear healthy, maintain a normal weight, or exercise regularly, since the cultural default assumption links high cholesterol so strongly to lifestyle.",
+    "The consequences of underdiagnosis are serious: without early treatment, heterozygous FH carries at least a 50% cumulative risk of a coronary event by age 60 in men, and roughly 30% in women. Even among people who are diagnosed with FH, research analyzing national health survey data found only about half were taking any statin, and fewer still were on a high-intensity statin regimen appropriate for their risk level, indicating that diagnosis alone doesn't guarantee adequate treatment.",
+    "A related but distinct form of [[misinformation||Inaccurate information, often spread widely, that shapes what people believe about a health condition or treatment, regardless of what the evidence actually shows.]] affects statins specifically, despite being among the most extensively studied medications in clinical history, subject to hundreds of clinical trials and decades of safety surveillance showing a consistent roughly 30% reduction in heart attack and stroke risk, with serious attributable side effects occurring in under 2% of patients. Despite this evidence base, research indicates that approximately 25% of patients decline a statin when a doctor recommends one, and real-world rates of reported muscle-related side effects substantially exceed what clinical trial data would predict.",
+    "Researchers attribute much of this gap to the [[nocebo effect||When negative expectations about a medication cause someone to experience, or attribute unrelated symptoms to, side effects that wouldn't otherwise occur or be noticed.]]: negative expectations about a medication, often shaped by disproportionately negative media coverage and anecdote-driven online content, measurably increase the likelihood that a patient will experience or attribute symptoms to that medication, independent of its actual pharmacological effects. This has been documented in other medication contexts as well, such as patients warned about a specific side effect being substantially more likely to report it than those not given that expectation.",
+    "As with every health topic covered in this app, the evidence points toward the same underlying solution: accurate, accessible information. Understanding that cholesterol often has a real, substantial genetic basis helps overcome the diagnostic delays caused by lifestyle-based assumptions, and understanding statins' actual, well-documented safety profile helps more people stay on a medication proven to meaningfully reduce their risk of heart attack and stroke.",
+  ],
+  sources: [
+    { label: "BMJ — Extent of Underdiagnosis of Familial Hypercholesterolaemia in Routine Practice", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC27432" },
+    { label: "CDC — Prevalence and Predictors of Cholesterol Screening and Statin Treatment", url: "https://stacks.cdc.gov/view/cdc/76112/cdc_76112_DS1.pdf" },
+    { label: "Public Health Post — Statins and the Nocebo Effect", url: "https://publichealthpost.org/health-equity/statins-and-the-nocebo-effect/" },
+    { label: "Cedars-Sinai — Familial Hypercholesterolemia", url: "https://www.cedars-sinai.org/health-library/diseases-and-conditions/f/familial-hypercholesterolemia.html" },
+  ],
+};
+
+/* ---------------------------------- new research (static — refresh periodically) ---------------------------------- */
+
+const RESEARCH_LAST_UPDATED = "September 2026";
+
+const RESEARCH_ITEMS = [
+  {
+    id: "oral-pcsk9-enlicitide",
+    headline: "First oral PCSK9 inhibitor pill becomes available",
+    source: "Pharmacy Times",
+    sourceUrl: "https://www.pharmacytimes.com/view/enlicitide-and-the-new-wave-of-pcsk9-inhibitors",
+    datePublished: "August 2026",
+    tag: "Treatment news",
+    whyItMatters: "A pill option means people who need extra LDL lowering beyond statins, but don't want injections, now have a needle-free choice.",
+    summary: [
+      "Enlicitide, a new oral PCSK9 inhibitor, has become available as a daily pill option for lowering LDL cholesterol, alongside another oral option still in development. Until now, PCSK9 inhibitors were only available as injections.",
+      "PCSK9 inhibitors work differently from statins and are generally used as an add-on for people who don't reach their cholesterol targets on statins alone, or who can't tolerate statins, rather than as a first choice for most people.",
+      "Specialists interviewed about the new pill emphasized that statins remain the proven first-line treatment for most people, with oral PCSK9 inhibitors offering an additional, more convenient option specifically for people who need more LDL lowering or want to avoid injections.",
+    ],
+  },
+  {
+    id: "universal-lpa-screening",
+    headline: "Guidelines increasingly call for a one-time Lp(a) test for every adult",
+    source: "Pharmacy Times, reporting on a 2026 ADCES presentation",
+    sourceUrl: "https://www.pharmacytimes.com/view/enlicitide-and-the-new-wave-of-pcsk9-inhibitors",
+    datePublished: "2026",
+    tag: "Guideline update",
+    whyItMatters: "Lp(a) isn't part of a standard cholesterol test, so without this specific screening, many people with a genetically elevated heart disease risk factor could go undetected.",
+    summary: [
+      "Lipoprotein(a), or Lp(a), is a cholesterol particle whose levels are almost entirely determined by genetics rather than diet or lifestyle, and it isn't included in a standard cholesterol (lipid panel) blood test. Elevated Lp(a) raises cardiovascular risk independent of a person's other cholesterol numbers.",
+      "Because Lp(a) can't be meaningfully changed through lifestyle changes, and new medicines targeting it specifically are advancing through development, clinical guidance increasingly calls for testing every adult for Lp(a) at least once in their lifetime, so people with elevated levels can be identified now and monitored, even before targeted treatments are fully available.",
+      "Specialists caution that while new Lp(a)-lowering medicines have shown very large reductions in Lp(a) levels in early studies, it isn't yet proven whether lowering Lp(a) this way actually reduces heart attacks or strokes, since those longer-term outcome trials are still ongoing as of 2026.",
+    ],
+  },
+  {
+    id: "inclisiran-twice-yearly-option",
+    headline: "Twice-a-year injection offers an alternative way to lower cholesterol",
+    source: "Pharmaceuticals journal review",
+    sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10143414/",
+    datePublished: "2025",
+    tag: "New study",
+    whyItMatters: "Needing treatment only twice a year, instead of daily pills or more frequent injections, could make it easier for some people to stay consistent with cholesterol treatment long-term.",
+    summary: [
+      "Inclisiran is a cholesterol-lowering medicine that works differently from both statins and older PCSK9 inhibitor injections: it uses a technology called siRNA to reduce the liver's production of a protein (PCSK9) involved in regulating LDL cholesterol.",
+      "After an initial dose and one follow-up dose three months later, inclisiran only needs to be given twice a year, a notably different schedule from daily statin pills or the every-2-to-4-week injections required by other PCSK9 inhibitors.",
+      "Clinical trials have shown inclisiran lowers LDL cholesterol by roughly 40 to 50% when added to other treatment, and ongoing research is studying its use in additional groups, including adolescents with familial hypercholesterolemia, to better understand its long-term role in cholesterol management.",
+    ],
+  },
+];
+
+/* ---------------------------------- sibling sites ---------------------------------- */
+
+const SIBLING_SITES = [
+  { label: "TB Honest", path: "/", color: "#2B6E68" },
+  { label: "HIV Honest", path: "/hiv/", color: "#A13D4C" },
+  { label: "COVID Honest", path: "/covid/", color: "#6B3FA0" },
+  { label: "Hep B Honest", path: "/hepb/", color: "#B5541E" },
+  { label: "Obesity Honest", path: "/obesity/", color: "#4C7A5E" },
+];
+
+/* ---------------------------------- glossary rendering ---------------------------------- */
+
+function GlossaryWord({ term, definition, sizeClass }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        className={`font-semibold underline decoration-2 underline-offset-4 ${sizeClass}`}
+        style={{ color: "var(--accent)", textDecorationStyle: "dotted", textDecorationColor: "var(--highlight)" }}
+        aria-expanded={open}
+      >
+        {term}
+      </button>
+      {open && (
+        <span
+          className={`block mt-2 mb-1 pl-3 border-l-2 ${sizeClass}`}
+          style={{ borderColor: "var(--highlight)", color: "var(--ink-soft)" }}
+        >
+          {definition}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function renderRichText(text, sizeClass) {
+  const regex = /\[\[(.+?)\|\|(.+?)\]\]/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>);
+    }
+    parts.push(<GlossaryWord key={key++} term={match[1]} definition={match[2]} sizeClass={sizeClass} />);
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(<span key={key++}>{text.slice(lastIndex)}</span>);
+  }
+  return parts;
+}
+
+/* ---------------------------------- fonts ---------------------------------- */
+
+function useFonts() {
+  useEffect(() => {
+    const id = "cholesterol-honest-fonts";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap";
+    document.head.appendChild(link);
+  }, []);
+}
+
+const BODY_FONT_STACK = "'Atkinson Hyperlegible', sans-serif";
+const HEADLINE_FONT_STACK = "'Fraunces', serif";
+
+/* ---------------------------------- app ---------------------------------- */
+
+const BODY_SIZES = ["text-base", "text-lg", "text-xl"];
+const TITLE_SIZES = ["text-2xl", "text-3xl", "text-4xl"];
+const LIST_TITLE_SIZES = ["text-lg", "text-xl", "text-2xl"];
+const INTRO_SIZES = ["text-xl", "text-2xl", "text-3xl"];
+
+function CholesterolHonestApp() {
+  useFonts();
+
+  const [tab, setTab] = useState("library"); // 'library' | 'research' | 'stigma'
+  const [view, setView] = useState("home"); // 'home' | 'article'
+  const [activeId, setActiveId] = useState(null);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [level, setLevel] = useState("simple");
+  const [sizeStep, setSizeStep] = useState(1);
+  const [speaking, setSpeaking] = useState(false);
+  const [stigmaLevel, setStigmaLevel] = useState("simple");
+  const [expandedResearchId, setExpandedResearchId] = useState(null);
+
+  const bodySize = BODY_SIZES[sizeStep];
+  const titleSize = TITLE_SIZES[sizeStep];
+  const listTitleSize = LIST_TITLE_SIZES[sizeStep];
+  const introSize = INTRO_SIZES[sizeStep];
+
+  const activeArticle = useMemo(() => ARTICLES.find((a) => a.id === activeId) || null, [activeId]);
+
+  function unwrapGlossary(text) {
+    return text.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1 $2");
+  }
+
+  function searchableText(article) {
+    const parts = [
+      article.title,
+      article.summary,
+      ...(article.simple || []),
+      ...(article.detailed || []),
+      ...(article.sources || []).map((s) => s.label),
+    ].filter(Boolean);
+    return unwrapGlossary(parts.join(" \n ")).toLowerCase();
+  }
+
+  function matchSnippet(article, q) {
+    if (!q) return null;
+    const alreadyVisible = article.title.toLowerCase().includes(q) || article.summary.toLowerCase().includes(q);
+    if (alreadyVisible) return null;
+    const body = unwrapGlossary([...(article.simple || []), ...(article.detailed || [])].join(" \n "));
+    const idx = body.toLowerCase().indexOf(q);
+    if (idx === -1) return null;
+    const start = Math.max(0, idx - 40);
+    const end = Math.min(body.length, idx + q.length + 60);
+    return (start > 0 ? "…" : "") + body.slice(start, end).trim() + (end < body.length ? "…" : "");
+  }
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ARTICLES.filter((a) => {
+      const matchesCategory = category === "All" || a.category === category;
+      const matchesQuery = !q || searchableText(a).includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  }, [query, category]);
+
+  function openArticle(id) {
+    stopSpeaking();
+    setActiveId(id);
+    setLevel("simple");
+    setView("article");
+  }
+
+  function goHome() {
+    stopSpeaking();
+    setView("home");
+    setActiveId(null);
+  }
+
+  function stopSpeaking() {
+    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+    setSpeaking(false);
+  }
+
+  function toggleSpeak() {
+    if (!activeArticle) return;
+    if (speaking) {
+      stopSpeaking();
+      return;
+    }
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+    const plain = (activeArticle[level] || []).map((p) => p.replace(/\[\[(.+?)\|\|(.+?)\]\]/g, "$1")).join(" ");
+    const text = `${activeArticle.title}. ${plain}`;
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.rate = 0.95;
+    utter.onend = () => setSpeaking(false);
+    utter.onerror = () => setSpeaking(false);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+    setSpeaking(true);
+  }
+
+  useEffect(() => stopSpeaking, []);
+
+  return (
+    <div
+      style={{
+        "--bg": "#EFF3F6",
+        "--bg-alt": "#E0E8ED",
+        "--ink": "#1E2B33",
+        "--ink-soft": "#5C6E78",
+        "--accent": "#2C5F8A",
+        "--accent-soft": "#D6E4EE",
+        "--highlight": "#C48A2E",
+        "--line": "#D4DEE5",
+        backgroundColor: "var(--bg)",
+        color: "var(--ink)",
+        fontFamily: BODY_FONT_STACK,
+        minHeight: "100%",
+      }}
+      className="w-full"
+    >
+      <div className="max-w-2xl mx-auto px-5 pb-16">
+        {/* top bar */}
+        <div className="sticky top-0 z-10 flex items-center justify-between py-4" style={{ backgroundColor: "var(--bg)" }}>
+          {view === "article" ? (
+            <button onClick={goHome} className="flex items-center gap-1 font-semibold" style={{ color: "var(--accent)" }}>
+              <ChevronLeft size={20} />
+              <span>Back</span>
+            </button>
+          ) : (
+            <span className="font-semibold" style={{ fontFamily: HEADLINE_FONT_STACK, fontSize: "1.3rem", fontWeight: 600 }}>
+              Cholesterol Honest
+            </span>
+          )}
+
+          <div className="flex items-center gap-2">
+            {view === "article" && (
+              <button
+                onClick={toggleSpeak}
+                aria-pressed={speaking}
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold border"
+                style={{
+                  borderColor: speaking ? "var(--accent)" : "var(--line)",
+                  color: speaking ? "white" : "var(--ink)",
+                  backgroundColor: speaking ? "var(--accent)" : "transparent",
+                }}
+              >
+                {speaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                {speaking ? "Stop" : "Listen"}
+              </button>
+            )}
+            <button
+              onClick={() => setSizeStep((s) => (s + 1) % 3)}
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-semibold border"
+              style={{ borderColor: "var(--line)" }}
+              aria-label="Change text size"
+              title="Change text size"
+            >
+              <Type size={16} />
+              {["S", "M", "L"][sizeStep]}
+            </button>
+          </div>
+        </div>
+
+        {/* mission hero */}
+        {view === "home" && (
+          <div className="mb-8 pb-8" style={{ borderBottom: "1px solid var(--line)" }}>
+            <h1 className={titleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600, lineHeight: 1.15 }}>
+              Understanding high cholesterol shouldn't require a medical degree.
+            </h1>
+            <p className={`${bodySize} mt-3`} style={{ color: "var(--ink-soft)", maxWidth: "42rem" }}>
+              Cholesterol Honest turns real, sourced research into plain language you can actually use —
+              including why genetics matter more than most people assume, and why statins are safer than their
+              reputation.
+            </p>
+
+            <div className="text-sm font-semibold mt-6 mb-3" style={{ color: "var(--ink-soft)" }}>
+              More from the Honest series
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {SIBLING_SITES.map((site) => (
+                <a
+                  key={site.path}
+                  href={site.path}
+                  className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                  style={{ borderColor: "var(--line)", color: "var(--ink)" }}
+                >
+                  <span style={{ width: 8, height: 8, borderRadius: 9999, backgroundColor: site.color, display: "inline-block", flexShrink: 0 }} />
+                  {site.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* top-level tabs */}
+        {view === "home" && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {[
+              ["research", "New Research"],
+              ["library", "Library"],
+              ["stigma", "Stigma"],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`rounded-full px-4 py-1.5 font-semibold border ${bodySize}`}
+                style={{
+                  borderColor: tab === key ? "var(--highlight)" : "var(--line)",
+                  backgroundColor: tab === key ? "var(--accent-soft)" : "transparent",
+                  color: tab === key ? "var(--ink)" : "var(--ink-soft)",
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ---------------- library / home ---------------- */}
+        {view === "home" && tab === "library" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Browse articles on causes, testing, and treatment — written in plain language and backed by real
+              sources.
+            </p>
+
+            <div className="flex items-center gap-2 rounded-full px-4 py-2.5 mb-4" style={{ backgroundColor: "var(--bg-alt)" }}>
+              <Search size={18} style={{ color: "var(--ink-soft)" }} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search topics, like 'statins' or 'LDL'"
+                className={`bg-transparent outline-none w-full ${bodySize}`}
+                style={{ color: "var(--ink)" }}
+              />
+              {query && (
+                <button onClick={() => setQuery("")} aria-label="Clear search">
+                  <X size={16} style={{ color: "var(--ink-soft)" }} />
+                </button>
+              )}
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 mb-6" style={{ scrollbarWidth: "none" }}>
+              {CATEGORIES.map((c) => {
+                const activeCat = c === category;
+                return (
+                  <button
+                    key={c}
+                    onClick={() => setCategory(c)}
+                    className={`shrink-0 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                    style={{
+                      borderColor: activeCat ? "var(--highlight)" : "var(--line)",
+                      backgroundColor: activeCat ? "var(--accent-soft)" : "transparent",
+                      color: activeCat ? "var(--ink)" : "var(--ink-soft)",
+                    }}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+            </div>
+
+            {filtered.length === 0 ? (
+              <p className={`${bodySize} py-8`} style={{ color: "var(--ink-soft)" }}>
+                No articles match your search. Try a different word or category.
+              </p>
+            ) : (
+              <div>
+                {filtered.map((a, i) => {
+                  const snippet = matchSnippet(a, query.trim().toLowerCase());
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => openArticle(a.id)}
+                      className="w-full text-left py-5"
+                      style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}
+                    >
+                      <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                        {a.title}
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {a.summary}
+                      </div>
+                      {snippet && (
+                        <div className="text-sm mt-1.5 italic" style={{ color: "var(--ink-soft)" }}>
+                          "{snippet}"
+                        </div>
+                      )}
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {a.category} · {a.readTime}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              This app explains general health information in plain language. It is not medical advice and
+              doesn't replace a visit with your doctor or nurse.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- new research ---------------- */}
+        {view === "home" && tab === "research" && (
+          <>
+            <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              Real cholesterol research, explained simply.
+            </p>
+            <p className={`${bodySize} mb-1`} style={{ color: "var(--ink-soft)" }}>
+              We periodically review current studies, guidelines, and health news about cholesterol, then
+              rewrite what we find in plain language. Every item links back to its real source.
+            </p>
+            <p className="text-sm mb-6" style={{ color: "var(--ink-soft)" }}>
+              Last updated: {RESEARCH_LAST_UPDATED}
+            </p>
+
+            <div>
+              {RESEARCH_ITEMS.map((r, i) => {
+                const expanded = expandedResearchId === r.id;
+                return (
+                  <div key={r.id || i} style={{ borderTop: i === 0 ? "1px solid var(--line)" : "none", borderBottom: "1px solid var(--line)" }}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setExpandedResearchId(expanded ? null : r.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setExpandedResearchId(expanded ? null : r.id);
+                        }
+                      }}
+                      aria-expanded={expanded}
+                      className="w-full text-left py-5 cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className={listTitleSize} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+                          {r.headline}
+                        </div>
+                        <ChevronDown
+                          size={20}
+                          style={{ color: "var(--ink-soft)", transform: expanded ? "rotate(180deg)" : "none", flexShrink: 0, marginTop: 4 }}
+                        />
+                      </div>
+                      <div className={`${bodySize} mt-1`} style={{ color: "var(--ink-soft)" }}>
+                        {renderRichText(r.whyItMatters || "", bodySize)}
+                      </div>
+                      <div className="text-sm mt-2" style={{ color: "var(--highlight)" }}>
+                        {r.tag ? `${r.tag} · ` : ""}
+                        {r.source}
+                        {r.datePublished ? ` · ${r.datePublished}` : ""}
+                      </div>
+                    </div>
+
+                    {expanded && (
+                      <div className="pb-5">
+                        <div className={`${bodySize} space-y-3`} style={{ lineHeight: 1.7 }}>
+                          {(r.summary || []).map((p, idx) => (
+                            <p key={idx}>{renderRichText(p, bodySize)}</p>
+                          ))}
+                        </div>
+                        {r.sourceUrl && (
+                          <a
+                            href={r.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1.5 mt-3 font-semibold ${bodySize}`}
+                            style={{ color: "var(--accent)" }}
+                          >
+                            Read the source
+                            <ExternalLink size={15} />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <p className="text-sm mt-8" style={{ color: "var(--ink-soft)" }}>
+              These summaries are written by AI from current research and news, and may contain mistakes. Use
+              the source link to check the original, and always talk with your doctor or nurse about your own
+              health.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- stigma ---------------- */}
+        {view === "home" && tab === "stigma" && (
+          <>
+            <p className={`${introSize} leading-snug mb-6`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+              {STIGMA_CONTENT.title}
+            </p>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={stigmaLevel === key}
+                  onClick={() => setStigmaLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: stigmaLevel === key ? "var(--accent)" : "transparent", color: stigmaLevel === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {STIGMA_CONTENT[stigmaLevel].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+              <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                Sources
+              </div>
+              <ul className="space-y-1">
+                {STIGMA_CONTENT.sources.map((s, idx) => (
+                  <li key={idx}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm inline-flex items-center gap-1"
+                      style={{ color: "var(--accent)" }}
+                    >
+                      {s.label}
+                      <ExternalLink size={12} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="text-sm mt-6" style={{ color: "var(--ink-soft)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </>
+        )}
+
+        {/* ---------------- article ---------------- */}
+        {view === "article" && activeArticle && (
+          <div>
+            <div className="text-sm font-semibold mb-2" style={{ color: "var(--highlight)" }}>
+              {activeArticle.category} · {activeArticle.readTime}
+            </div>
+            <h1 className={`${titleSize} mb-4 leading-tight`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 600 }}>
+              {activeArticle.title}
+            </h1>
+
+            <div className="inline-flex rounded-full p-1 mb-6" style={{ backgroundColor: "var(--bg-alt)" }} role="tablist" aria-label="Reading level">
+              {[
+                ["simple", "Simple"],
+                ["detailed", "More detail"],
+              ].map(([key, label]) => (
+                <button
+                  key={key}
+                  role="tab"
+                  aria-selected={level === key}
+                  onClick={() => setLevel(key)}
+                  className={`rounded-full px-4 py-1.5 font-semibold ${bodySize}`}
+                  style={{ backgroundColor: level === key ? "var(--accent)" : "transparent", color: level === key ? "white" : "var(--ink-soft)" }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className={`${bodySize} space-y-4`} style={{ lineHeight: 1.7 }}>
+              {activeArticle[level].map((p, idx) => (
+                <p key={idx}>{renderRichText(p, bodySize)}</p>
+              ))}
+            </div>
+
+            {activeArticle.sources && activeArticle.sources.length > 0 && (
+              <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--line)" }}>
+                <div className="text-sm font-semibold mb-2" style={{ color: "var(--ink-soft)" }}>
+                  Sources
+                </div>
+                <ul className="space-y-1">
+                  {activeArticle.sources.map((s, idx) => (
+                    <li key={idx}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm inline-flex items-center gap-1"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {s.label}
+                        <ExternalLink size={12} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <p className="text-sm mt-6 pt-6" style={{ color: "var(--ink-soft)", borderTop: activeArticle.sources ? "none" : "1px solid var(--line)" }}>
+              This is general health information, not medical advice. Please talk with your doctor or nurse
+              about your own health and treatment.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<CholesterolHonestApp />);
+
+</script>
+<script>
+  var sourceCode = document.getElementById("app-source").textContent;
+  var compiled = Babel.transform(sourceCode, {
+    presets: [["react", { runtime: "classic" }]]
+  }).code;
+  var scriptEl = document.createElement("script");
+  scriptEl.text = compiled;
+  document.body.appendChild(scriptEl);
+</script>
+</body>
+</html>
