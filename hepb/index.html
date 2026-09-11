@@ -269,6 +269,13 @@ const STIGMA_CONTENT = {
   ],
 };
 
+const SIBLING_SITES = [
+  { label: "TB Honest", path: "/", color: "#2B6E68" },
+  { label: "HIV Honest", path: "/hiv/", color: "#A13D4C" },
+  { label: "COVID Honest", path: "/covid/", color: "#6B3FA0" },
+  { label: "Obesity Honest", path: "/obesity/", color: "#4C7A5E" },
+];
+
 /* ---------------------------------- glossary rendering ---------------------------------- */
 
 /* ---------------------------------- new research (static — refresh periodically) ---------------------------------- */
@@ -575,6 +582,23 @@ function HepBHonestApp() {
               so you can understand your test results, your treatment, and the facts that cut through stigma,
               without the guesswork.
             </p>
+
+            <div className="text-sm font-semibold mt-6 mb-3" style={{ color: "var(--ink-soft)" }}>
+              More from the Honest series
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {SIBLING_SITES.map((site) => (
+                <a
+                  key={site.path}
+                  href={site.path}
+                  className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 border font-semibold ${bodySize}`}
+                  style={{ borderColor: "var(--line)", color: "var(--ink)" }}
+                >
+                  <span style={{ width: 8, height: 8, borderRadius: 9999, backgroundColor: site.color, display: "inline-block", flexShrink: 0 }} />
+                  {site.label}
+                </a>
+              ))}
+            </div>
           </div>
         )}
 
