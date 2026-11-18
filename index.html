@@ -1761,6 +1761,46 @@ const TITLE_SIZES = ["text-2xl", "text-3xl", "text-4xl"];
 const LIST_TITLE_SIZES = ["text-lg", "text-xl", "text-2xl"];
 const INTRO_SIZES = ["text-xl", "text-2xl", "text-3xl"];
 
+// Interactive TB visualizer. Lives at /visualizer/ as its own page; embedded here in an
+// iframe that reports its height so the tab grows with it.
+function VisualizerTab({ introSize, bodySize }) {
+  const [height, setHeight] = useState(1600);
+  const frameRef = useRef(null);
+  useEffect(() => {
+    function onMessage(e) {
+      if (frameRef.current && e.source === frameRef.current.contentWindow && e.data && typeof e.data.tbviz === "number") {
+        setHeight(Math.max(600, e.data.tbviz));
+      }
+    }
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
+  return (
+    <>
+      <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
+        See what TB does inside the body, and how treatment stops it.
+      </p>
+      <p className={`${bodySize} mb-1`} style={{ color: "var(--ink-soft)" }}>
+        Follow TB from infection to latent TB, see what happens when sleeping germs wake up, and watch how
+        each medicine attacks them. Pick a scenario and press play.
+      </p>
+      <p className="text-sm mb-4" style={{ color: "var(--ink-soft)" }}>
+        This page is currently available in English only.{" "}
+        <a href="visualizer/" target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-semibold" style={{ color: "var(--accent)" }}>
+          Open full screen <ExternalLink size={12} />
+        </a>
+      </p>
+      <iframe
+        ref={frameRef}
+        src="visualizer/?embed=1"
+        title="Interactive TB visualizer"
+        loading="lazy"
+        style={{ width: "100%", height, border: 0, display: "block" }}
+      />
+    </>
+  );
+}
+
 function TBHonestResearchApp() {
   useFonts();
 
@@ -2053,6 +2093,28 @@ function TBHonestResearchApp() {
               actually use — so you can understand your test results, your treatment, and your rights, without
               the guesswork.
             </p>
+            <a
+              href="visualizer/"
+              className="mt-5 flex items-center gap-4 rounded-2xl border px-4 py-3"
+              style={{ borderColor: "var(--line)", backgroundColor: "var(--accent-soft)", color: "var(--ink)", maxWidth: "42rem", textDecoration: "none" }}
+            >
+              <span
+                className="flex-none rounded-full flex items-center justify-center"
+                style={{ width: 44, height: 44, backgroundColor: "var(--accent)", color: "white" }}
+                aria-hidden="true"
+              >
+                <svg width="18" height="18" viewBox="0 0 14 14"><path d="M3 1.5v11l9.5-5.5z" fill="currentColor" /></svg>
+              </span>
+              <span className="min-w-0">
+                <span className="block font-semibold" style={{ fontFamily: HEADLINE_FONT_STACK, fontSize: "1.15rem" }}>
+                  See inside TB
+                </span>
+                <span className="block text-sm" style={{ color: "var(--ink-soft)" }}>
+                  Watch how TB gets into the lungs, sleeps, wakes up, and how each medicine stops it, step by step.
+                </span>
+              </span>
+              <span aria-hidden="true" className="ml-auto font-semibold text-xl" style={{ color: "var(--accent)" }}>→</span>
+            </a>
           </div>
         )}
 
@@ -2064,6 +2126,7 @@ function TBHonestResearchApp() {
               ["library", strings.library],
               ["stigma", "Stigma"],
               ["journey", "LTBI Guide"],
+              ["visualizer", "See inside TB"],
             ].map(([key, label]) => (
               <button
                 key={key}
@@ -2314,6 +2377,9 @@ function TBHonestResearchApp() {
         )}
 
         {/* ---------------- LTBI guide ---------------- */}
+        {/* ---------------- visualizer ---------------- */}
+        {view === "home" && tab === "visualizer" && <VisualizerTab introSize={introSize} bodySize={bodySize} />}
+
         {view === "home" && tab === "journey" && (
           <>
             <p className={`${introSize} leading-snug mb-2`} style={{ fontFamily: HEADLINE_FONT_STACK, fontWeight: 500 }}>
